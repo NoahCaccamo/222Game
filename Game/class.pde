@@ -63,21 +63,21 @@ class Player {
 
   void move() {
 
-    if (keys[0] == true) {
+    if (keys[0] == true && isSlashing == false) {
       ypos -= mvspeed;
     }
 
 
-    if (keys[1] == true) {
+    if (keys[1] == true && isSlashing == false) {
       ypos += mvspeed;
     }
 
 
-    if (keys[2] == true) {
+    if (keys[2] == true && isSlashing == false) {
       xpos -= mvspeed;
     }
 
-    if (keys[3] == true) {
+    if (keys[3] == true && isSlashing == false) {
       xpos += mvspeed;
     }
   }
@@ -233,6 +233,59 @@ class commands {
 
 }
 
+class slashBox {
+  float bwidth = 50;
+  float bheight = 100;
+  float xpos;
+  float ypos;
+  float angle;
+  
+  float plx;
+  float ply;
+  
+  int life = millis() + 100;
+  color c;
+  
+  slashBox(color bc){
+    
+    c = bc;
+    
+    mAngle = atan2(mouseY-p1.ypos, mouseX - p1.xpos);
+
+  if (mAngle < 0) {
+    mAngle += TWO_PI;
+  }
+angle = mAngle;
+
+      pushMatrix();
+  translate(p1.xpos, p1.ypos);
+       rotate(mAngle);
+  translate(50, 0);
+
+xpos = screenX(0,0);
+ypos = screenY(0,0);
+
+plx = p1.xpos;
+ply = p1.ypos;
+
+  popMatrix();
+    
+  }
+  
+  void display() {
+    pushMatrix();
+    translate(plx, ply);
+     rotate(angle);
+     translate(50,0);
+       fill(c);
+  rect(0, 0, bwidth, bheight);
+    popMatrix();
+    
+  }
+  
+
+  
+}
 
 
 ///////////
