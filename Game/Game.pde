@@ -219,6 +219,11 @@ void slash(color c) {
   */
   slashes.add(new slashBox(color(c)));
   //popMatrix();
+  PVector mouseVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
+  mouseVec.normalize();
+   mouseVec.mult(10);
+  p1.xpos -= mouseVec.x;
+    p1.ypos -= mouseVec.y;
 }
 
 int intTimer(int timerLength) {
