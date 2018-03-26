@@ -178,6 +178,62 @@ class projectile {
    ellipse(position.x, position.y, 10, 10);
   }
 }
+//new comType(6)
+
+class comType{
+  boolean done;
+  comType(){
+    done = false;
+  }
+  
+}
+
+class combo1 extends comType{
+   
+  void run(){
+    
+  };
+  
+}
+
+class combo2 extends comType{
+   void run(){
+    
+  };
+  
+}
+
+class combo3 extends comType{
+   void run(){
+    
+     
+     done = true;
+  };
+  
+}
+
+
+class commands {
+  
+  ArrayList<comType> commands = new ArrayList <comType>();
+  
+  void add(int id){
+    if(id == 1){
+      commands.add(new combo1());
+    }else if (id == 2){
+      commands.add(new combo2());
+    }else{
+      commands.add(new combo3());
+    }
+  }
+  void removeHead(){
+    commands.remove(0);
+    
+  }
+
+}
+
+
 
 ///////////
 void startDodge() {
