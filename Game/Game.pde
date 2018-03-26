@@ -7,18 +7,25 @@ Player p1;
 
 ArrayList<fadePlayer> streak = new ArrayList<fadePlayer>();
 ArrayList<projectile> bullets = new ArrayList <projectile>();
-
+ArrayList<slashBox> slashes = new ArrayList<slashBox>();
 
 
 float mAngle;
 
 boolean time;
 int timer, dTimer, cdCombo, comboCounter;
-int  cdSlash = 3;
+int  cdSlash1, cdSlash2, cdSlash3, lag1, lag2, lag3;
+int cdSlash1e = 400;
+int cdSlash2e = 400;
+int cdSlash3e = 600;
+int lag1e = 200;
+int lag2e = 150;
+int lag3e = 100;
+
 int TIME;
 
 boolean canSlash = true;
-boolean combo1, combo2, isSlashing;
+boolean combo1, combo2, combo3, isSlashing, click1, click2, click3;
 
 int dLength = 120;
 int dDist = 10;
@@ -41,7 +48,7 @@ void setup() {
 void draw () {
 
   background(135);
-  println(canSlash, millis(), cdSlash);
+  println(canSlash, millis(), cdSlash1, isSlashing);
 
 
   for (int i=0; i<bullets.size(); i++) {
@@ -50,6 +57,15 @@ void draw () {
     getBullets.display();
     getBullets.update();
   }
+  
+  for (int i=0; i<slashes.size(); i++){
+    slashBox getSlashes = slashes.get(i);
+    
+    getSlashes.display();
+  if (millis()>getSlashes.life) {
+     slashes.remove(i); 
+    }
+}
 
 
 
@@ -81,7 +97,45 @@ void draw () {
       streak.remove(i);
     }
   }
-  
+
+
+  if (cdSlash1 < millis() && cdSlash2 < millis() && cdSlash3 < millis()) {
+    isSlashing = false; 
+    combo1 = false; 
+    combo2 = false; 
+    combo3 = false;
+    click1 = false;
+    click2 = false;
+    click3 = false;
+  }
+
+
+  if (cdSlash1 > millis() && isDashing == false && combo1 == false && combo2 == false && combo3 == false && lag1 <= millis()) {
+    //while (lag1 > millis()) {}
+lag1 = 0;
+
+    slash(color(255, 0, 0));
+    isSlashing = true;
+    combo1 = true;
+   
+  }
+  if (cdSlash2 > millis() && isSlashing == true && combo1 == true && combo2 == false && combo3 == false && cdSlash1 <= millis() && lag2 <= millis()) {
+   // while (cdSlash1 > millis()) {}
+   // while (lag2 > millis()){}
+    lag2 = 0;
+    
+    slash(color(0, 255, 0));
+    combo2 = true;
+  }
+  if (cdSlash3 > millis() && isSlashing == true && combo1 == true && combo2 == true && combo3 == false && cdSlash2 <= millis() && lag3 <= millis()) {
+  //  while (cdSlash2 > millis()) {}
+   //sd while(lag3 > millis()){}
+    lag3 = 0;
+    
+    slash(color(0, 0, 255));
+    combo3 = true;
+  }
+
 
   p1.move();
   p1.display();
@@ -104,15 +158,24 @@ void keyReleased() {
 void mousePressed() {
 
   if (mouseButton == LEFT) {
-
-    if (cdSlash < millis() && isDashing == false) {
-      slash();
-      cdSlash = millis() + 1000;
-      
+     int tempT = millis();
+     
+    if (isDashing == false && click1 == false && click2 == false && click3 == false) {
+      lag1 = tempT + lag1e;
+      cdSlash1 = tempT + lag1e + cdSlash1e;
+      click1 = true;
+    } else if (isDashing == false && click1 == true && click2 == false && click3 == false) {
+      lag2 = tempT + lag2e + (cdSlash1 - tempT);      
+      cdSlash2 = tempT + cdSlash2e + (lag2-tempT);
+      click2 = true;
+    } else if (isDashing == false && click1 == true && click2 == true && click3 == false) {
+      lag3 = tempT + lag3e + (cdSlash2-tempT);
+      cdSlash3 = tempT + cdSlash3e + (lag3-tempT);
+      click3 = true;
     }
-    
-   //add command to array
-   //new comType(1) add this to array list
+
+    //add command to array
+    //new comType(1) add this to array list
 
 
 
@@ -140,8 +203,8 @@ void mousePressed() {
   }
 }
 
-void slash() {
-  mAngle = atan2(mouseY-p1.ypos, mouseX - p1.xpos);
+void slash(color c) {
+  /*mAngle = atan2(mouseY-p1.ypos, mouseX - p1.xpos);
 
   if (mAngle < 0) {
     mAngle += TWO_PI;
@@ -152,18 +215,20 @@ void slash() {
 
   rotate(mAngle);
   translate(50, 0);
-  rect(0, 0, 50, 100);
-  popMatrix();
+  fill(c);
+  */
+  slashes.add(new slashBox(color(c)));
+  //popMatrix();
 }
 
 int intTimer(int timerLength) {
   int remainingTime = timerLength-millis();
-  
+
   if (remainingTime%1000>0) {
-   int actualTime = (remainingTime/1000);
-   return actualTime;
-  }else {
-   time = false;
-   return 0;
+    int actualTime = (remainingTime/1000);
+    return actualTime;
+  } else {
+    time = false;
+    return 0;
   }
 }
