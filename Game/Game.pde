@@ -15,16 +15,17 @@ float mAngle;
 boolean time;
 int timer, dTimer, cdCombo, comboCounter;
 int  cdSlash1, cdSlash2, cdSlash3, lag1, lag2, lag3;
-int cdSlash1e = 400;
-int cdSlash2e = 400;
-int cdSlash3e = 600;
-int lag1e = 200;
-int lag2e = 150;
+int cdSlash1e = 300;
+int cdSlash2e = 350;
+int cdSlash3e = 450;
+int lag1e = 50;
+int lag2e = 100;
 int lag3e = 100;
 
 int TIME;
 
 boolean canSlash = true;
+boolean cantMove;
 boolean combo1, combo2, combo3, isSlashing, click1, click2, click3;
 
 int dLength = 120;
@@ -57,15 +58,15 @@ void draw () {
     getBullets.display();
     getBullets.update();
   }
-  
-  for (int i=0; i<slashes.size(); i++){
+
+  for (int i=0; i<slashes.size(); i++) {
     slashBox getSlashes = slashes.get(i);
-    
+
     getSlashes.display();
-  if (millis()>getSlashes.life) {
-     slashes.remove(i); 
+    if (millis()>getSlashes.life) {
+      slashes.remove(i);
     }
-}
+  }
 
 
 
@@ -100,40 +101,46 @@ void draw () {
 
 
   if (cdSlash1 < millis() && cdSlash2 < millis() && cdSlash3 < millis()) {
-    isSlashing = false; 
+    cantMove = false;
+  }
+
+  if (cdSlash1 + 100 < millis() && cdSlash2 + 100 < millis() && cdSlash3 < millis()) {
     combo1 = false; 
     combo2 = false; 
     combo3 = false;
     click1 = false;
     click2 = false;
     click3 = false;
+    isSlashing = false;
   }
 
 
   if (cdSlash1 > millis() && isDashing == false && combo1 == false && combo2 == false && combo3 == false && lag1 <= millis()) {
     //while (lag1 > millis()) {}
-lag1 = 0;
+    lag1 = 0;
 
     slash(color(255, 0, 0));
     isSlashing = true;
     combo1 = true;
-   
+    cantMove = true;
   }
   if (cdSlash2 > millis() && isSlashing == true && combo1 == true && combo2 == false && combo3 == false && cdSlash1 <= millis() && lag2 <= millis()) {
-   // while (cdSlash1 > millis()) {}
-   // while (lag2 > millis()){}
+    // while (cdSlash1 > millis()) {}
+    // while (lag2 > millis()){}
     lag2 = 0;
-    
+
     slash(color(0, 255, 0));
     combo2 = true;
+    cantMove = true;
   }
   if (cdSlash3 > millis() && isSlashing == true && combo1 == true && combo2 == true && combo3 == false && cdSlash2 <= millis() && lag3 <= millis()) {
-  //  while (cdSlash2 > millis()) {}
-   //sd while(lag3 > millis()){}
+    //  while (cdSlash2 > millis()) {}
+    //sd while(lag3 > millis()){}
     lag3 = 0;
-    
+
     slash(color(0, 0, 255));
     combo3 = true;
+    cantMove = true;
   }
 
 
@@ -158,17 +165,21 @@ void keyReleased() {
 void mousePressed() {
 
   if (mouseButton == LEFT) {
-     int tempT = millis();
-     
+    int tempT = millis();
+
     if (isDashing == false && click1 == false && click2 == false && click3 == false) {
       lag1 = tempT + lag1e;
       cdSlash1 = tempT + lag1e + cdSlash1e;
       click1 = true;
     } else if (isDashing == false && click1 == true && click2 == false && click3 == false) {
+      cdSlash1 -= 100;
+
       lag2 = tempT + lag2e + (cdSlash1 - tempT);      
       cdSlash2 = tempT + cdSlash2e + (lag2-tempT);
       click2 = true;
     } else if (isDashing == false && click1 == true && click2 == true && click3 == false) {
+      cdSlash2 -=100;
+
       lag3 = tempT + lag3e + (cdSlash2-tempT);
       cdSlash3 = tempT + cdSlash3e + (lag3-tempT);
       click3 = true;
@@ -205,25 +216,25 @@ void mousePressed() {
 
 void slash(color c) {
   /*mAngle = atan2(mouseY-p1.ypos, mouseX - p1.xpos);
-
-  if (mAngle < 0) {
-    mAngle += TWO_PI;
-  }
-
-  pushMatrix();
-  translate(p1.xpos, p1.ypos);
-
-  rotate(mAngle);
-  translate(50, 0);
-  fill(c);
-  */
+   
+   if (mAngle < 0) {
+   mAngle += TWO_PI;
+   }
+   
+   pushMatrix();
+   translate(p1.xpos, p1.ypos);
+   
+   rotate(mAngle);
+   translate(50, 0);
+   fill(c);
+   */
   slashes.add(new slashBox(color(c)));
   //popMatrix();
   PVector mouseVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
   mouseVec.normalize();
-   mouseVec.mult(10);
+  mouseVec.mult(10);
   p1.xpos -= mouseVec.x;
-    p1.ypos -= mouseVec.y;
+  p1.ypos -= mouseVec.y;
 }
 
 int intTimer(int timerLength) {
