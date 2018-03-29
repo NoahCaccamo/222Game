@@ -14,11 +14,10 @@ class Player {
   }
 
   void display() {
+    noCursor();
     //Animate
-    if (p1Animate == true) {
     if (frameCount %5 ==0) frame++;
     if (frame>= playerFrames.length) frame = 0;
-    }
   }
 
   void keysCheckP() {
@@ -46,22 +45,18 @@ class Player {
   void keysCheckR() {
     if (key == 'w' || key == 'W') {
       keys[0] = false;
-      lastU = true;lastD = false; lastR = false; lastL = false;
     }
 
     if (key == 's' || key == 'S') {
       keys[1] = false;
-      lastU = false;lastD = true; lastR = false; lastL = false;
     }
 
     if (key == 'a' || key == 'A') {
       keys[2] = false;
-      lastU = false;lastD = false; lastR = false; lastL = true;
     }
 
     if (key == 'd' || key == 'D') {
       keys[3] = false;
-      lastU = false;lastD = false; lastR = true; lastL = false;
     }
   }
 
@@ -71,60 +66,24 @@ class Player {
 
     if (keys[0] == true && isSlashing == false) {
       ypos -= mvspeed;
-  
+      image(playerFramesUp[frame], xpos, ypos);
     }
+
 
     if (keys[1] == true && isSlashing == false) {
       ypos += mvspeed;
- 
+      image(playerFrames[frame], xpos, ypos);
     }
 
 
     if (keys[2] == true && isSlashing == false) {
       xpos -= mvspeed;
-
+      image(playerFramesLeft[frame], xpos, ypos);
     }
 
     if (keys[3] == true && isSlashing == false) {
       xpos += mvspeed;
-   
-    }
-  }
-  
-  void animate() {
-    noTint();
-    if (keys[0] == true && isSlashing == false) {
-      p1Animate = true;
-      image(playerFramesUp[frame], xpos, ypos);
-    }
-
-    else if (keys[1] == true && isSlashing == false) {
-      p1Animate = true;
-      image(playerFrames[frame], xpos, ypos);
-    }
-
-
-    else if (keys[2] == true && isSlashing == false) {
-      p1Animate = true;
-      image(playerFramesLeft[frame], xpos, ypos);
-    }
-
-    else if (keys[3] == true && isSlashing == false) {
-      p1Animate = true;
       image(playerFramesRight[frame], xpos, ypos);
-    }
-    else {
-     p1Animate = false;
-      if (lastU == true) {
-        image(playerFramesUp[frame], xpos, ypos);
-      }else if (lastD == true) {
-        image(playerFrames[frame], xpos, ypos);
-      }else if (lastR == true) {
-        image(playerFramesRight[frame], xpos, ypos);
-      }else if (lastL == true) {
-        image(playerFramesLeft[frame], xpos, ypos);
-      }
-      
     }
   }
 
@@ -156,7 +115,7 @@ class Player {
       dHoriz = 1;
     }
   }
-    }
+}
 
 
 class fadePlayer {
@@ -180,10 +139,9 @@ class fadePlayer {
 
   void display() {
     fill(255, 0, 0);
+    noCursor();
     pushMatrix();
-        tint(255, trans);
     image(playerFrames[frame], xpos, ypos);
-
     popMatrix();
     //Animate
     if (frameCount %5 ==0) frame++;
