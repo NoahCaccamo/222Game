@@ -3,7 +3,18 @@
 // Left Click - slash
 // Right Click - shoot
 
+import processing.sound.*;
+SoundFile introMusic;
 Player p1;
+PImage[] playerFrames = new PImage [9];
+PImage[] playerFramesUp = new PImage [9];
+PImage[] playerFramesRight = new PImage [9];
+PImage[] playerFramesLeft = new PImage [9];
+PImage[] magicFrames = new PImage [5];
+PImage[] meleeFrames = new PImage [5];
+PImage[] backgroundFrames = new PImage [3];
+PImage b0, b1, b2;
+
 
 ArrayList<fadePlayer> streak = new ArrayList<fadePlayer>();
 ArrayList<projectile> bullets = new ArrayList <projectile>();
@@ -40,14 +51,66 @@ int dVert, dHoriz;
 void setup() {
   size(900, 900);
   noStroke();
+  imageMode(CENTER);
   rectMode(CENTER);
 
+  //Loads Background
+  b0 = loadImage("Cobblestone-0.png");
+  b1 = loadImage("Cobblestone-1.png");
+  b2 = loadImage("Cobblestone-2.png");
+  backgroundFrames[0] = b0;
+  backgroundFrames[1] = b1;
+  backgroundFrames[2] = b2;
+
   p1 = new Player(40, 1, 1, 3);
+
+  //Loads Player
+  for (int i=0; i< playerFrames.length; i++) {
+    String filename = "sprite_0" + i + ".png";
+    playerFrames[i] = loadImage(filename);
+  }
+
+  for (int i=0; i< playerFramesUp.length; i++) {
+    String filename = "spriteUp_0" + i + ".png";
+    playerFramesUp[i] = loadImage(filename);
+  }
+
+  for (int i=0; i< playerFramesRight.length; i++) {
+    String filename = "spriteRightLeft_0" + i + ".png";
+    playerFramesRight[i] = loadImage(filename);
+  }
+  
+  for (int i=0; i< playerFramesLeft.length; i++) {
+    String filename = "spriteLeft_0" + i + ".png";
+    playerFramesLeft[i] = loadImage(filename);
+  }
+  
+  //Loads Magic
+
+  for (int i=0; i< magicFrames.length; i++) {
+    String filename = "fireball_" + i + ".png";
+    magicFrames[i] = loadImage(filename);
+  }
+
+  //Loads Melee
+  for (int i=0; i< meleeFrames.length; i++) {
+    String filename = "melee_" + i + ".png";
+    meleeFrames[i] = loadImage(filename);
+  }
+
+  //Loads Music
+  introMusic = new SoundFile(this, "Intro_Music.mp3");
+
+
+  introMusic.play();
 }
 
 void draw () {
 
-  background(135);
+  for (int p=0; p<1000; p++) {
+    image(backgroundFrames[int(random(backgroundFrames.length))], random(width), random(height), 32, 32);
+  }
+
   println(canSlash, millis(), cdSlash1, isSlashing);
 
 
@@ -57,15 +120,15 @@ void draw () {
     getBullets.display();
     getBullets.update();
   }
-  
-  for (int i=0; i<slashes.size(); i++){
+
+  for (int i=0; i<slashes.size(); i++) {
     slashBox getSlashes = slashes.get(i);
-    
+
     getSlashes.display();
-  if (millis()>getSlashes.life) {
-     slashes.remove(i); 
+    if (millis()>getSlashes.life) {
+      slashes.remove(i);
     }
-}
+  }
 
 
 
@@ -112,26 +175,25 @@ void draw () {
 
   if (cdSlash1 > millis() && isDashing == false && combo1 == false && combo2 == false && combo3 == false && lag1 <= millis()) {
     //while (lag1 > millis()) {}
-lag1 = 0;
+    lag1 = 0;
 
     slash(color(255, 0, 0));
     isSlashing = true;
     combo1 = true;
-   
   }
   if (cdSlash2 > millis() && isSlashing == true && combo1 == true && combo2 == false && combo3 == false && cdSlash1 <= millis() && lag2 <= millis()) {
-   // while (cdSlash1 > millis()) {}
-   // while (lag2 > millis()){}
+    // while (cdSlash1 > millis()) {}
+    // while (lag2 > millis()){}
     lag2 = 0;
-    
+
     slash(color(0, 255, 0));
     combo2 = true;
   }
   if (cdSlash3 > millis() && isSlashing == true && combo1 == true && combo2 == true && combo3 == false && cdSlash2 <= millis() && lag3 <= millis()) {
-  //  while (cdSlash2 > millis()) {}
-   //sd while(lag3 > millis()){}
+    //  while (cdSlash2 > millis()) {}
+    //sd while(lag3 > millis()){}
     lag3 = 0;
-    
+
     slash(color(0, 0, 255));
     combo3 = true;
   }
@@ -158,8 +220,8 @@ void keyReleased() {
 void mousePressed() {
 
   if (mouseButton == LEFT) {
-     int tempT = millis();
-     
+    int tempT = millis();
+
     if (isDashing == false && click1 == false && click2 == false && click3 == false) {
       lag1 = tempT + lag1e;
       cdSlash1 = tempT + lag1e + cdSlash1e;
@@ -205,18 +267,18 @@ void mousePressed() {
 
 void slash(color c) {
   /*mAngle = atan2(mouseY-p1.ypos, mouseX - p1.xpos);
-
-  if (mAngle < 0) {
-    mAngle += TWO_PI;
-  }
-
-  pushMatrix();
-  translate(p1.xpos, p1.ypos);
-
-  rotate(mAngle);
-  translate(50, 0);
-  fill(c);
-  */
+   
+   if (mAngle < 0) {
+   mAngle += TWO_PI;
+   }
+   
+   pushMatrix();
+   translate(p1.xpos, p1.ypos);
+   
+   rotate(mAngle);
+   translate(50, 0);
+   fill(c);
+   */
   slashes.add(new slashBox(color(c)));
   //popMatrix();
 }
