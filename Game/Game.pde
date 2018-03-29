@@ -15,6 +15,8 @@ PImage[] meleeFrames = new PImage [5];
 PImage[] backgroundFrames = new PImage [3];
 PImage b0, b1, b2;
 
+boolean lastR, lastL, lastU, lastD;
+boolean p1Animate = true;
 
 ArrayList<fadePlayer> streak = new ArrayList<fadePlayer>();
 ArrayList<projectile> bullets = new ArrayList <projectile>();
@@ -55,12 +57,12 @@ void setup() {
   rectMode(CENTER);
 
   //Loads Background
-  b0 = loadImage("Cobblestone-0.png");
-  b1 = loadImage("Cobblestone-1.png");
-  b2 = loadImage("Cobblestone-2.png");
-  backgroundFrames[0] = b0;
-  backgroundFrames[1] = b1;
-  backgroundFrames[2] = b2;
+  //b0 = loadImage("Cobblestone-0.png");
+  //b1 = loadImage("Cobblestone-1.png");
+  //b2 = loadImage("Cobblestone-2.png");
+  //backgroundFrames[0] = b0;
+  //backgroundFrames[1] = b1;
+  //backgroundFrames[2] = b2;
 
   p1 = new Player(40, 1, 1, 3);
 
@@ -70,10 +72,12 @@ void setup() {
     playerFrames[i] = loadImage(filename);
   }
 
+
   for (int i=0; i< playerFramesUp.length; i++) {
     String filename = "spriteUp_0" + i + ".png";
     playerFramesUp[i] = loadImage(filename);
   }
+
 
   for (int i=0; i< playerFramesRight.length; i++) {
     String filename = "spriteRightLeft_0" + i + ".png";
@@ -106,10 +110,10 @@ void setup() {
 }
 
 void draw () {
-
-  for (int p=0; p<1000; p++) {
-    image(backgroundFrames[int(random(backgroundFrames.length))], random(width), random(height), 32, 32);
-  }
+background(0);
+  //for (int p=0; p<1000; p++) {
+  //  image(backgroundFrames[int(random(backgroundFrames.length))], random(width), random(height), 32, 32);
+  //}
 
   println(canSlash, millis(), cdSlash1, isSlashing);
 
@@ -201,6 +205,7 @@ void draw () {
 
   p1.move();
   p1.display();
+  p1.animate();
 }
 
 void keyPressed() {
