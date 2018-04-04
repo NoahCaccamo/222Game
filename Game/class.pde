@@ -4,9 +4,8 @@ class Player {
   float xpos;
   float ypos;
   float mvspeed;
-  int frame;
+
   Player(float isize, float ixpos, float iypos, float imvspeed) {
-    frame = 0;
     size = isize;
     xpos = ixpos;
     ypos = iypos;
@@ -14,17 +13,17 @@ class Player {
   }
 
   void display() {
-    noCursor();
-    //Animate
-    if (frameCount %5 ==0) frame++;
-    if (frame>= playerFrames.length) frame = 0;
+    fill(255, 0, 0);
+    rect(xpos, ypos, 40, 40);
   }
 
   void keysCheckP() {
-
     if (key == 'w' || key == 'W') {
       keys[0] = true;
     }
+
+
+
 
     if (key == 's' || key == 'S') {
       keys[1] = true;
@@ -64,26 +63,22 @@ class Player {
 
   void move() {
 
-    if (keys[0] == true && isSlashing == false) {
+    if (keys[0] == true && cantMove == false) {
       ypos -= mvspeed;
-      image(playerFramesUp[frame], xpos, ypos);
     }
 
 
-    if (keys[1] == true && isSlashing == false) {
+    if (keys[1] == true && cantMove == false) {
       ypos += mvspeed;
-      image(playerFrames[frame], xpos, ypos);
     }
 
 
-    if (keys[2] == true && isSlashing == false) {
+    if (keys[2] == true && cantMove == false) {
       xpos -= mvspeed;
-      image(playerFramesLeft[frame], xpos, ypos);
     }
 
-    if (keys[3] == true && isSlashing == false) {
+    if (keys[3] == true && cantMove == false) {
       xpos += mvspeed;
-      image(playerFramesRight[frame], xpos, ypos);
     }
   }
 
@@ -124,28 +119,21 @@ class fadePlayer {
   float ypos;
   int timer;
   int trans = 255;
-  int frame = 0;
 
   fadePlayer(float isize, float ixpos, float iypos, int itimer) {
     size = isize;
     xpos = ixpos;
     ypos = iypos;
     timer = itimer;
-    frame = 0;
   }
   void fade() {
     trans -= 40;
   }
 
   void display() {
-    fill(255, 0, 0);
-    noCursor();
-    pushMatrix();
-    image(playerFrames[frame], xpos, ypos);
-    popMatrix();
-    //Animate
-    if (frameCount %5 ==0) frame++;
-    if (frame>= playerFrames.length) frame = 0;
+
+    fill(255, 0, 0, trans);
+    rect(xpos, ypos, size, size);
   }
 }
 
@@ -155,7 +143,6 @@ class projectile {
   PVector mouse = new PVector(mouseX, mouseY);
   PVector position = new PVector(p1.xpos, p1.ypos);
   PVector projectileVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
-  int frame;
 
   projectile() {
 
@@ -184,14 +171,7 @@ class projectile {
   }
 
   void display() {
-    fill(255, 0, 0);
-    pushMatrix();
-    image(magicFrames[frame], position.x, position.y);
-    popMatrix();
-
-    //Animate
-    if (frameCount %5 ==0) frame++;
-    if (frame>= magicFrames.length) frame = 0;
+    ellipse(position.x, position.y, 10, 10);
   }
 }
 //new comType(6)
@@ -251,8 +231,6 @@ class slashBox {
   float plx;
   float ply;
 
-  int frame;
-
   int life = millis() + 100;
   color c;
 
@@ -283,16 +261,41 @@ class slashBox {
 
   void display() {
     pushMatrix();
-    fill(c);
     translate(plx, ply);
     rotate(angle);
-    translate(25, 0);
-    image(meleeFrames[frame], 0, 0);
-    popMatrix();
+    translate(50, 0);
+    fill(c);
+    
+    slash = new FBox(50, 100);
+    slash.setPosition(p1.xpos,p1.ypos);
+    slash.setRotation(angle);
+    slash.setStatic(true);
+    slash.setFill(0);
+    slash.setRestitution(0);
+    
+    PVector mouse = new PVector(mouseX, mouseY);
+  PVector position = new PVector(p1.xpos, p1.ypos);
+  PVector projectileVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
+    PVector velocity;
+    velocity = new PVector(0, 0);
 
-    //Animate
-    if (frameCount %5 ==0) frame++;
-    if (frame>= meleeFrames.length) frame = 0;
+
+    mouse.sub(position);
+    mouse.normalize();
+    mouse.mult(3000);
+
+    projectileVec.normalize();
+    projectileVec.mult(-40);
+    
+    slash.adjustPosition(projectileVec.x,projectileVec.y);
+    world.add(slash);
+    
+   // rect(0, 0, bwidth, bheight);
+
+    popMatrix();
+    
+
+    
   }
 }
 
@@ -300,7 +303,7 @@ class slashBox {
 ///////////
 void startDodge() {
   timer =millis() + dLength; 
-  dTimer = timer + 300;
+  dTimer = timer + 170;
   isSlashing = false; 
   combo1 = false; 
   combo2 = false; 
@@ -308,4 +311,5 @@ void startDodge() {
   click1 = false;
   click2 = false;
   click3 = false;
+  cantMove = false;
 }
