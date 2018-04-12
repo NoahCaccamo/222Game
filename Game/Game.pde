@@ -2,6 +2,13 @@
 // SPACEBAR or SHIFT - dodge
 // Left Click - slash
 // Right Click - shoot
+import java.awt.geom.*;
+import java.awt.*;
+
+
+ArrayList<Area> slashHbox = new ArrayList<Area>();
+
+
 
 Player p1;
 
@@ -38,18 +45,38 @@ boolean isDashing;
 
 int dVert, dHoriz;
 
+
+color cd = color(255, 0,0);
 void setup() {
   size(900, 900);
   noStroke();
   rectMode(CENTER);
 
   p1 = new Player(40, 1, 1, 3);
+  
 }
 
 void draw () {
 
   background(135);
   println(canSlash, millis(), cdSlash1, isSlashing);
+  
+Area mouse = new Area(new Rectangle(mouseX - 25/2, mouseY -25/2, 25, 25));
+Area player = new Area(new Rectangle2D.Float(p1.xpos - 40/2, p1.ypos - 40/2, 40, 40));
+pushMatrix(); 
+  translate(mouseX, mouseY);
+  fill(cd);
+  rect(0, 0, 25, 25); 
+  popMatrix();
+ 
+  mouse.intersect(player);
+  
+  if (mouse.isEmpty() == false) {
+    cd = color(255, 0, 0);
+  }
+  else {
+    cd = color(255);  
+  }
 
 
   for (int i=0; i<bullets.size(); i++) {
