@@ -1,3 +1,4 @@
+
 //INSTRUCTIONS: WSAD - move
 // SPACEBAR or SHIFT - dodge
 // Left Click - slash
@@ -5,12 +6,14 @@
 import java.awt.geom.*;
 import java.awt.*;
 
+Area playerHbox;
 
-ArrayList<Area> slashHbox = new ArrayList<Area>();
+ArrayList<hitboxSlash> HboxSlashes = new ArrayList<hitboxSlash>();
 
 
 
 Player p1;
+enemy e1;
 
 ArrayList<fadePlayer> streak = new ArrayList<fadePlayer>();
 ArrayList<projectile> bullets = new ArrayList <projectile>();
@@ -46,37 +49,48 @@ boolean isDashing;
 int dVert, dHoriz;
 
 
+int slashNum;
+
 color cd = color(255, 0,0);
 void setup() {
   size(900, 900);
   noStroke();
   rectMode(CENTER);
 
+//add the player
   p1 = new Player(40, 1, 1, 3);
+  e1 = new enemy(50, width/2, height/2, 3);
   
 }
 
 void draw () {
 
   background(135);
-  println(canSlash, millis(), cdSlash1, isSlashing);
+ // println(canSlash, millis(), cdSlash1, isSlashing);
   
+  // add hitboxes for player and mouse
 Area mouse = new Area(new Rectangle(mouseX - 25/2, mouseY -25/2, 25, 25));
-Area player = new Area(new Rectangle2D.Float(p1.xpos - 40/2, p1.ypos - 40/2, 40, 40));
+playerHbox = new Area(new Rectangle2D.Float(p1.xpos - 40/2, p1.ypos - 40/2, 40, 40));
+
+//temp mouse display hitbox
 pushMatrix(); 
   translate(mouseX, mouseY);
   fill(cd);
   rect(0, 0, 25, 25); 
   popMatrix();
  
-  mouse.intersect(player);
+  //mouse.intersect(player);
   
-  if (mouse.isEmpty() == false) {
-    cd = color(255, 0, 0);
-  }
-  else {
-    cd = color(255);  
-  }
+  //if (mouse.isEmpty() == false) {
+  //  cd = color(255, 0, 0);
+  //  println("player hit");
+  //}
+  //else {
+  //  cd = color(255);  
+  //}
+
+
+
 
 
   for (int i=0; i<bullets.size(); i++) {
@@ -92,6 +106,7 @@ pushMatrix();
     getSlashes.display();
     if (millis()>getSlashes.life) {
       slashes.remove(i);
+      HboxSlashes.clear();
     }
   }
 
@@ -147,6 +162,8 @@ pushMatrix();
     lag1 = 0;
 
     slash(color(255, 0, 0));
+    HboxSlashes.add(new hitboxSlash(50, 100));
+    
     isSlashing = true;
     combo1 = true;
     cantMove = true;
@@ -157,6 +174,8 @@ pushMatrix();
     lag2 = 0;
 
     slash(color(0, 255, 0));
+    HboxSlashes.add(new hitboxSlash(50, 100));
+    
     combo2 = true;
     cantMove = true;
   }
@@ -166,13 +185,31 @@ pushMatrix();
     lag3 = 0;
 
     slash(color(0, 0, 255));
+    HboxSlashes.add(new hitboxSlash(50, 100));
+    
     combo3 = true;
     cantMove = true;
   }
 
+if (HboxSlashes.size() >= 1) {
+  hitboxSlash theSlash = HboxSlashes.get(0);
+  theSlash.a1.intersect(mouse);
+
+
+if (theSlash.a1.isEmpty() == false) {
+ cd = color(0,0,255);
+ //println("slash hit" + millis() + "   " +HboxSlashes.size()+"    " + slashNum);
+}else {
+ cd = color(255); 
+}
+ 
+}
+
 
   p1.move();
   p1.display();
+  e1.display();
+  e1.collide();
 }
 
 void keyPressed() {
@@ -255,23 +292,17 @@ void slash(color c) {
    translate(50, 0);
    fill(c);
    */
-  slashes.add(new slashBox(color(c)));
-  //popMatrix();
+   
+     
   PVector mouseVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
   mouseVec.normalize();
   mouseVec.mult(10);
   p1.xpos -= mouseVec.x;
   p1.ypos -= mouseVec.y;
-}
+   
+  slashes.add(new slashBox(color(c)));
+  //popMatrix();
+  
+  
 
-int intTimer(int timerLength) {
-  int remainingTime = timerLength-millis();
-
-  if (remainingTime%1000>0) {
-    int actualTime = (remainingTime/1000);
-    return actualTime;
-  } else {
-    time = false;
-    return 0;
-  }
 }
