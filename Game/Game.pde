@@ -308,7 +308,7 @@ void mousePressed() {
   // To switch game state on game over screen
   if (gameState == gameO) {
     // To switch game state from game over to main menu
-    if ((mouseX >= 400 && mouseX <= 510) && (mouseY >= 450 && mouseY <= 510)) {
+    if ((mouseX >= 380 && mouseX <= 520) && (mouseY >= 450 && mouseY <= 520)) {
       gameState = mainM;
     }
   }
