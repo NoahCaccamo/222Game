@@ -13,6 +13,7 @@ playerHealth pH;
 int mainM = 0;
 int controlM = 1;
 int runGame = 2;
+int gameO = 3;
 
 // current game state
 int gameState = mainM;
@@ -21,6 +22,7 @@ int gameState = mainM;
 mainMenu mM;
 buttonPlay bP;
 controlMenu cM;
+gameOver gO;
 
 Area playerHbox;
 
@@ -79,6 +81,7 @@ void setup() {
   mM = new mainMenu();
   bP = new buttonPlay();
   cM = new controlMenu();
+  gO = new gameOver();
 
   // add the player
   p1 = new Player(40, 1, 1, 3);
@@ -86,18 +89,22 @@ void setup() {
 }
 
 void draw() {
+  // for changing game states
   if (gameState == mainM) {
-    mM.display();
-    bP.display();
+    mM.display(); // display main menu
+    bP.display(); // display play button
+    reset(); // reset the game
   } else if (gameState == runGame) { 
-    runGame();
-    // display health bar image
-    pH.display();
+    runGame(); // run the game
+    pH.display(); // display health bar image
   } else if (gameState == controlM) { 
-    cM.display();
+    cM.display(); // display controls menu
+  } else if (gameState == gameO) {
+    gO.display(); // display game over screen
   }
 }
 
+// runs the game
 void runGame () {
 
   background(135);
@@ -239,13 +246,25 @@ void runGame () {
     }
   }
 
-
-  p1.move();
-  p1.display();
-  e1.display();
-  e1.collide();
+  // let players & enemies display & collide only if player health > 0
+  if (pH.hp > 0) {
+    p1.move();
+    p1.display();
+    e1.display();
+    e1.collide();
+  }
 }
 
+// reset the game if player dies
+void reset() {
+  pH.hp = 1000; // reset player HP to full health
+  pH.resetFrame(); // reset health bar image to full health
+  
+  p1.xpos = 0; // reset player x-position
+  p1.ypos = 0; // reset player y-position
+}
+
+// checks to see if keys are pressed
 void keyPressed() {
   p1.keysCheckP();
   if (key == ' '||keyCode == SHIFT) {
@@ -256,10 +275,12 @@ void keyPressed() {
   }
 }
 
+// checks to see if keys have been released
 void keyReleased() {
   p1.keysCheckR();
 }
 
+// checks to see if mouse has been pressed
 void mousePressed() {
 
   // To switch game states on main menu screen
@@ -281,6 +302,14 @@ void mousePressed() {
     // To switch game state from controls menu to run game
     if ((mouseX >= 400 && mouseX <= 510) && (mouseY >= 750 && mouseY <= 810)) {
       gameState = runGame;
+    }
+  }
+
+  // To switch game state on game over screen
+  if (gameState == gameO) {
+    // To switch game state from game over to main menu
+    if ((mouseX >= 400 && mouseX <= 510) && (mouseY >= 450 && mouseY <= 510)) {
+      gameState = mainM;
     }
   }
 
@@ -334,6 +363,7 @@ void mousePressed() {
   }
 }
 
+// melee attack for player
 void slash(color c) {
   /*mAngle = atan2(mouseY-p1.ypos, mouseX - p1.xpos);
    

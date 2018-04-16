@@ -39,9 +39,14 @@ class enemy {
     if (hbox.isEmpty() == false) {
       println("hit" + millis());
       //println("slash hit" + millis() + "   " +HboxSlashes.size()+"    " + slashNum);
-      
+
       // decrease player health
       pH.loseHealth();
+
+      // trigger game over screen if player health reaches 0
+      if (pH.hp == 0) {
+        gameState = gameO;
+      }
     } else {
     }
   }
