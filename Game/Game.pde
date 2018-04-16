@@ -247,7 +247,8 @@ void runGame () {
   }
 
   // let players & enemies display & collide only if player health > 0
-  if (pH.hp > 0) {
+  //if (pH.hp > 0) {
+  if (gameState == runGame && pH.hp > 0) {
     p1.move();
     p1.display();
     e1.display();
@@ -259,7 +260,7 @@ void runGame () {
 void reset() {
   pH.hp = 1000; // reset player HP to full health
   pH.resetFrame(); // reset health bar image to full health
-  
+
   p1.xpos = 0; // reset player x-position
   p1.ypos = 0; // reset player y-position
 }
