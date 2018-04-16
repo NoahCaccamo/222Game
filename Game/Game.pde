@@ -6,6 +6,9 @@
 import java.awt.geom.*;
 import java.awt.*;
 
+// declare player health
+playerHealth pH; 
+
 // declare game state variables
 int mainM = 0;
 int controlM = 1;
@@ -69,6 +72,9 @@ void setup() {
   noStroke();
   rectMode(CENTER);
 
+  // for player health
+  pH = new playerHealth(1000);
+
   // add menus
   mM = new mainMenu();
   bP = new buttonPlay();
@@ -85,6 +91,8 @@ void draw() {
     bP.display();
   } else if (gameState == runGame) { 
     runGame();
+    // display health bar image
+    pH.display();
   } else if (gameState == controlM) { 
     cM.display();
   }

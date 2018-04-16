@@ -39,6 +39,9 @@ class enemy {
     if (hbox.isEmpty() == false) {
       println("hit" + millis());
       //println("slash hit" + millis() + "   " +HboxSlashes.size()+"    " + slashNum);
+      
+      // decrease player health
+      pH.loseHealth();
     } else {
     }
   }
