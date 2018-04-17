@@ -22,6 +22,10 @@ t1.translate(-rwidth/2, -rheight/2);
 a1 = new Area(t1.createTransformedShape(r1));
   }
   
+  void refresh() {
+   a1 = new Area(t1.createTransformedShape(r1)); 
+  }
+  
 
   
 }

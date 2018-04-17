@@ -34,13 +34,19 @@ class enemy {
   }
 
   void collide() {
+  
     hbox.intersect(playerHbox); 
 
     if (hbox.isEmpty() == false) {
-      println("hit" + millis());
+      //println("hit" + millis());
       //println("slash hit" + millis() + "   " +HboxSlashes.size()+"    " + slashNum);
     } else {
     }
+    refresh();
+  }
+  
+  void refresh() {
+    hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
   }
 }
 
