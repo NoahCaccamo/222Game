@@ -164,7 +164,6 @@ void draw () {
     slash(color(255, 0, 0));
     HboxSlashes.add(new hitboxSlash(50, 100));
 
-slashEnemy();
     
 
     isSlashing = true;
@@ -178,7 +177,6 @@ slashEnemy();
 
     slash(color(0, 255, 0));
     HboxSlashes.add(new hitboxSlash(50, 100));
-slashEnemy();
 
     combo2 = true;
     cantMove = true;
@@ -190,7 +188,6 @@ slashEnemy();
 
     slash(color(0, 0, 255));
     HboxSlashes.add(new hitboxSlash(50, 100));
-slashEnemy();
 
     combo3 = true;
     cantMove = true;
@@ -218,9 +215,10 @@ slashEnemy();
   //}
 
     ////////////////////////////////////////////////////
+  if (HboxSlashes.size() >= 1) {
+slashEnemy();
+  }
   
-
-
   p1.move();
   p1.display();
   for (int i=0; i < enemys.size(); i++) {
