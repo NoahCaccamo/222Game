@@ -13,11 +13,15 @@ ArrayList<hitboxSlash> HboxSlashes = new ArrayList<hitboxSlash>();
 
 
 Player p1;
+basicRangedEnemy e1, e2;
 
 ArrayList<fadePlayer> streak = new ArrayList<fadePlayer>();
 ArrayList<projectile> bullets = new ArrayList <projectile>();
+ArrayList<enemyProjectile> enemyProjectiles = new ArrayList <enemyProjectile>();
 ArrayList<slashBox> slashes = new ArrayList<slashBox>();
-ArrayList<enemy> enemys = new ArrayList<enemy>();
+
+ArrayList<meleeEnemy> meleeEnemies = new ArrayList<meleeEnemy>();
+ArrayList<chargerEnemy> chargerEnemies = new ArrayList<chargerEnemy>();
 
 PVector slashKnockVector;
 
@@ -60,11 +64,18 @@ void setup() {
 
   //add the player
   p1 = new Player(40, 1, 1, 3);
-  enemys.add( new enemy(20, width/2, height/2, 3));
-  enemys.add( new enemy(20, width/2, 0, 3));
-  enemys.add( new enemy(20, width/2+1, 0, 3));
-  enemys.add( new enemy(15, width/2+10, 0, 3));
-  enemys.add( new enemy(20, width/2+15, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(20, width/2, height/2, 3));
+  //meleeEnemies.add( new meleeEnemy(20, width/2, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(20, width/2+1, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(15, width/2+10, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(20, width/2+15, 0, 3));
+  e1 = new basicRangedEnemy(40, width/2, height/2, 1);
+  e2 = new basicRangedEnemy(50, width/2, 0, 56);
+  
+  chargerEnemies.add(new chargerEnemy(10, width/2, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
+  chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
+  chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
 }
 
 void draw () {
@@ -102,6 +113,13 @@ void draw () {
 
     getBullets.display();
     getBullets.update();
+  }
+  
+  for (int i=0; i<enemyProjectiles.size(); i++) {
+   enemyProjectile getProjectile = enemyProjectiles.get(i);
+   
+   getProjectile.display();
+   getProjectile.update();
   }
 
   for (int i=0; i<slashes.size(); i++) {
@@ -192,7 +210,7 @@ void draw () {
     //  while (cdSlash2 > millis()) {}
     //sd while(lag3 > millis()){}
     lag3 = 0;
-    slashPunch = 50;
+    slashPunch = 10;
 
     slash(color(0, 0, 255));
     HboxSlashes.add(new hitboxSlash(50, 100));
@@ -207,7 +225,7 @@ void draw () {
   //rect(width/2, height/2, 25, 25);
   //if (HboxSlashes.size() >= 1) {
   //  hitboxSlash theSlash = HboxSlashes.get(0);
-  //  enemy getEnemy = enemys.get(0);
+  //  enemy getEnemy = meleeEnemies.get(0);
   //  theSlash.refresh();
   //  getEnemy.refresh();
 
@@ -229,13 +247,24 @@ void draw () {
 
   p1.move();
   p1.display();
-  for (int i=0; i < enemys.size(); i++) {
-    enemy getEnemy = enemys.get(i);
+  for (int i=0; i < meleeEnemies.size(); i++) {
+    meleeEnemy getEnemy = meleeEnemies.get(i);
     getEnemy.display();
     getEnemy.collide();
   }
+for(int i=0; i < chargerEnemies.size(); i++){
+   chargerEnemy getCharger = chargerEnemies.get(i);
+   getCharger.display();
+}
+
 
   checkEnemies();
+  collideCharger();
+  
+  
+  e1.display();
+  e2.display();
+  //////////end of draw
 }
 
 void keyPressed() {
@@ -296,11 +325,6 @@ void mousePressed() {
   ////////////
   if (mouseButton == RIGHT) {
     bullets.add (new projectile());
-    for (int i=0; i<bullets.size(); i++) {
-      projectile getBullets = bullets.get(i);
-
-      getBullets.update();
-    }
   }
 }
 
@@ -316,8 +340,8 @@ void slash(color c) {
 }
 
 void slashEnemy() {
-  for (int i=0; i < enemys.size(); i++) {
-    enemy getEnemy = enemys.get(i);
+  for (int i=0; i < meleeEnemies.size(); i++) {
+    meleeEnemy getEnemy = meleeEnemies.get(i);
     hitboxSlash getSlash = HboxSlashes.get(0);
     println(i);
     if (getEnemy.lastSlash < getSlash.num) {
@@ -328,7 +352,7 @@ void slashEnemy() {
       if (getSlash.a1.isEmpty() == false) {
         //getEnemy.hp -= 1; 
 
-        getEnemy.stun(350); 
+        getEnemy.stun(100); 
 
         slashBox getSlashAngle = slashes.get(0);
         PVector knockback = new PVector(getEnemy.position.x + 100, getEnemy.position.y);
@@ -340,7 +364,7 @@ void slashEnemy() {
         getEnemy.position.y -= slashKnockVector.y;
 
         if (getEnemy.hp <= 0) {
-          enemys.remove(i);
+          meleeEnemies.remove(i);
         }
       }
     }
@@ -350,8 +374,8 @@ void slashEnemy() {
 }
 
 void checkEnemies() {
-  for (int a=0; a < enemys.size(); a++) {
-    enemy getEnemy = enemys.get(a); 
+  for (int a=0; a < meleeEnemies.size(); a++) {
+    meleeEnemy getEnemy = meleeEnemies.get(a); 
 
 
     //////WIP player - enemy collision pushback
@@ -364,10 +388,10 @@ void checkEnemies() {
     // getEnemy.position.y += playerCollision.y;
     //}
 
-    for (int b= a; b <enemys.size(); b++) {
+    for (int b= a; b <meleeEnemies.size(); b++) {
       if (a != b) {
-        enemy getEnemy1 = enemys.get(a);
-        enemy getEnemy2 = enemys.get(b);
+        meleeEnemy getEnemy1 = meleeEnemies.get(a);
+        meleeEnemy getEnemy2 = meleeEnemies.get(b);
 
         if (dist(getEnemy1.position.x, getEnemy1.position.y, getEnemy2.position.x, getEnemy2.position.y) <= getEnemy1.size/2 + getEnemy2.size/2 + 5) {
           PVector between = new PVector(getEnemy1.position.x - getEnemy2.position.x, getEnemy1.position.y - getEnemy2.position.y);

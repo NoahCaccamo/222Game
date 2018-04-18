@@ -3,12 +3,17 @@
 class projectile {
   PVector  velocity, acceleration;
   float topspeed;
-  PVector mouse = new PVector(mouseX, mouseY);
-  PVector position = new PVector(p1.xpos, p1.ypos);
-  PVector projectileVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
+  PVector mouse;
+  PVector position;
+  PVector projectileVec;
 
   projectile() {
-
+mouse = new PVector(mouseX, mouseY);
+position = new PVector(p1.xpos, p1.ypos);
+projectileVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
+    
+    
+    
     velocity = new PVector(0, 0);
     topspeed = 40;
 
@@ -35,6 +40,18 @@ class projectile {
 
   void display() {
     ellipse(position.x, position.y, 10, 10);
+  }
+}
+
+class enemyProjectile extends projectile {
+ 
+  enemyProjectile(PVector _enemyPos) {
+    float xenemy = _enemyPos.x;
+    float yenemy = _enemyPos.y;
+    position = new PVector(xenemy, yenemy);
+    projectileVec = new PVector(xenemy - p1.xpos, yenemy - p1.ypos);
+    
+    projectileVec.setMag(3);
   }
 }
 //new comType(6)
