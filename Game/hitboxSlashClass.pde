@@ -5,10 +5,13 @@ class hitboxSlash {
   Area a1;
   float xpos = p1.xpos;
   float ypos = p1.ypos;
+  int num;
   
   hitboxSlash(int _rwidth, int _rheight) {
+    
+     slashKnockVector= new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
     slashNum += 1;
-    int num = slashNum;
+    num = slashNum;
     int rwidth = _rwidth;
     int rheight = _rheight;
     
