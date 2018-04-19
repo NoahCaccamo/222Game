@@ -6,14 +6,18 @@ class projectile {
   PVector mouse;
   PVector position;
   PVector projectileVec;
+  Area hbox;
+  float size;
+  color c;
 
   projectile() {
-mouse = new PVector(mouseX, mouseY);
-position = new PVector(p1.xpos, p1.ypos);
-projectileVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
-    
-    
-    
+    mouse = new PVector(mouseX, mouseY);
+    position = new PVector(p1.xpos, p1.ypos);
+    projectileVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
+
+    size = 10;
+    c = color(255, 24, 0);
+
     velocity = new PVector(0, 0);
     topspeed = 40;
 
@@ -39,18 +43,27 @@ projectileVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
   }
 
   void display() {
-    ellipse(position.x, position.y, 10, 10);
+    hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
+    fill(c);
+    ellipse(position.x, position.y, size, size);
+  }
+
+  void refresh() {
+    hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
   }
 }
 
 class enemyProjectile extends projectile {
- 
+
   enemyProjectile(PVector _enemyPos) {
+
+    c = color(142, 12, 157);
+
     float xenemy = _enemyPos.x;
     float yenemy = _enemyPos.y;
     position = new PVector(xenemy, yenemy);
     projectileVec = new PVector(xenemy - p1.xpos, yenemy - p1.ypos);
-    
+
     projectileVec.setMag(3);
   }
 }
@@ -111,7 +124,7 @@ class slashBox {
   float plx;
   float ply;
 
-  int life = millis() + 100;
+  int life = millis() + 50;
   color c;
 
   slashBox(color bc) {

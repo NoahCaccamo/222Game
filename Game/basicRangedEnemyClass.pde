@@ -26,25 +26,25 @@ class basicRangedEnemy {
   }
 
   void display() {
-    
-    
-    
+
+
+
     if (canMoveTimer < millis()) {
       canMove = true;
     }
-if (shootTimer < millis()) {
- shoot(); 
-  shootTimer = millis() + shootDelay;
-}
+    if (shootTimer < millis()) {
+      shoot(); 
+      shootTimer = millis() + shootDelay;
+    }
 
     player = new PVector(p1.xpos, p1.ypos);
     towardPlayer = new PVector(position.x - player.x, position.y - player.y);
     towardPlayer.setMag(0.5);
 
 
-      position.x -= towardPlayer.x;
-      position.y -= towardPlayer.y;
-    
+    position.x -= towardPlayer.x;
+    position.y -= towardPlayer.y;
+
 
     fill(0, 255, 255);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
@@ -56,7 +56,6 @@ if (shootTimer < millis()) {
     hbox.intersect(playerHbox); 
 
     if (hbox.isEmpty() == false) {
- 
     } else {
     }
     refresh();
@@ -70,8 +69,8 @@ if (shootTimer < millis()) {
     canMove = false;
     canMoveTimer = millis() + stunTime;
   }
-  
+
   void shoot() {
-   enemyProjectiles.add(new enemyProjectile(position)); 
+    enemyProjectiles.add(new enemyProjectile(position));
   }
 }
