@@ -1,4 +1,4 @@
-class enemy {
+class meleeEnemy {
   float size;
   float xpos;
   float ypos;
@@ -15,7 +15,7 @@ class enemy {
 
   int topspeed = 40;
 
-  enemy(float _size, float _xpos, float _ypos, float _mvspeed) {
+  meleeEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
     size = _size;
     xpos = _xpos;
     ypos = _ypos;
@@ -33,7 +33,7 @@ class enemy {
     towardPlayer = new PVector(position.x - player.x, position.y - player.y);
     towardPlayer.setMag(2);
 
-    if (dist(position.x, position.y, player.x, player.y) >= 70 && canMove == true &&   goTime == true) {
+    if (dist(position.x, position.y, player.x, player.y) >= 70 && canMove == true && goTime == true) {
       position.x -= towardPlayer.x;
       position.y -= towardPlayer.y;
     }
@@ -45,7 +45,7 @@ class enemy {
 
   void collide() {
 
-    hbox.intersect(playerHbox); 
+    hbox.intersect(p1.hbox); 
 
     if (hbox.isEmpty() == false) {
       //println("hit" + millis());
@@ -64,26 +64,3 @@ class enemy {
     canMoveTimer = millis() + stunTime;
   }
 }
-
-//velocity = new PVector(0, 0);
-//    topspeed = 40;
-
-//    mouse.sub(position);
-//    mouse.normalize();
-//    mouse.mult(3000);
-
-//    projectileVec.normalize();
-//    projectileVec.mult(10);
-//  }
-//  void update() {
-
-//    PVector acceleration = PVector.sub(mouse, position);
-//    acceleration.setMag(0.2);
-
-//    velocity.add(acceleration);
-
-//     velocity.limit(topspeed);
-//    velocity.setMag(0.2);
-//    position.add(velocity);
-//    position.x -= projectileVec.x;
-//    position.y -= projectileVec.y;
