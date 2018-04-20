@@ -12,7 +12,7 @@ class basicRangedEnemy {
   boolean canMove = true;
   int canMoveTimer;
   int shootTimer;
-  int shootDelay = 2000;
+  int shootDelay = 1000;
 
 
   basicRangedEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
@@ -21,7 +21,7 @@ class basicRangedEnemy {
     ypos = _ypos;
     mvspeed = _mvspeed;
     position = new PVector(xpos, ypos);
-    hp = 6;
+    hp = 12;
     shootTimer = millis() + 300;
   }
 
@@ -71,6 +71,6 @@ class basicRangedEnemy {
   }
 
   void shoot() {
-    enemyProjectiles.add(new enemyProjectile(position));
+    enemyProjectiles.add(new enemyProjectile(position, 5, true));
   }
 }

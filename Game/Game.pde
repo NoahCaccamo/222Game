@@ -62,8 +62,8 @@ int slashNum;
 
 color cd = color(255, 0, 0);
 void setup() {
-fullScreen();
-//size(900, 900);
+  fullScreen();
+  //size(900, 900);
   noStroke();
   rectMode(CENTER);
 
@@ -81,6 +81,10 @@ fullScreen();
   chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
   chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
   chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
+    chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
+      chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
+        chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
+          chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
 }
 
 void draw () {
@@ -113,29 +117,6 @@ void draw () {
 
 
 
-  for (int i=0; i<bullets.size(); i++) {
-    projectile getBullets = bullets.get(i);
-
-    getBullets.display();
-    getBullets.update();
-  }
-
-  for (int i=0; i<enemyProjectiles.size(); i++) {
-    enemyProjectile getProjectile = enemyProjectiles.get(i);
-
-    getProjectile.display();
-    getProjectile.update();
-  }
-
-  for (int i=0; i<slashes.size(); i++) {
-    slashBox getSlashes = slashes.get(i);
-
-    getSlashes.display();
-    if (millis()>getSlashes.life) {
-      slashes.remove(i);
-      HboxSlashes.clear();
-    }
-  }
 
 
 
@@ -246,29 +227,58 @@ void draw () {
   //}
 
   ////////////////////////////////////////////////////
+
+
+  for (int i=0; i<bullets.size(); i++) {
+    projectile getBullets = bullets.get(i);
+
+    getBullets.display();
+    getBullets.update();
+  }
+
+  for (int i=0; i<enemyProjectiles.size(); i++) {
+    enemyProjectile getProjectile = enemyProjectiles.get(i);
+
+    getProjectile.display();
+    getProjectile.update();
+  }
+
+  for (int i=0; i<slashes.size(); i++) {
+    slashBox getSlashes = slashes.get(i);
+
+    getSlashes.display();
+    if (millis()>getSlashes.life) {
+      slashes.remove(i);
+      HboxSlashes.clear();
+    }
+  }
+
+
+
+
+
+  //BULLET COLLISION CHECKING
+  if (bullets.size() >=1) {
+
+    if (meleeEnemies.size() >= 1) {
+      shootMeleeEnemy();
+    }
+    if (chargerEnemies.size() >= 1) {
+      shootChargerEnemy();
+    }
+    if (basicRangedEnemies.size() >= 1) {
+      shootBasicRangedEnemy();
+    }
+  }
+
   if (HboxSlashes.size() >= 1) {
     slashEnemy();
   }
 
-//BULLET COLLISION CHECKING
-  if (bullets.size() >=1) {
-    
-    if (meleeEnemies.size() >= 1) {
-    shootMeleeEnemy();
-  }
-    if (chargerEnemies.size() >= 1) {
-    shootChargerEnemy();
-  }
-  if (basicRangedEnemies.size() >= 1) {
-    shootBasicRangedEnemy();
-  }
-    
-  }
-  
 
   p1.move();
   p1.display();
-  
+
   //DISPLAY AND UPDATE ENEMIES
   for (int i=0; i < meleeEnemies.size(); i++) {
     meleeEnemy getEnemy = meleeEnemies.get(i);
@@ -288,6 +298,8 @@ void draw () {
 
   checkEnemies();
   collideCharger();
+
+
 
 
   //////////end of draw
@@ -400,8 +412,8 @@ void slashEnemy() {
     getEnemy.refresh();
     //slash end
   }
-  
-  
+
+
   for (int i=0; i < chargerEnemies.size(); i++) {
     chargerEnemy getEnemy = chargerEnemies.get(i);
     hitboxSlash getSlash = HboxSlashes.get(0);
@@ -436,6 +448,68 @@ void slashEnemy() {
     getEnemy.refresh();
     //slash end
   }
+
+  for (int i=0; i < basicRangedEnemies.size(); i++) {
+    basicRangedEnemy getEnemy = basicRangedEnemies.get(i);
+    hitboxSlash getSlash = HboxSlashes.get(0);
+
+    //slash begin
+    if (getEnemy.lastSlash < getSlash.num) {
+      getEnemy.lastSlash = getSlash.num;
+
+      //check for melee enemy getting slashed
+      getSlash.a1.intersect(getEnemy.hbox);
+
+      if (getSlash.a1.isEmpty() == false) {
+        getEnemy.hp -= 1; 
+
+        getEnemy.stun(100); 
+
+        slashBox getSlashAngle = slashes.get(0);
+        PVector knockback = new PVector(getEnemy.position.x + 100, getEnemy.position.y);
+
+        knockback.rotate(getSlashAngle.angle);
+
+
+        getEnemy.position.x -= slashKnockVector.x;
+        getEnemy.position.y -= slashKnockVector.y;
+
+        if (getEnemy.hp <= 0) {
+          basicRangedEnemies.remove(i);
+        }
+      }
+    }
+    getSlash.refresh();
+    getEnemy.refresh();
+    //slash end
+  }
+
+  for (int i=0; i < enemyProjectiles.size(); i++) {
+    enemyProjectile getProjectile = enemyProjectiles.get(i);
+    hitboxSlash getSlash = HboxSlashes.get(0);
+
+    if (enemyProjectiles.size()-1 < i) {
+      break;
+    }
+
+    //check for projectile being slashed
+    if (getProjectile.canSlash == true) {
+
+      getSlash.a1.intersect(getProjectile.hbox);
+
+      if (getSlash.a1.isEmpty() == false) {
+        bullets.add(new projectile());
+        projectile getBullet = bullets.get(bullets.size()-1);
+
+        getBullet.position = getProjectile.position;
+        getBullet.projectileVec = (getProjectile.projectileVec.mult(-1));
+        getBullet.projectileVec.setMag(getProjectile.speed * 2);
+        enemyProjectiles.remove(i);
+      }
+    }
+    getSlash.refresh();
+    getProjectile.refresh();
+  }
 }
 
 void shootMeleeEnemy() {
@@ -451,7 +525,7 @@ void shootMeleeEnemy() {
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
         bullets.remove(b);
-        
+
         if (getEnemy.hp <= 0) {
           meleeEnemies.remove(a);
         }
@@ -476,7 +550,7 @@ void shootChargerEnemy() {
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
         bullets.remove(b);
-        
+
         if (getEnemy.hp <= 0) {
           chargerEnemies.remove(a);
         }
@@ -501,7 +575,7 @@ void shootBasicRangedEnemy() {
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
         bullets.remove(b);
-        
+
         if (getEnemy.hp <= 0) {
           basicRangedEnemies.remove(a);
         }
@@ -545,6 +619,26 @@ void checkEnemies() {
             getEnemy2.position.x -= between.x;
             getEnemy2.position.y -= between.y;
           }
+        }
+      }
+    }
+  } //end melee
+  //charger enemies check
+  for (int a=0; a < chargerEnemies.size(); a++) {
+    for (int b=0; b < chargerEnemies.size(); b++) {
+      if (a != b) {
+        chargerEnemy getEnemy1 = chargerEnemies.get(a);
+        chargerEnemy getEnemy2 = chargerEnemies.get(b);
+
+        if (dist(getEnemy1.position.x, getEnemy1.position.y, getEnemy2.position.x, getEnemy2.position.y) <= getEnemy1.size/2 + getEnemy2.size/2 + 5) {
+          PVector between = new PVector(getEnemy1.position.x - getEnemy2.position.x, getEnemy1.position.y - getEnemy2.position.y);
+          between.setMag(1.5); 
+
+          getEnemy1.position.x += between.x;
+          getEnemy1.position.x += between.y;
+
+          getEnemy2.position.x -= between.x;
+          getEnemy2.position.y -= between.y;
         }
       }
     }

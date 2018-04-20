@@ -9,6 +9,7 @@ class projectile {
   Area hbox;
   float size;
   color c;
+  float reflectedSpeed;
 
   projectile() {
     mouse = new PVector(mouseX, mouseY);
@@ -51,12 +52,19 @@ class projectile {
   void refresh() {
     hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
   }
+  
 }
 
 class enemyProjectile extends projectile {
 
-  enemyProjectile(PVector _enemyPos) {
+  float speed;
+  boolean canSlash;
+  
+  enemyProjectile(PVector _enemyPos, float _speed, boolean _canSlash) {
 
+    speed = _speed;
+    canSlash = _canSlash;
+    
     c = color(142, 12, 157);
 
     float xenemy = _enemyPos.x;
@@ -64,7 +72,7 @@ class enemyProjectile extends projectile {
     position = new PVector(xenemy, yenemy);
     projectileVec = new PVector(xenemy - p1.xpos, yenemy - p1.ypos);
 
-    projectileVec.setMag(3);
+    projectileVec.setMag(speed);
   }
 }
 //new comType(6)
