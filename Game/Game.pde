@@ -25,6 +25,8 @@ ArrayList<slashBox> slashes = new ArrayList<slashBox>();
 ArrayList<meleeEnemy> meleeEnemies = new ArrayList<meleeEnemy>();
 ArrayList<chargerEnemy> chargerEnemies = new ArrayList<chargerEnemy>();
 ArrayList<basicRangedEnemy> basicRangedEnemies = new ArrayList<basicRangedEnemy>();
+ArrayList<tripleRangedEnemy> tripleRangedEnemies = new ArrayList<tripleRangedEnemy>();
+ArrayList<turret> turrets = new ArrayList<turret>();
 
 int score;
 int ammo;
@@ -84,22 +86,25 @@ slowFilter = loadImage("purp-FILTER.png");
 
   //add the player
   p1 = new Player(40, 1, 1, 3);
-  meleeEnemies.add( new meleeEnemy(30, width/2, height/2, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2, 0, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2+1, 0, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2+10, 0, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2+15, 0, 3));
-  basicRangedEnemies.add( new basicRangedEnemy(40, width/2, height/2, 1));
-  basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
+  //meleeEnemies.add( new meleeEnemy(30, width/2, height/2, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2+1, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2+10, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2+15, 0, 3));
+  //basicRangedEnemies.add( new basicRangedEnemy(40, width/2, height/2, 1));
+  //basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
 
-  chargerEnemies.add(new chargerEnemy(10, width/2, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
-  chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
-  chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
+  //tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
+turrets.add(new turret(30, width/2, height/2));
+
+  //chargerEnemies.add(new chargerEnemy(10, width/2, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
 }
 
 void draw () {
@@ -295,6 +300,17 @@ void draw () {
     getEnemy.display();
     getEnemy.collide();
   }
+  for (int i=0; i < tripleRangedEnemies.size(); i++) {
+    tripleRangedEnemy getEnemy = tripleRangedEnemies.get(i);
+    getEnemy.display();
+    getEnemy.collide();
+  }
+  for(int i=0; i < turrets.size(); i++){
+     turret getTurret = turrets.get(i);
+     getTurret.display();
+     getTurret.collide();
+  }
+  
   
   
   slowTime();

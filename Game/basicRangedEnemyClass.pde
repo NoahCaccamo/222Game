@@ -13,8 +13,9 @@ class basicRangedEnemy {
   int canMoveTimer;
   int shootTimer;
   int shootDelay = 1000;
+  int atkAnimTimer = 0; // Use this timer to make the animation happen right before the shoot timer goes off so they align
 
-
+  basicRangedEnemy(){}
   basicRangedEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
     size = _size;
     xpos = _xpos;
@@ -26,8 +27,6 @@ class basicRangedEnemy {
   }
 
   void display() {
-
-
 
     if (canMoveTimer < millis()) {
       canMove = true;
@@ -72,6 +71,6 @@ shootTimer ++;
   }
 
   void shoot() {
-    enemyProjectiles.add(new enemyProjectile(position, 5, true));
+    enemyProjectiles.add(new enemyProjectile(position, 5, true, 0, false));
   }
 }

@@ -10,6 +10,8 @@ class projectile {
   float size;
   color c;
   float reflectedSpeed;
+  float angle;
+  boolean isRotated;
 
   projectile() {
     mouse = new PVector(mouseX, mouseY);
@@ -62,10 +64,12 @@ class enemyProjectile extends projectile {
   float speed;
   boolean canSlash;
   
-  enemyProjectile(PVector _enemyPos, float _speed, boolean _canSlash) {
+  enemyProjectile(PVector _enemyPos, float _speed, boolean _canSlash, float _angle, boolean _isRotated) {
 
     speed = _speed;
     canSlash = _canSlash;
+    angle = _angle;
+    isRotated = _isRotated;
     
     c = color(142, 12, 157);
 
@@ -73,8 +77,12 @@ class enemyProjectile extends projectile {
     float yenemy = _enemyPos.y;
     position = new PVector(xenemy, yenemy);
     projectileVec = new PVector(xenemy - p1.xpos, yenemy - p1.ypos);
-
     projectileVec.setMag(speed);
+    
+    if (isRotated == true) {
+     projectileVec.rotate(angle); 
+    }
+    
   }
 }
 //new comType(6)

@@ -1,4 +1,4 @@
-class enemy {
+class enemy { // IGNORE THIS
   float size;
   float xpos;
   float ypos;

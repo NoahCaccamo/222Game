@@ -1,4 +1,4 @@
-class meleeEnemy {
+class meleeEnemy { // NOTE: I havent made the attack yet for these guys. Just make a function in this class that executes the melee animation and we good.
   float size;
   float xpos;
   float ypos;
