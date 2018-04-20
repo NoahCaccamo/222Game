@@ -33,7 +33,7 @@ class enemy {
     towardPlayer = new PVector(position.x - player.x, position.y - player.y);
     towardPlayer.setMag(2);
 
-    if (dist(position.x, position.y, player.x, player.y) >= 70 && canMove == true) {
+    if (dist(position.x, position.y, player.x, player.y) >= 70 && canMove == true &&   goTime == true) {
       position.x -= towardPlayer.x;
       position.y -= towardPlayer.y;
     }

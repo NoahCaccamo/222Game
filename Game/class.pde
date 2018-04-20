@@ -39,8 +39,10 @@ class projectile {
     // velocity.limit(topspeed);
     //velocity.setMag(0.2);
     //position.add(velocity);
+      if (goTime == true) {
     position.x -= projectileVec.x;
     position.y -= projectileVec.y;
+      }
   }
 
   void display() {
@@ -173,15 +175,3 @@ class slashBox {
 
 
 ///////////
-void startDodge() {
-  timer =millis() + dLength; 
-  dTimer = timer + 115;
-  isSlashing = false; 
-  combo1 = false; 
-  combo2 = false; 
-  combo3 = false;
-  click1 = false;
-  click2 = false;
-  click3 = false;
-  cantMove = false;
-}

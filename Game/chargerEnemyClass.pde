@@ -30,7 +30,7 @@ if (canMoveTimer < millis()) {
     towardPlayer = new PVector(position.x - player.x, position.y - player.y);
     towardPlayer.setMag(4);
 
-if (canMove == true) {
+if (canMove == true && goTime == true) {
     position.x -= towardPlayer.x;
     position.y -= towardPlayer.y;
 }
@@ -57,14 +57,15 @@ void collideCharger() {
   for (int i=0; i < chargerEnemies.size(); i++) {
     chargerEnemy getCharger = chargerEnemies.get(i);
 
-    getCharger.hbox.intersect(playerHbox); 
+    getCharger.hbox.intersect(p1.hbox); 
 
     if (getCharger.hbox.isEmpty() == false) {
       //DAMAGE PLAYER////////////////////////////////////////////////////////////////////////////////////////////////////////
-      println("boon");
+    //  println("boon");
       chargerEnemies.remove(i);
     } else {
     }
     getCharger.refresh();
+    p1.refresh();
   }
 }

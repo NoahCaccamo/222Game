@@ -6,6 +6,8 @@
 import java.awt.geom.*;
 import java.awt.*;
 
+PImage slowFilter;
+
 Area playerHbox;
 
 ArrayList<hitboxSlash> HboxSlashes = new ArrayList<hitboxSlash>();
@@ -24,6 +26,11 @@ ArrayList<meleeEnemy> meleeEnemies = new ArrayList<meleeEnemy>();
 ArrayList<chargerEnemy> chargerEnemies = new ArrayList<chargerEnemy>();
 ArrayList<basicRangedEnemy> basicRangedEnemies = new ArrayList<basicRangedEnemy>();
 
+int score;
+int ammo;
+int ratio = 6;
+float ammoParts;
+
 PVector slashKnockVector;
 
 float mAngle;
@@ -32,7 +39,7 @@ boolean time;
 
 int bulletDamage = 3;
 
-int timer, dTimer, cdCombo, comboCounter;
+int timer, dTimer, sTimer, smTimer, iTimer, timeTimer, cdCombo, comboCounter;
 int  cdSlash1, cdSlash2, cdSlash3, lag1, lag2, lag3;
 int cdSlash1e = 200;
 int cdSlash2e = 250;
@@ -60,12 +67,20 @@ int dVert, dHoriz;
 int slashPunch;
 int slashNum;
 
+float lastForce;
+PVector lastSource;
+
+boolean goTime = true;
+int slowCounter;
+
 color cd = color(255, 0, 0);
 void setup() {
-  fullScreen();
-  //size(900, 900);
+  //fullScreen();
+  size(900, 900);
   noStroke();
   rectMode(CENTER);
+
+slowFilter = loadImage("purp-FILTER.png");
 
   //add the player
   p1 = new Player(40, 1, 1, 3);
@@ -81,10 +96,10 @@ void setup() {
   chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
   chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
   chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
-    chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
-      chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
-        chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
-          chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
 }
 
 void draw () {
@@ -92,9 +107,6 @@ void draw () {
   background(135);
   // println(canSlash, millis(), cdSlash1, isSlashing);
 
-  // add hitboxes for player and mouse
-  Area mouse = new Area(new Rectangle(mouseX - 25/2, mouseY -25/2, 25, 25));
-  playerHbox = new Area(new Rectangle2D.Float(p1.xpos - 40/2, p1.ypos - 40/2, 40, 40));
 
   //temp mouse display hitbox
   pushMatrix(); 
@@ -102,22 +114,6 @@ void draw () {
   fill(cd);
   rect(0, 0, 25, 25); 
   popMatrix();
-
-  //mouse.intersect(player);
-
-  //if (mouse.isEmpty() == false) {
-  //  cd = color(255, 0, 0);
-  //  println("player hit");
-  //}
-  //else {
-  //  cd = color(255);  
-  //}
-
-
-
-
-
-
 
 
   if (dTimer < millis()) {
@@ -270,6 +266,10 @@ void draw () {
       shootBasicRangedEnemy();
     }
   }
+  if (enemyProjectiles.size() >= 1) {
+    shootPlayer();
+  }
+
 
   if (HboxSlashes.size() >= 1) {
     slashEnemy();
@@ -280,6 +280,7 @@ void draw () {
   p1.display();
 
   //DISPLAY AND UPDATE ENEMIES
+
   for (int i=0; i < meleeEnemies.size(); i++) {
     meleeEnemy getEnemy = meleeEnemies.get(i);
     getEnemy.display();
@@ -294,21 +295,26 @@ void draw () {
     getEnemy.display();
     getEnemy.collide();
   }
-
+  
+  
+  slowTime();
 
   checkEnemies();
   collideCharger();
-
-
-
-
+  stagger();
+  invulCheck();
+  convertParts();
+  fill(0);
+  textSize(40);
+  text("Ammo: " + ammo, 20, 100); 
+text("HP: " + p1.hp, 20, 50);
   //////////end of draw
 }
 
 void keyPressed() {
   p1.keysCheckP();
   if (key == ' '||keyCode == SHIFT) {
-    if (isDashing == false) {
+    if (isDashing == false && p1.isStaggered == false) {
       p1.dash();
       isDashing = true;
     }
@@ -324,45 +330,30 @@ void mousePressed() {
   if (mouseButton == LEFT) {
     int tempT = millis();
 
-    if (isDashing == false && click1 == false && click2 == false && click3 == false) {
+    if (isDashing == false && click1 == false && click2 == false && click3 == false && canSlash == true) {
       lag1 = tempT + lag1e;
       cdSlash1 = tempT + lag1e + cdSlash1e;
       click1 = true;
-    } else if (isDashing == false && click1 == true && click2 == false && click3 == false) {
+    } else if (isDashing == false && click1 == true && click2 == false && click3 == false && canSlash == true) {
       cdSlash1 -= 100;
 
       lag2 = tempT + lag2e + (cdSlash1 - tempT);      
       cdSlash2 = tempT + cdSlash2e + (lag2-tempT);
       click2 = true;
-    } else if (isDashing == false && click1 == true && click2 == true && click3 == false) {
+    } else if (isDashing == false && click1 == true && click2 == true && click3 == false && canSlash == true) {
       cdSlash2 -=100;
 
       lag3 = tempT + lag3e + (cdSlash2-tempT);
       cdSlash3 = tempT + cdSlash3e + (lag3-tempT);
       click3 = true;
     }
-
-    //add command to array
-    //new comType(1) add this to array list
-
-
-
-    //  if (canSlash == true && comboCounter == 0) {
-
-
-    //isSlashing = true;
-    //canSlash = false;
-    //cdSlash = millis() + 1000;
-
-
-    //}
-    //if (isSlashing = true) {
-
-    //}
   }
   ////////////
   if (mouseButton == RIGHT) {
-    bullets.add (new projectile());
+    if (ammo > 0) {
+      ammo -= 1;
+      bullets.add (new projectile());
+    }
   }
 }
 
@@ -390,6 +381,8 @@ void slashEnemy() {
       getSlash.a1.intersect(getEnemy.hbox);
 
       if (getSlash.a1.isEmpty() == false) {
+        ammoParts += 1;
+
         getEnemy.hp -= 1; 
 
         getEnemy.stun(100); 
@@ -404,6 +397,7 @@ void slashEnemy() {
         getEnemy.position.y -= slashKnockVector.y;
 
         if (getEnemy.hp <= 0) {
+          ammoParts += 3;
           meleeEnemies.remove(i);
         }
       }
@@ -426,6 +420,11 @@ void slashEnemy() {
       getSlash.a1.intersect(getEnemy.hbox);
 
       if (getSlash.a1.isEmpty() == false) {
+        if (getEnemy.size <= 25) {
+          ammoParts += 1;
+        } else {
+          ammoParts += 2;
+        }
         getEnemy.hp -= 1; 
 
         getEnemy.stun(100); 
@@ -461,6 +460,8 @@ void slashEnemy() {
       getSlash.a1.intersect(getEnemy.hbox);
 
       if (getSlash.a1.isEmpty() == false) {
+        ammoParts += 1;
+
         getEnemy.hp -= 1; 
 
         getEnemy.stun(100); 
@@ -475,6 +476,7 @@ void slashEnemy() {
         getEnemy.position.y -= slashKnockVector.y;
 
         if (getEnemy.hp <= 0) {
+          ammoParts += 3;
           basicRangedEnemies.remove(i);
         }
       }
@@ -643,4 +645,65 @@ void checkEnemies() {
       }
     }
   }
+}
+
+void convertParts() {
+  if (ammoParts >= ratio) {
+    ammoParts -= ratio;
+    ammo += 1;
+  }
+}
+
+void shootPlayer() {
+  for (int i=0; i < enemyProjectiles.size(); i++) {
+    enemyProjectile getProjectile = enemyProjectiles.get(i);
+
+    getProjectile.hbox.intersect(p1.hbox);
+    if (getProjectile.hbox.isEmpty() == false) {
+      //DAMAGE PLAYER
+      damage(getProjectile.position, 7, 1);
+      
+      
+      
+      
+      if(p1.invulnerable == true && isDashing == true && p1.isStaggered == false && timeTimer < millis() + 1000) {
+       ///SLOW TIME 
+       slowTimeTimer();
+       iTimer = dTimer;
+      } else {
+        enemyProjectiles.remove(i);
+      }
+        
+      
+      break;
+    }
+    getProjectile.refresh();
+    p1.refresh();
+  }
+}
+
+void slowTimeTimer() {
+  timeTimer = millis() + 2500;
+}
+
+void slowTime() {
+ if (timeTimer > millis()) {
+   tint(255, 50);
+   image(slowFilter, 0, 0);
+   println("TIME SLOWED" + millis());
+   
+  if (goTime == true) {
+   goTime = false; 
+   slowCounter = 0;
+  }
+  if (goTime == false) {
+   slowCounter += 1; 
+  }
+  if (goTime == false && slowCounter >= 3) {
+  goTime = true;
+  }
+  
+ } else{
+  goTime = true; 
+ }
 }
