@@ -18,10 +18,13 @@ Player p1;
 basicRangedEnemy e1, e2;
 
 ArrayList<fadePlayer> streak = new ArrayList<fadePlayer>();
+
 ArrayList<projectile> bullets = new ArrayList <projectile>();
 ArrayList<enemyProjectile> enemyProjectiles = new ArrayList <enemyProjectile>();
+
 ArrayList<slashBox> slashes = new ArrayList<slashBox>();
 
+//Enemy Arrays
 ArrayList<meleeEnemy> meleeEnemies = new ArrayList<meleeEnemy>();
 ArrayList<chargerEnemy> chargerEnemies = new ArrayList<chargerEnemy>();
 ArrayList<basicRangedEnemy> basicRangedEnemies = new ArrayList<basicRangedEnemy>();
@@ -117,18 +120,22 @@ void draw () {
   // println(canSlash, millis(), cdSlash1, isSlashing);
 
 
-  //temp mouse display hitbox
+  //temp mouse display hitbox///Make reticle here later
   pushMatrix(); 
   translate(mouseX, mouseY);
   fill(cd);
   rect(0, 0, 25, 25); 
   popMatrix();
+////////////////////////
 
+//DASHING
 
+//stop dashing when the dash timer ends
   if (dTimer < millis()) {
     isDashing = false;
   }
 
+//Dash movement + FX
   if (timer > millis()) {
     streak.add(new fadePlayer(40, p1.xpos, p1.ypos, 1000));
     if (dUp == true||dDown == true) {
@@ -144,7 +151,7 @@ void draw () {
     dRight = false;
   }
 
-
+//Display dash FX
   for (int i=0; i<streak.size(); i++) {
     fadePlayer gotFade = streak.get(i);
     gotFade.fade();
@@ -154,11 +161,14 @@ void draw () {
     }
   }
 
+//SLASHING
 
+//cant move while slashing
   if (cdSlash1 < millis() && cdSlash2 < millis() && cdSlash3 < millis()) {
     cantMove = false;
   }
 
+//End combo state
   if (cdSlash1 + 100 < millis() && cdSlash2 + 100 < millis() && cdSlash3 < millis()) {
     combo1 = false; 
     combo2 = false; 
@@ -170,8 +180,8 @@ void draw () {
   }
 
 
+//Execute slashes based on flags and timers
   if (cdSlash1 > millis() && isDashing == false && combo1 == false && combo2 == false && combo3 == false && lag1 <= millis()) {
-    //while (lag1 > millis()) {}
     lag1 = 0;
     slashPunch = 10;
 
@@ -185,8 +195,6 @@ void draw () {
     cantMove = true;
   }
   if (cdSlash2 > millis() && isSlashing == true && combo1 == true && combo2 == false && combo3 == false && cdSlash1 <= millis() && lag2 <= millis()) {
-    // while (cdSlash1 > millis()) {}
-    // while (lag2 > millis()){}
     lag2 = 0;
     slashPunch = 10;
 
@@ -234,6 +242,7 @@ void draw () {
   ////////////////////////////////////////////////////
 
 
+//DISPLAY BULLETS AND SLASHES
   for (int i=0; i<bullets.size(); i++) {
     projectile getBullets = bullets.get(i);
 
@@ -279,17 +288,17 @@ void draw () {
     shootPlayer();
   }
 
-
+//SLASH COLISION CHECKING
   if (HboxSlashes.size() >= 1) {
     slashEnemy();
   }
 
 
+//display player
   p1.move();
   p1.display();
 
   //DISPLAY AND UPDATE ENEMIES
-
   for (int i=0; i < meleeEnemies.size(); i++) {
     meleeEnemy getEnemy = meleeEnemies.get(i);
     getEnemy.display();
@@ -321,7 +330,7 @@ void draw () {
   }
   
   
-  
+  //Check stuff
   slowTime();
 
   checkEnemies();
@@ -329,6 +338,8 @@ void draw () {
   stagger();
   invulCheck();
   convertParts();
+  
+  //DISPLAY HUD
   fill(0);
   textSize(40);
   text("Ammo: " + ammo, 20, 100); 
