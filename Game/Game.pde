@@ -27,6 +27,7 @@ ArrayList<chargerEnemy> chargerEnemies = new ArrayList<chargerEnemy>();
 ArrayList<basicRangedEnemy> basicRangedEnemies = new ArrayList<basicRangedEnemy>();
 ArrayList<tripleRangedEnemy> tripleRangedEnemies = new ArrayList<tripleRangedEnemy>();
 ArrayList<turret> turrets = new ArrayList<turret>();
+ArrayList<spiralRangedEnemy> spiralRangedEnemies = new ArrayList<spiralRangedEnemy>();
 
 int score;
 int ammo;
@@ -77,8 +78,8 @@ int slowCounter;
 
 color cd = color(255, 0, 0);
 void setup() {
-  //fullScreen();
-  size(900, 900);
+  fullScreen();
+  //size(900, 900);
   noStroke();
   rectMode(CENTER);
 
@@ -95,7 +96,7 @@ slowFilter = loadImage("purp-FILTER.png");
   //basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
 
   //tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
-turrets.add(new turret(30, width/2, height/2));
+//turrets.add(new turret(30, width/2, height/2));
 
   //chargerEnemies.add(new chargerEnemy(10, width/2, height/2, 12));
   //chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
@@ -105,6 +106,9 @@ turrets.add(new turret(30, width/2, height/2));
   //chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
   //chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
   //chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
+  
+  spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2, height/2, 0.3));
+  spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 200, height/2+ 300, 0.3));
 }
 
 void draw () {
@@ -310,6 +314,11 @@ void draw () {
      getTurret.display();
      getTurret.collide();
   }
+  for(int i=0; i < spiralRangedEnemies.size(); i++){
+     spiralRangedEnemy getSpiral = spiralRangedEnemies.get(i);
+     getSpiral.display();
+     getSpiral.collide();
+  }
   
   
   
@@ -511,11 +520,12 @@ void slashEnemy() {
     }
 
     //check for projectile being slashed
-    if (getProjectile.canSlash == true) {
+   
 
       getSlash.a1.intersect(getProjectile.hbox);
 
       if (getSlash.a1.isEmpty() == false) {
+         if (getProjectile.canSlash == true) {
         bullets.add(new projectile());
         projectile getBullet = bullets.get(bullets.size()-1);
 
@@ -523,8 +533,12 @@ void slashEnemy() {
         getBullet.projectileVec = (getProjectile.projectileVec.mult(-1));
         getBullet.projectileVec.setMag(getProjectile.speed * 2);
         enemyProjectiles.remove(i);
+         }
+         else{
+          enemyProjectiles.remove(i); 
+         }
       }
-    }
+    
     getSlash.refresh();
     getProjectile.refresh();
   }
@@ -686,7 +700,8 @@ void shootPlayer() {
        ///SLOW TIME 
        slowTimeTimer();
        iTimer = dTimer;
-      } else {
+      } else if (p1.invulnerable == true && isDashing == true){
+      }else{
         enemyProjectiles.remove(i);
       }
         
@@ -704,7 +719,7 @@ void slowTimeTimer() {
 
 void slowTime() {
  if (timeTimer > millis()) {
-   tint(255, 50);
+   tint(255, 50); //50
    image(slowFilter, 0, 0);
    println("TIME SLOWED" + millis());
    

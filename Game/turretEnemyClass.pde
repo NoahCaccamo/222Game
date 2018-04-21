@@ -30,7 +30,7 @@ class turret extends basicRangedEnemy {
   }
   
   void shoot() {
-    enemyProjectiles.add(new enemyProjectile(position, 2, true, 0, false));
+    enemyProjectiles.add(new enemyProjectile(position, 2, false, 0, false));
   }
   
 }
