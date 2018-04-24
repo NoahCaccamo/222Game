@@ -7,6 +7,7 @@ import java.awt.geom.*;
 import java.awt.*;
 
 PImage slowFilter;
+PImage emptyHeart, fullHeart;
 
 Area playerHbox;
 
@@ -79,6 +80,20 @@ PVector lastSource;
 boolean goTime = true;
 int slowCounter;
 
+int wave;
+int wavePoints;
+
+int chanceMelee, chanceCharger, chanceRanged, chanceTriple, chanceSpiral, chanceTurret, chanceSwarm;
+int meleeCost = 1;
+int chargerCost = 1;
+int rangedCost = 1;
+int tripleCost = 2;
+int spiralCost = 10;
+int turretCost = 5;
+int swarmCost = 3;
+
+int collideTimer = 1000;
+
 color cd = color(255, 0, 0);
 void setup() {
   fullScreen();
@@ -86,36 +101,38 @@ void setup() {
   noStroke();
   rectMode(CENTER);
 
-slowFilter = loadImage("purp-FILTER.png");
+  slowFilter = loadImage("purp-FILTER.png");
+  fullHeart = loadImage("fill.png");
+  emptyHeart = loadImage("empty.png");
 
   //add the player
   p1 = new Player(40, 1, 1, 3);
-  meleeEnemies.add( new meleeEnemy(30, width/2, height/2, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2, 0, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2+1, 0, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2+10, 0, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2+15, 0, 3));
-  basicRangedEnemies.add( new basicRangedEnemy(40, width/2, height/2, 1));
-  basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
+  //meleeEnemies.add( new meleeEnemy(30, width/2, height/2, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2+1, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2+10, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2+15, 0, 3));
+  //basicRangedEnemies.add( new basicRangedEnemy(40, width/2, height/2, 1));
+  //basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
 
-  tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
-turrets.add(new turret(30, width/2, height/2));
+  //tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
+  // turrets.add(new turret(30, width/2, height/2));
 
-  chargerEnemies.add(new chargerEnemy(10, width/2, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
-  chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
-  chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
-  
-  spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2, height/2, 0.3));
-  spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 200, height/2+ 300, 0.3));
+  //chargerEnemies.add(new chargerEnemy(10, width/2, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
+
+  //spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2, height/2, 0.3));
+  //spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 200, height/2+ 300, 0.3));
 }
 
 void draw () {
-
+int millis = millis();
   background(135);
   // println(canSlash, millis(), cdSlash1, isSlashing);
 
@@ -126,16 +143,16 @@ void draw () {
   fill(cd);
   rect(0, 0, 25, 25); 
   popMatrix();
-////////////////////////
+  ////////////////////////
 
-//DASHING
+  //DASHING
 
-//stop dashing when the dash timer ends
+  //stop dashing when the dash timer ends
   if (dTimer < millis()) {
     isDashing = false;
   }
 
-//Dash movement + FX
+  //Dash movement + FX
   if (timer > millis()) {
     streak.add(new fadePlayer(40, p1.xpos, p1.ypos, 1000));
     if (dUp == true||dDown == true) {
@@ -151,7 +168,7 @@ void draw () {
     dRight = false;
   }
 
-//Display dash FX
+  //Display dash FX
   for (int i=0; i<streak.size(); i++) {
     fadePlayer gotFade = streak.get(i);
     gotFade.fade();
@@ -161,14 +178,14 @@ void draw () {
     }
   }
 
-//SLASHING
+  //SLASHING
 
-//cant move while slashing
+  //cant move while slashing
   if (cdSlash1 < millis() && cdSlash2 < millis() && cdSlash3 < millis()) {
     cantMove = false;
   }
 
-//End combo state
+  //End combo state
   if (cdSlash1 + 100 < millis() && cdSlash2 + 100 < millis() && cdSlash3 < millis()) {
     combo1 = false; 
     combo2 = false; 
@@ -180,7 +197,7 @@ void draw () {
   }
 
 
-//Execute slashes based on flags and timers
+  //Execute slashes based on flags and timers
   if (cdSlash1 > millis() && isDashing == false && combo1 == false && combo2 == false && combo3 == false && lag1 <= millis()) {
     lag1 = 0;
     slashPunch = 10;
@@ -242,7 +259,7 @@ void draw () {
   ////////////////////////////////////////////////////
 
 
-//DISPLAY BULLETS AND SLASHES
+  //DISPLAY BULLETS AND SLASHES
   for (int i=0; i<bullets.size(); i++) {
     projectile getBullets = bullets.get(i);
 
@@ -272,7 +289,7 @@ void draw () {
 
 
   //BULLET COLLISION CHECKING
-  if (bullets.size() >=1) {
+  if (bullets.size() >=1 && collideTimer < millis) {
 
     if (meleeEnemies.size() >= 1) {
       shootMeleeEnemy();
@@ -283,18 +300,27 @@ void draw () {
     if (basicRangedEnemies.size() >= 1) {
       shootBasicRangedEnemy();
     }
+    if (tripleRangedEnemies.size() >= 1) {
+      shootTripleRangedEnemy();
+    }
+    if (spiralRangedEnemies.size() >= 1) {
+      shootSpiralRangedEnemy();
+    }
+    if (turrets.size() >=1) {
+      shootTurrets();
+    }
   }
   if (enemyProjectiles.size() >= 1) {
     shootPlayer();
   }
 
-//SLASH COLISION CHECKING
-  if (HboxSlashes.size() >= 1) {
+  //SLASH COLISION CHECKING
+  if (HboxSlashes.size() >= 1 && collideTimer < millis) {
     slashEnemy();
   }
 
 
-//display player
+  //display player
   p1.move();
   p1.display();
 
@@ -318,31 +344,33 @@ void draw () {
     getEnemy.display();
     getEnemy.collide();
   }
-  for(int i=0; i < turrets.size(); i++){
-     turret getTurret = turrets.get(i);
-     getTurret.display();
-     getTurret.collide();
+  for (int i=0; i < turrets.size(); i++) {
+    turret getTurret = turrets.get(i);
+    getTurret.display();
+    getTurret.collide();
   }
-  for(int i=0; i < spiralRangedEnemies.size(); i++){
-     spiralRangedEnemy getSpiral = spiralRangedEnemies.get(i);
-     getSpiral.display();
-     getSpiral.collide();
+  for (int i=0; i < spiralRangedEnemies.size(); i++) {
+    spiralRangedEnemy getSpiral = spiralRangedEnemies.get(i);
+    getSpiral.display();
+    getSpiral.collide();
   }
-  
-  
+
+
   //Check stuff
   slowTime();
-collideCharger();
+  collideCharger();
   checkEnemies();
   stagger();
   invulCheck();
   convertParts();
-  
+
   //DISPLAY HUD
   fill(0);
   textSize(40);
   text("Ammo: " + ammo, 20, 100); 
-text("HP: " + p1.hp, 20, 50);
+  displayHealth();
+  calcChances(20, 20, 20, 20, 5, 5, 10);
+  spawner();
   //////////end of draw
 }
 
@@ -404,7 +432,11 @@ void slash(color c) {
 }
 
 void slashEnemy() {
+  
+ 
   for (int i=0; i < meleeEnemies.size(); i++) {
+    if( i+1 > meleeEnemies.size()) break;
+    
     meleeEnemy getEnemy = meleeEnemies.get(i);
     hitboxSlash getSlash = HboxSlashes.get(0);
 
@@ -442,7 +474,7 @@ void slashEnemy() {
     //slash end
   }
 
-
+if (chargerEnemies.size() > 0) {
   for (int i=0; i < chargerEnemies.size(); i++) {
     chargerEnemy getEnemy = chargerEnemies.get(i);
     hitboxSlash getSlash = HboxSlashes.get(0);
@@ -451,6 +483,9 @@ void slashEnemy() {
     if (getEnemy.lastSlash < getSlash.num) {
       getEnemy.lastSlash = getSlash.num;
 
+if(i+1 > chargerEnemies.size()) {
+ break; 
+}
       //check for melee enemy getting slashed
       getSlash.a1.intersect(getEnemy.hbox);
 
@@ -482,6 +517,7 @@ void slashEnemy() {
     getEnemy.refresh();
     //slash end
   }
+}
 
   for (int i=0; i < basicRangedEnemies.size(); i++) {
     basicRangedEnemy getEnemy = basicRangedEnemies.get(i);
@@ -490,6 +526,9 @@ void slashEnemy() {
     //slash begin
     if (getEnemy.lastSlash < getSlash.num) {
       getEnemy.lastSlash = getSlash.num;
+if (i+1 > basicRangedEnemies.size()) {
+ break; 
+}
 
       //check for melee enemy getting slashed
       getSlash.a1.intersect(getEnemy.hbox);
@@ -520,7 +559,7 @@ void slashEnemy() {
     getEnemy.refresh();
     //slash end
   }
-  
+
   for (int i=0; i < tripleRangedEnemies.size(); i++) {
     tripleRangedEnemy getEnemy = tripleRangedEnemies.get(i);
     hitboxSlash getSlash = HboxSlashes.get(0);
@@ -596,7 +635,36 @@ void slashEnemy() {
     getEnemy.refresh();
     //slash end
   }
-  
+
+  for (int i=0; i < turrets.size(); i++) {
+    turret getTurret = turrets.get(i);
+    hitboxSlash getSlash = HboxSlashes.get(0);
+if (i > turrets.size()) {
+ break; 
+}
+    //slash begin
+    if (getTurret.lastSlash < getSlash.num) {
+      getTurret.lastSlash = getSlash.num;
+
+      //check for melee enemy getting slashed
+      getSlash.a1.intersect(getTurret.hbox);
+
+      if (getSlash.a1.isEmpty() == false) {
+        ammoParts += 1;
+
+        getTurret.hp -= 1; 
+
+        if (getTurret.hp <= 0) {
+          ammoParts += 3;
+          turrets.remove(i);
+        }
+      }
+    }
+    getSlash.refresh();
+    getTurret.refresh();
+    //slash end
+  }
+
 
   for (int i=0; i < enemyProjectiles.size(); i++) {
     enemyProjectile getProjectile = enemyProjectiles.get(i);
@@ -607,12 +675,12 @@ void slashEnemy() {
     }
 
     //check for projectile being slashed
-   
 
-      getSlash.a1.intersect(getProjectile.hbox);
 
-      if (getSlash.a1.isEmpty() == false) {
-         if (getProjectile.canSlash == true) {
+    getSlash.a1.intersect(getProjectile.hbox);
+
+    if (getSlash.a1.isEmpty() == false) {
+      if (getProjectile.canSlash == true) {
         bullets.add(new projectile());
         projectile getBullet = bullets.get(bullets.size()-1);
 
@@ -620,12 +688,11 @@ void slashEnemy() {
         getBullet.projectileVec = (getProjectile.projectileVec.mult(-1));
         getBullet.projectileVec.setMag(getProjectile.speed * 2);
         enemyProjectiles.remove(i);
-         }
-         else{
-          enemyProjectiles.remove(i); 
-         }
+      } else {
+        enemyProjectiles.remove(i);
       }
-    
+    }
+
     getSlash.refresh();
     getProjectile.refresh();
   }
@@ -634,8 +701,14 @@ void slashEnemy() {
 void shootMeleeEnemy() {
 
   for (int a=0; a < meleeEnemies.size(); a++) {
-
+if(a+1 > meleeEnemies.size()) {
+ break; 
+}
     for (int b=0; b < bullets.size(); b++) {
+      if (b+1 > bullets.size()) {
+       break; 
+      }
+      
       meleeEnemy getEnemy = meleeEnemies.get(a);
       projectile getBullet = bullets.get(b);
 
@@ -664,6 +737,10 @@ void shootChargerEnemy() {
       chargerEnemy getEnemy = chargerEnemies.get(a);
       projectile getBullet = bullets.get(b);
 
+if (a+1>chargerEnemies.size() || b+1>bullets.size()) {
+ break; 
+}
+
       getBullet.hbox.intersect(getEnemy.hbox);
 
       if (getBullet.hbox.isEmpty() == false) {
@@ -689,6 +766,13 @@ void shootBasicRangedEnemy() {
       basicRangedEnemy getEnemy = basicRangedEnemies.get(a);
       projectile getBullet = bullets.get(b);
 
+if (bullets.isEmpty() == true || basicRangedEnemies.isEmpty() == true) {
+ break; 
+}
+if (a+1 > basicRangedEnemies.size() || b+1 > bullets.size()) {
+ break; 
+}
+
       getBullet.hbox.intersect(getEnemy.hbox);
 
       if (getBullet.hbox.isEmpty() == false) {
@@ -709,8 +793,15 @@ void shootBasicRangedEnemy() {
 void shootTripleRangedEnemy() {
 
   for (int a=0; a < tripleRangedEnemies.size(); a++) {
-
+if (a > tripleRangedEnemies.size()) {
+break;
+}
+    
     for (int b=0; b < bullets.size(); b++) {
+      if (b > bullets.size()) {
+       break; 
+      }
+      
       tripleRangedEnemy getEnemy = tripleRangedEnemies.get(a);
       projectile getBullet = bullets.get(b);
 
@@ -751,6 +842,31 @@ void shootSpiralRangedEnemy() {
         break;
       }
       getEnemy.refresh();
+      getBullet.refresh();
+    }
+  }
+}
+
+void shootTurrets() {
+
+  for (int a=0; a < turrets.size(); a++) {
+
+    for (int b=0; b < bullets.size(); b++) {
+      turret getTurret = turrets.get(a);
+      projectile getBullet = bullets.get(b);
+
+      getBullet.hbox.intersect(getTurret.hbox);
+
+      if (getBullet.hbox.isEmpty() == false) {
+        getTurret.hp -= bulletDamage;
+        bullets.remove(b);
+
+        if (getTurret.hp <= 0) {
+          turrets.remove(a);
+        }
+        break;
+      }
+      getTurret.refresh();
       getBullet.refresh();
     }
   }
@@ -830,20 +946,20 @@ void shootPlayer() {
     if (getProjectile.hbox.isEmpty() == false) {
       //DAMAGE PLAYER
       damage(getProjectile.position, 7, 1);
-      
-      
-      
-      
-      if(p1.invulnerable == true && isDashing == true && p1.isStaggered == false && timeTimer < millis() + 1000) {
-       ///SLOW TIME 
-       slowTimeTimer();
-       iTimer = dTimer;
-      } else if (p1.invulnerable == true && isDashing == true){
-      }else{
+
+
+
+
+      if (p1.invulnerable == true && isDashing == true && p1.isStaggered == false && timeTimer < millis() + 1000) {
+        ///SLOW TIME 
+        slowTimeTimer();
+        iTimer = dTimer;
+      } else if (p1.invulnerable == true && isDashing == true) {
+      } else {
         enemyProjectiles.remove(i);
       }
-        
-      
+
+
       break;
     }
     getProjectile.refresh();
@@ -856,23 +972,127 @@ void slowTimeTimer() {
 }
 
 void slowTime() {
- if (timeTimer > millis()) {
-   tint(255, 50); //50
-   image(slowFilter, 0, 0);
-   println("TIME SLOWED" + millis());
-   
-  if (goTime == true) {
-   goTime = false; 
-   slowCounter = 0;
+  if (timeTimer > millis()) {
+    tint(255, 50); //50
+    image(slowFilter, 0, 0);
+    println("TIME SLOWED" + millis());
+
+    if (goTime == true) {
+      goTime = false; 
+      slowCounter = 0;
+    }
+    if (goTime == false) {
+      slowCounter += 1;
+    }
+    if (goTime == false && slowCounter >= 3) {
+      goTime = true;
+    }
+  } else {
+    goTime = true;
   }
-  if (goTime == false) {
-   slowCounter += 1; 
+}
+
+
+void displayHealth() {
+  text("Health: ", 50, 45);
+  tint(255);
+  for (int i=0; i < p1.maxHp; i++) {
+    image(emptyHeart, 200+ i*100, 0);
   }
-  if (goTime == false && slowCounter >= 3) {
-  goTime = true;
+
+  for (int i=0; i < p1.hp; i++) {
+    image(fullHeart, 200+ i*100, 0);
   }
-  
- } else{
-  goTime = true; 
- }
+}
+
+void spawner() {
+  boolean canTriple, canSpiral, canTurrets;
+
+
+  if (meleeEnemies.isEmpty() && chargerEnemies.isEmpty() && basicRangedEnemies.isEmpty() && tripleRangedEnemies.isEmpty() && spiralRangedEnemies.isEmpty() && turrets.isEmpty()) {
+    wave ++;
+    collideTimer = millis() + 1000;
+    if (wave < 3) {
+      wavePoints = 1;
+    }else if (wave < 6) {
+     wavePoints = 5; 
+    }
+    else if (wave < 10) {
+     wavePoints = 10; 
+    }
+    else {
+     wavePoints = 30; 
+    }
+  }
+
+  if (wavePoints > 0) {
+    float rand = random(0, 100);
+
+    if (rand < chanceMelee) {
+      if (wavePoints >= meleeCost) {
+        meleeEnemies.add( new meleeEnemy(30, random(width), random(height), 3));
+        wavePoints -= meleeCost;
+      }
+    } else if (rand < chanceCharger) {
+      if (wavePoints >= chargerCost) {
+        chargerEnemies.add(new chargerEnemy(10, random(width), random(height), 12));
+        wavePoints -= chargerCost;
+      }
+    } else if (rand < chanceRanged) {
+      if (wavePoints >= rangedCost) {
+        basicRangedEnemies.add( new basicRangedEnemy(50, random(width), random(height), 56));
+        wavePoints -= rangedCost;
+      }
+    } else if (rand < chanceTriple) {
+      if (wavePoints >= tripleCost) {
+       tripleRangedEnemies.add( new tripleRangedEnemy(50, random(width), random(height), 56));
+        wavePoints -= tripleCost;
+      }
+    } else if (rand < chanceSpiral) {
+      if (wavePoints >= spiralCost) {
+       spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
+        wavePoints -= spiralCost;
+      }
+      
+    } else if (rand < chanceTurret) {
+      if (wavePoints >= turretCost) {
+       turrets.add(new turret(30, random(width), random(height)));
+        wavePoints -= turretCost;
+      }
+    }
+    else {
+     if (wavePoints >= swarmCost) {
+      float swarmNum = random(3, 8);
+       for(int i=0; i < swarmNum; i++){
+          chargerEnemies.add(new chargerEnemy(10, width, i, 12));
+       }
+       wavePoints -= swarmCost;
+     }
+    }
+  }
+}
+
+void calcChances(int _chanceMelee, int _chanceCharger, int _chanceRanged, int _chanceTriple, int _chanceSpiral, int _chanceTurret, int _chanceSwarm) {
+  int currentMax = 0;
+
+  currentMax += _chanceMelee;
+  chanceMelee = currentMax;
+
+  currentMax += _chanceCharger;
+  chanceCharger = currentMax;
+
+  currentMax += _chanceRanged;
+  chanceRanged = currentMax;
+
+  currentMax += _chanceTriple;
+  chanceTriple = currentMax;
+
+  currentMax += _chanceSpiral;
+  chanceSpiral = currentMax;
+
+  currentMax += _chanceTurret;
+  chanceTurret = currentMax;
+
+  currentMax += +chanceSwarm;
+  chanceSwarm = currentMax;
 }
