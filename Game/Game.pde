@@ -90,25 +90,25 @@ slowFilter = loadImage("purp-FILTER.png");
 
   //add the player
   p1 = new Player(40, 1, 1, 3);
-  //meleeEnemies.add( new meleeEnemy(30, width/2, height/2, 3));
-  //meleeEnemies.add( new meleeEnemy(30, width/2, 0, 3));
-  //meleeEnemies.add( new meleeEnemy(30, width/2+1, 0, 3));
-  //meleeEnemies.add( new meleeEnemy(30, width/2+10, 0, 3));
-  //meleeEnemies.add( new meleeEnemy(30, width/2+15, 0, 3));
-  //basicRangedEnemies.add( new basicRangedEnemy(40, width/2, height/2, 1));
-  //basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
+  meleeEnemies.add( new meleeEnemy(30, width/2, height/2, 3));
+  meleeEnemies.add( new meleeEnemy(30, width/2, 0, 3));
+  meleeEnemies.add( new meleeEnemy(30, width/2+1, 0, 3));
+  meleeEnemies.add( new meleeEnemy(30, width/2+10, 0, 3));
+  meleeEnemies.add( new meleeEnemy(30, width/2+15, 0, 3));
+  basicRangedEnemies.add( new basicRangedEnemy(40, width/2, height/2, 1));
+  basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
 
-  //tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
-//turrets.add(new turret(30, width/2, height/2));
+  tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
+turrets.add(new turret(30, width/2, height/2));
 
-  //chargerEnemies.add(new chargerEnemy(10, width/2, height/2, 12));
-  //chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
-  //chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
-  //chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
-  //chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
-  //chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
-  //chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
-  //chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width/2, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
+  chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
+  chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
   
   spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2, height/2, 0.3));
   spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 200, height/2+ 300, 0.3));
@@ -332,9 +332,8 @@ void draw () {
   
   //Check stuff
   slowTime();
-
+collideCharger();
   checkEnemies();
-  collideCharger();
   stagger();
   invulCheck();
   convertParts();
@@ -521,6 +520,83 @@ void slashEnemy() {
     getEnemy.refresh();
     //slash end
   }
+  
+  for (int i=0; i < tripleRangedEnemies.size(); i++) {
+    tripleRangedEnemy getEnemy = tripleRangedEnemies.get(i);
+    hitboxSlash getSlash = HboxSlashes.get(0);
+
+    //slash begin
+    if (getEnemy.lastSlash < getSlash.num) {
+      getEnemy.lastSlash = getSlash.num;
+
+      //check for melee enemy getting slashed
+      getSlash.a1.intersect(getEnemy.hbox);
+
+      if (getSlash.a1.isEmpty() == false) {
+        ammoParts += 1;
+
+        getEnemy.hp -= 1; 
+
+        getEnemy.stun(100); 
+
+        slashBox getSlashAngle = slashes.get(0);
+        PVector knockback = new PVector(getEnemy.position.x + 100, getEnemy.position.y);
+
+        knockback.rotate(getSlashAngle.angle);
+
+
+        getEnemy.position.x -= slashKnockVector.x;
+        getEnemy.position.y -= slashKnockVector.y;
+
+        if (getEnemy.hp <= 0) {
+          ammoParts += 3;
+          tripleRangedEnemies.remove(i);
+        }
+      }
+    }
+    getSlash.refresh();
+    getEnemy.refresh();
+    //slash end
+  }
+
+  for (int i=0; i < spiralRangedEnemies.size(); i++) {
+    spiralRangedEnemy getEnemy = spiralRangedEnemies.get(i);
+    hitboxSlash getSlash = HboxSlashes.get(0);
+
+    //slash begin
+    if (getEnemy.lastSlash < getSlash.num) {
+      getEnemy.lastSlash = getSlash.num;
+
+      //check for melee enemy getting slashed
+      getSlash.a1.intersect(getEnemy.hbox);
+
+      if (getSlash.a1.isEmpty() == false) {
+        ammoParts += 1;
+
+        getEnemy.hp -= 1; 
+
+        getEnemy.stun(100); 
+
+        slashBox getSlashAngle = slashes.get(0);
+        PVector knockback = new PVector(getEnemy.position.x + 100, getEnemy.position.y);
+
+        knockback.rotate(getSlashAngle.angle);
+
+
+        getEnemy.position.x -= slashKnockVector.x;
+        getEnemy.position.y -= slashKnockVector.y;
+
+        if (getEnemy.hp <= 0) {
+          ammoParts += 3;
+          spiralRangedEnemies.remove(i);
+        }
+      }
+    }
+    getSlash.refresh();
+    getEnemy.refresh();
+    //slash end
+  }
+  
 
   for (int i=0; i < enemyProjectiles.size(); i++) {
     enemyProjectile getProjectile = enemyProjectiles.get(i);
@@ -629,6 +705,57 @@ void shootBasicRangedEnemy() {
     }
   }
 }
+
+void shootTripleRangedEnemy() {
+
+  for (int a=0; a < tripleRangedEnemies.size(); a++) {
+
+    for (int b=0; b < bullets.size(); b++) {
+      tripleRangedEnemy getEnemy = tripleRangedEnemies.get(a);
+      projectile getBullet = bullets.get(b);
+
+      getBullet.hbox.intersect(getEnemy.hbox);
+
+      if (getBullet.hbox.isEmpty() == false) {
+        getEnemy.hp -= bulletDamage;
+        bullets.remove(b);
+
+        if (getEnemy.hp <= 0) {
+          tripleRangedEnemies.remove(a);
+        }
+        break;
+      }
+      getEnemy.refresh();
+      getBullet.refresh();
+    }
+  }
+}
+
+void shootSpiralRangedEnemy() {
+
+  for (int a=0; a < spiralRangedEnemies.size(); a++) {
+
+    for (int b=0; b < bullets.size(); b++) {
+      spiralRangedEnemy getEnemy = spiralRangedEnemies.get(a);
+      projectile getBullet = bullets.get(b);
+
+      getBullet.hbox.intersect(getEnemy.hbox);
+
+      if (getBullet.hbox.isEmpty() == false) {
+        getEnemy.hp -= bulletDamage;
+        bullets.remove(b);
+
+        if (getEnemy.hp <= 0) {
+          spiralRangedEnemies.remove(a);
+        }
+        break;
+      }
+      getEnemy.refresh();
+      getBullet.refresh();
+    }
+  }
+}
+
 
 void checkEnemies() {
   for (int a=0; a < meleeEnemies.size(); a++) {

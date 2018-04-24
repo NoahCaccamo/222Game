@@ -53,15 +53,15 @@ if (canMove == true && goTime == true) {
   
 }
 
-void collideCharger() {
+  void collideCharger() {
   for (int i=0; i < chargerEnemies.size(); i++) {
     chargerEnemy getCharger = chargerEnemies.get(i);
 
     getCharger.hbox.intersect(p1.hbox); 
 
     if (getCharger.hbox.isEmpty() == false) {
-      //DAMAGE PLAYER////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //  println("boon");
+      //DAMAGE PLAYER
+    damage(getCharger.position, 7, 1);
       chargerEnemies.remove(i);
     } else {
     }
