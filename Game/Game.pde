@@ -25,6 +25,7 @@ ArrayList<enemyProjectile> enemyProjectiles = new ArrayList <enemyProjectile>();
 
 ArrayList<slashBox> slashes = new ArrayList<slashBox>();
 
+ArrayList<pickup> pickups = new ArrayList<pickup>();
 //Enemy Arrays
 ArrayList<meleeEnemy> meleeEnemies = new ArrayList<meleeEnemy>();
 ArrayList<chargerEnemy> chargerEnemies = new ArrayList<chargerEnemy>();
@@ -93,6 +94,7 @@ int turretCost = 5;
 int swarmCost = 3;
 
 int collideTimer = 1000;
+int pickupTimer;
 
 color cd = color(255, 0, 0);
 void setup() {
@@ -354,11 +356,16 @@ int millis = millis();
     getSpiral.display();
     getSpiral.collide();
   }
+  for (int i=0; i < pickups.size(); i++) {
+    pickup getPickup = pickups.get(i);
+    getPickup.display();
+  }
 
 
   //Check stuff
   slowTime();
   collideCharger();
+  if (pickupTimer < millis) collidePickup();
   checkEnemies();
   stagger();
   invulCheck();
@@ -465,7 +472,11 @@ void slashEnemy() {
 
         if (getEnemy.hp <= 0) {
           ammoParts += 3;
+          pickups.add(new pickup(20, getEnemy.xpos, getEnemy.ypos));
+          pickupTimer = millis() + 1000;
           meleeEnemies.remove(i);
+          ///TEMP REMOVE
+          
         }
       }
     }
@@ -1006,10 +1017,9 @@ void displayHealth() {
 }
 
 void spawner() {
-  boolean canTriple, canSpiral, canTurrets;
+  text(wave, width/2, height/2);
 
-
-  if (meleeEnemies.isEmpty() && chargerEnemies.isEmpty() && basicRangedEnemies.isEmpty() && tripleRangedEnemies.isEmpty() && spiralRangedEnemies.isEmpty() && turrets.isEmpty()) {
+  if (meleeEnemies.isEmpty() && chargerEnemies.isEmpty() && basicRangedEnemies.isEmpty() && tripleRangedEnemies.isEmpty() && spiralRangedEnemies.isEmpty() && turrets.isEmpty() && collideTimer < millis()) {
     wave ++;
     collideTimer = millis() + 1000;
     if (wave < 3) {
