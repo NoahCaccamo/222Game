@@ -17,8 +17,8 @@ Ptmx map;
 
 PImage slowFilter;
 PGraphics wall;
-PImage[] enemyFrames = new PImage [5];
 PImage [] enemyLarge = new PImage [5];
+PImage [] enemyLargeflip = new PImage [5];
 PImage[] playerFrames = new PImage [9];
 PImage[] playerFramesUp = new PImage [9];
 PImage[] playerFramesRight = new PImage [9];
@@ -28,7 +28,9 @@ PImage[] magicFramesv2 = new PImage[9];
 PImage[] meleeFrames = new PImage [9];
 PImage[] backgroundFrames = new PImage [3];
 PImage [] dragon = new PImage [4];
+PImage [] dragonflip = new PImage [4];
 PImage [] ogre = new PImage [8];
+PImage [] ogreflip = new PImage [8];
 
 Area playerHbox;
 
@@ -119,48 +121,58 @@ void setup() {
   //add the player
   p1 = new Player(40, 1, 1, 3);
   brec1 = new basicRangedEnemy();
-  meleeEnemies.add( new meleeEnemy(30, width/2, height/2, 3));
+  meleeEnemies.add( new meleeEnemy(60, width/2, height/2, 3));
   //meleeEnemies.add( new meleeEnemy(30, width/2, 0, 3));
   //meleeEnemies.add( new meleeEnemy(30, width/2+1, 0, 3));
   //meleeEnemies.add( new meleeEnemy(30, width/2+10, 0, 3));
   //meleeEnemies.add( new meleeEnemy(30, width/2+15, 0, 3));
-  basicRangedEnemies.add( new basicRangedEnemy(40, width/2, height/2, 1));
+  basicRangedEnemies.add( new basicRangedEnemy(125, width/2, height/2, 1));
   //basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
 
   //tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
   //turrets.add(new turret(30, width/2, height/2));
 
-  chargerEnemies.add(new chargerEnemy(10, width/2, height/2, 12));
-  //chargerEnemies.add(new chargerEnemy(100, width/2, 0, 12));
+  //chargerEnemies.add(new chargerEnemy(50, width/2, height/2, 12));
+  chargerEnemies.add(new chargerEnemy(60, width/2, 0, 12));
   //chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
   //chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
   //chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
   //chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
   //chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
   //chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
-
-  for (int i=0; i< enemyFrames.length; i++) {
-    String filename = "enemy" + i + ".png";
-    enemyFrames[i] = loadImage(filename);
-  }
-
+  
   //Loads Larger Enemy
   for (int i=0; i< enemyLarge.length; i++) {
     String filename = "enemybigger" + i + ".png";
     enemyLarge[i] = loadImage(filename);    
-   // s = i;
   }
+  
+    for (int i=0; i< enemyLarge.length; i++) {
+    String filename = "enemybigger" + i + " copy" + ".png";
+    enemyLargeflip[i] = loadImage(filename);    
+  }
+  
 
   //Loads Ogre
   for (int i=0; i< ogre.length; i++) {
     String filename = "OGRESPRITE_" + i + ".png";
     ogre[i] = loadImage(filename);
   }
-
+  
+ for (int i =0; i < ogreflip.length; i++) {
+   String filename = "OGRESPRITE_" + i + " copy" + ".png";
+   ogreflip[i] = loadImage (filename);
+ }
+ 
   //Loads Dragon
   for (int i=0; i< dragon.length; i++) {
     String filename = "dragonsprite_" + i + ".png";
     dragon[i] = loadImage(filename);
+  }
+  
+   for (int i=0; i< dragonflip.length; i++) {
+    String filename = "dragonsprite_" + i + " copy" + ".png";
+    dragonflip[i] = loadImage(filename);
   }
 
   //Loads Player

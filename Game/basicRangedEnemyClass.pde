@@ -2,6 +2,9 @@ class basicRangedEnemy {
   float size;
   float xpos;
   float ypos;
+  float speedX;
+  float speedY;
+  float scaleRatio = 1.0000;
   int hp;
   PVector position;
   float mvspeed;
@@ -17,7 +20,7 @@ class basicRangedEnemy {
   int frame = 0;  // our current frame 
   int flip = 1;
   float x;
-  float y; 
+  float y;
 
   basicRangedEnemy() {
   }
@@ -29,6 +32,8 @@ class basicRangedEnemy {
     position = new PVector(xpos, ypos);
     hp = 12;
     shootTimer = 0;
+    x = random(width);
+    y = random(height);
   }
 
   void animate() {
@@ -65,9 +70,15 @@ class basicRangedEnemy {
 
 
     pushMatrix(); // save the origin 
-    image(dragon[frame], position.x, position.y);
-    popMatrix();  // restore the origin
+    if (towardPlayer.x >= 0) {
+      image(dragonflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    }
+    
+    else {
+      image(dragon[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    }
 
+    popMatrix();  // restore the origin   
     //Animate
     if (frameCount %5 ==0) frame++;
     if (frame>= dragon.length) frame = 0;

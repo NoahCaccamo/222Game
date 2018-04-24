@@ -2,6 +2,7 @@ class meleeEnemy { // NOTE: I havent made the attack yet for these guys. Just ma
   float size;
   float xpos;
   float ypos;
+  float scaleRatio = 1.0000;
   int hp;
   PVector position;
   float mvspeed;
@@ -40,11 +41,17 @@ class meleeEnemy { // NOTE: I havent made the attack yet for these guys. Just ma
       position.x -= towardPlayer.x;
       position.y -= towardPlayer.y;
     }
-
-    rect(position.x, position.y, size, size);
-    pushMatrix(); // save the origin 
-    image(ogre[frame], position.x, position.y);
-    popMatrix();  // restore the origin
+    
+    pushMatrix();
+   if (towardPlayer.x >= 0) {
+      image(ogreflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    }
+    
+    else {
+      image(ogre[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    }
+    popMatrix();
+   // rect(position.x, position.y, size, size);
 
     //Animate
     if (frameCount %5 ==0) frame++;
