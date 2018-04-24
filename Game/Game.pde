@@ -1,3 +1,5 @@
+import ptmx.*;
+
 
 //INSTRUCTIONS: WSAD - move
 // SPACEBAR or SHIFT - dodge
@@ -5,37 +7,56 @@
 // Right Click - shoot
 import java.awt.geom.*;
 import java.awt.*;
+import ptmx.*;
+import processing.sound.*;
+
+SoundFile introMusic;
+SoundFile playMusic;
+
+Ptmx map;
 
 PImage slowFilter;
+PGraphics wall;
+PImage[] enemyFrames = new PImage [5];
+PImage [] enemyLarge = new PImage [5];
+PImage[] playerFrames = new PImage [9];
+PImage[] playerFramesUp = new PImage [9];
+PImage[] playerFramesRight = new PImage [9];
+PImage[] playerFramesLeft = new PImage [9];
+PImage[] magicFrames = new PImage [9];
+PImage[] magicFramesv2 = new PImage[9];
+PImage[] meleeFrames = new PImage [9];
+PImage[] backgroundFrames = new PImage [3];
+PImage [] dragon = new PImage [4];
+PImage [] ogre = new PImage [8];
 
 Area playerHbox;
 
 ArrayList<hitboxSlash> HboxSlashes = new ArrayList<hitboxSlash>();
 
 
-
 Player p1;
-basicRangedEnemy e1, e2;
+basicRangedEnemy brec1;
+chargerEnemy cec1;
+meleeEnemy mec1;
+
 
 ArrayList<fadePlayer> streak = new ArrayList<fadePlayer>();
-
 ArrayList<projectile> bullets = new ArrayList <projectile>();
 ArrayList<enemyProjectile> enemyProjectiles = new ArrayList <enemyProjectile>();
-
 ArrayList<slashBox> slashes = new ArrayList<slashBox>();
 
-//Enemy Arrays
 ArrayList<meleeEnemy> meleeEnemies = new ArrayList<meleeEnemy>();
 ArrayList<chargerEnemy> chargerEnemies = new ArrayList<chargerEnemy>();
 ArrayList<basicRangedEnemy> basicRangedEnemies = new ArrayList<basicRangedEnemy>();
 ArrayList<tripleRangedEnemy> tripleRangedEnemies = new ArrayList<tripleRangedEnemy>();
 ArrayList<turret> turrets = new ArrayList<turret>();
-ArrayList<spiralRangedEnemy> spiralRangedEnemies = new ArrayList<spiralRangedEnemy>();
 
 int score;
 int ammo;
 int ratio = 6;
 float ammoParts;
+int s;
 
 PVector slashKnockVector;
 
@@ -59,6 +80,8 @@ int TIME;
 boolean canSlash = true;
 boolean cantMove;
 boolean combo1, combo2, combo3, isSlashing, click1, click2, click3;
+boolean p1Animate = true;
+boolean lastR, lastL, lastU, lastD;
 
 int dLength = 120;
 int dDist = 10;
@@ -80,62 +103,131 @@ boolean goTime = true;
 int slowCounter;
 
 color cd = color(255, 0, 0);
+
+
 void setup() {
-  fullScreen();
-  //size(900, 900);
+  //fullScreen();
+  imageMode(CENTER);
+  map = new Ptmx(this, "brick.tmx");
+  wall = createGraphics(32, 32);
+  size(900, 900);
   noStroke();
   rectMode(CENTER);
 
-slowFilter = loadImage("purp-FILTER.png");
+  slowFilter = loadImage("purp-FILTER.png");
 
   //add the player
   p1 = new Player(40, 1, 1, 3);
+  brec1 = new basicRangedEnemy();
   meleeEnemies.add( new meleeEnemy(30, width/2, height/2, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2, 0, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2+1, 0, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2+10, 0, 3));
-  meleeEnemies.add( new meleeEnemy(30, width/2+15, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2+1, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2+10, 0, 3));
+  //meleeEnemies.add( new meleeEnemy(30, width/2+15, 0, 3));
   basicRangedEnemies.add( new basicRangedEnemy(40, width/2, height/2, 1));
-  basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
+  //basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
 
-  tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
-turrets.add(new turret(30, width/2, height/2));
+  //tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
+  //turrets.add(new turret(30, width/2, height/2));
 
   chargerEnemies.add(new chargerEnemy(10, width/2, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width/2, 0, 12));
-  chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
-  chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
-  chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
-  
-  spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2, height/2, 0.3));
-  spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 200, height/2+ 300, 0.3));
+  //chargerEnemies.add(new chargerEnemy(100, width/2, 0, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width/2, height, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width + 1, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
+  //chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
+
+  for (int i=0; i< enemyFrames.length; i++) {
+    String filename = "enemy" + i + ".png";
+    enemyFrames[i] = loadImage(filename);
+  }
+
+  //Loads Larger Enemy
+  for (int i=0; i< enemyLarge.length; i++) {
+    String filename = "enemybigger" + i + ".png";
+    enemyLarge[i] = loadImage(filename);    
+   // s = i;
+  }
+
+  //Loads Ogre
+  for (int i=0; i< ogre.length; i++) {
+    String filename = "OGRESPRITE_" + i + ".png";
+    ogre[i] = loadImage(filename);
+  }
+
+  //Loads Dragon
+  for (int i=0; i< dragon.length; i++) {
+    String filename = "dragonsprite_" + i + ".png";
+    dragon[i] = loadImage(filename);
+  }
+
+  //Loads Player
+  for (int i=0; i< playerFrames.length; i++) {
+    String filename = "sprite_0" + i + ".png";
+    playerFrames[i] = loadImage(filename);
+  }
+
+
+  for (int i=0; i< playerFramesUp.length; i++) {
+    String filename = "spriteUp_0" + i + ".png";
+    playerFramesUp[i] = loadImage(filename);
+  }
+
+
+  for (int i=0; i< playerFramesRight.length; i++) {
+    String filename = "spriteRightLeft_0" + i + ".png";
+    playerFramesRight[i] = loadImage(filename);
+  }
+
+  for (int i=0; i< playerFramesLeft.length; i++) {
+    String filename = "spriteLeft_0" + i + ".png";
+    playerFramesLeft[i] = loadImage(filename);
+  }
+
+  //Loads Magic
+  for (int i=0; i <magicFrames.length; i++) {
+    String filename = "fireball_0" + i + ".png";
+    magicFrames[i] = loadImage(filename);
+    magicFrames[i].resize(16, 16);
+  }
+
+  //Loads Magicv2
+
+  for (int i=0; i <magicFramesv2.length; i++) {
+    String filename = "enemyfireball_0" + i + ".png";
+    magicFramesv2[i] = loadImage(filename);
+    magicFramesv2[i].resize(16, 16);
+  }
+
+  //Loads Melee
+  for (int i=0; i< meleeFrames.length; i++) {
+    String filename = "melee_0" + i + ".png";
+    meleeFrames[i] = loadImage(filename);
+  }
 }
 
 void draw () {
-
-  background(135);
+  background(map.getBackgroundColor());
+  map.draw(0, 0);
+  PVector p1Map = map.canvasToMap(p1.xpos, p1.ypos);
+  map.draw(wall, 1, p1Map.x, p1Map.y);
   // println(canSlash, millis(), cdSlash1, isSlashing);
+  p1.animate();
 
-
-  //temp mouse display hitbox///Make reticle here later
+  //temp mouse display hitbox
   pushMatrix(); 
   translate(mouseX, mouseY);
   fill(cd);
   rect(0, 0, 25, 25); 
   popMatrix();
-////////////////////////
 
-//DASHING
 
-//stop dashing when the dash timer ends
   if (dTimer < millis()) {
     isDashing = false;
   }
 
-//Dash movement + FX
   if (timer > millis()) {
     streak.add(new fadePlayer(40, p1.xpos, p1.ypos, 1000));
     if (dUp == true||dDown == true) {
@@ -151,7 +243,7 @@ void draw () {
     dRight = false;
   }
 
-//Display dash FX
+
   for (int i=0; i<streak.size(); i++) {
     fadePlayer gotFade = streak.get(i);
     gotFade.fade();
@@ -161,14 +253,11 @@ void draw () {
     }
   }
 
-//SLASHING
 
-//cant move while slashing
   if (cdSlash1 < millis() && cdSlash2 < millis() && cdSlash3 < millis()) {
     cantMove = false;
   }
 
-//End combo state
   if (cdSlash1 + 100 < millis() && cdSlash2 + 100 < millis() && cdSlash3 < millis()) {
     combo1 = false; 
     combo2 = false; 
@@ -180,8 +269,8 @@ void draw () {
   }
 
 
-//Execute slashes based on flags and timers
   if (cdSlash1 > millis() && isDashing == false && combo1 == false && combo2 == false && combo3 == false && lag1 <= millis()) {
+    //while (lag1 > millis()) {}
     lag1 = 0;
     slashPunch = 10;
 
@@ -195,6 +284,8 @@ void draw () {
     cantMove = true;
   }
   if (cdSlash2 > millis() && isSlashing == true && combo1 == true && combo2 == false && combo3 == false && cdSlash1 <= millis() && lag2 <= millis()) {
+    // while (cdSlash1 > millis()) {}
+    // while (lag2 > millis()){}
     lag2 = 0;
     slashPunch = 10;
 
@@ -242,7 +333,6 @@ void draw () {
   ////////////////////////////////////////////////////
 
 
-//DISPLAY BULLETS AND SLASHES
   for (int i=0; i<bullets.size(); i++) {
     projectile getBullets = bullets.get(i);
 
@@ -288,17 +378,17 @@ void draw () {
     shootPlayer();
   }
 
-//SLASH COLISION CHECKING
+
   if (HboxSlashes.size() >= 1) {
     slashEnemy();
   }
 
 
-//display player
   p1.move();
   p1.display();
 
   //DISPLAY AND UPDATE ENEMIES
+
   for (int i=0; i < meleeEnemies.size(); i++) {
     meleeEnemy getEnemy = meleeEnemies.get(i);
     getEnemy.display();
@@ -318,31 +408,25 @@ void draw () {
     getEnemy.display();
     getEnemy.collide();
   }
-  for(int i=0; i < turrets.size(); i++){
-     turret getTurret = turrets.get(i);
-     getTurret.display();
-     getTurret.collide();
+  for (int i=0; i < turrets.size(); i++) {
+    turret getTurret = turrets.get(i);
+    getTurret.display();
+    getTurret.collide();
   }
-  for(int i=0; i < spiralRangedEnemies.size(); i++){
-     spiralRangedEnemy getSpiral = spiralRangedEnemies.get(i);
-     getSpiral.display();
-     getSpiral.collide();
-  }
-  
-  
-  //Check stuff
+
+
+
   slowTime();
-collideCharger();
+
   checkEnemies();
-  stagger();
-  invulCheck();
+  collideCharger();
+  //  stagger();
+  // invulCheck();
   convertParts();
-  
-  //DISPLAY HUD
   fill(0);
   textSize(40);
   text("Ammo: " + ammo, 20, 100); 
-text("HP: " + p1.hp, 20, 50);
+  text("HP: " + p1.hp, 20, 50);
   //////////end of draw
 }
 
@@ -520,83 +604,6 @@ void slashEnemy() {
     getEnemy.refresh();
     //slash end
   }
-  
-  for (int i=0; i < tripleRangedEnemies.size(); i++) {
-    tripleRangedEnemy getEnemy = tripleRangedEnemies.get(i);
-    hitboxSlash getSlash = HboxSlashes.get(0);
-
-    //slash begin
-    if (getEnemy.lastSlash < getSlash.num) {
-      getEnemy.lastSlash = getSlash.num;
-
-      //check for melee enemy getting slashed
-      getSlash.a1.intersect(getEnemy.hbox);
-
-      if (getSlash.a1.isEmpty() == false) {
-        ammoParts += 1;
-
-        getEnemy.hp -= 1; 
-
-        getEnemy.stun(100); 
-
-        slashBox getSlashAngle = slashes.get(0);
-        PVector knockback = new PVector(getEnemy.position.x + 100, getEnemy.position.y);
-
-        knockback.rotate(getSlashAngle.angle);
-
-
-        getEnemy.position.x -= slashKnockVector.x;
-        getEnemy.position.y -= slashKnockVector.y;
-
-        if (getEnemy.hp <= 0) {
-          ammoParts += 3;
-          tripleRangedEnemies.remove(i);
-        }
-      }
-    }
-    getSlash.refresh();
-    getEnemy.refresh();
-    //slash end
-  }
-
-  for (int i=0; i < spiralRangedEnemies.size(); i++) {
-    spiralRangedEnemy getEnemy = spiralRangedEnemies.get(i);
-    hitboxSlash getSlash = HboxSlashes.get(0);
-
-    //slash begin
-    if (getEnemy.lastSlash < getSlash.num) {
-      getEnemy.lastSlash = getSlash.num;
-
-      //check for melee enemy getting slashed
-      getSlash.a1.intersect(getEnemy.hbox);
-
-      if (getSlash.a1.isEmpty() == false) {
-        ammoParts += 1;
-
-        getEnemy.hp -= 1; 
-
-        getEnemy.stun(100); 
-
-        slashBox getSlashAngle = slashes.get(0);
-        PVector knockback = new PVector(getEnemy.position.x + 100, getEnemy.position.y);
-
-        knockback.rotate(getSlashAngle.angle);
-
-
-        getEnemy.position.x -= slashKnockVector.x;
-        getEnemy.position.y -= slashKnockVector.y;
-
-        if (getEnemy.hp <= 0) {
-          ammoParts += 3;
-          spiralRangedEnemies.remove(i);
-        }
-      }
-    }
-    getSlash.refresh();
-    getEnemy.refresh();
-    //slash end
-  }
-  
 
   for (int i=0; i < enemyProjectiles.size(); i++) {
     enemyProjectile getProjectile = enemyProjectiles.get(i);
@@ -607,12 +614,11 @@ void slashEnemy() {
     }
 
     //check for projectile being slashed
-   
+    if (getProjectile.canSlash == true) {
 
       getSlash.a1.intersect(getProjectile.hbox);
 
       if (getSlash.a1.isEmpty() == false) {
-         if (getProjectile.canSlash == true) {
         bullets.add(new projectile());
         projectile getBullet = bullets.get(bullets.size()-1);
 
@@ -620,12 +626,8 @@ void slashEnemy() {
         getBullet.projectileVec = (getProjectile.projectileVec.mult(-1));
         getBullet.projectileVec.setMag(getProjectile.speed * 2);
         enemyProjectiles.remove(i);
-         }
-         else{
-          enemyProjectiles.remove(i); 
-         }
       }
-    
+    }
     getSlash.refresh();
     getProjectile.refresh();
   }
@@ -706,57 +708,6 @@ void shootBasicRangedEnemy() {
   }
 }
 
-void shootTripleRangedEnemy() {
-
-  for (int a=0; a < tripleRangedEnemies.size(); a++) {
-
-    for (int b=0; b < bullets.size(); b++) {
-      tripleRangedEnemy getEnemy = tripleRangedEnemies.get(a);
-      projectile getBullet = bullets.get(b);
-
-      getBullet.hbox.intersect(getEnemy.hbox);
-
-      if (getBullet.hbox.isEmpty() == false) {
-        getEnemy.hp -= bulletDamage;
-        bullets.remove(b);
-
-        if (getEnemy.hp <= 0) {
-          tripleRangedEnemies.remove(a);
-        }
-        break;
-      }
-      getEnemy.refresh();
-      getBullet.refresh();
-    }
-  }
-}
-
-void shootSpiralRangedEnemy() {
-
-  for (int a=0; a < spiralRangedEnemies.size(); a++) {
-
-    for (int b=0; b < bullets.size(); b++) {
-      spiralRangedEnemy getEnemy = spiralRangedEnemies.get(a);
-      projectile getBullet = bullets.get(b);
-
-      getBullet.hbox.intersect(getEnemy.hbox);
-
-      if (getBullet.hbox.isEmpty() == false) {
-        getEnemy.hp -= bulletDamage;
-        bullets.remove(b);
-
-        if (getEnemy.hp <= 0) {
-          spiralRangedEnemies.remove(a);
-        }
-        break;
-      }
-      getEnemy.refresh();
-      getBullet.refresh();
-    }
-  }
-}
-
-
 void checkEnemies() {
   for (int a=0; a < meleeEnemies.size(); a++) {
     meleeEnemy getEnemy = meleeEnemies.get(a); 
@@ -830,20 +781,16 @@ void shootPlayer() {
     if (getProjectile.hbox.isEmpty() == false) {
       //DAMAGE PLAYER
       damage(getProjectile.position, 7, 1);
-      
-      
-      
-      
-      if(p1.invulnerable == true && isDashing == true && p1.isStaggered == false && timeTimer < millis() + 1000) {
-       ///SLOW TIME 
-       slowTimeTimer();
-       iTimer = dTimer;
-      } else if (p1.invulnerable == true && isDashing == true){
-      }else{
+
+      if (p1.invulnerable == true && isDashing == true && p1.isStaggered == false && timeTimer < millis() + 1000) {
+        ///SLOW TIME 
+        slowTimeTimer();
+        iTimer = dTimer;
+      } else {
         enemyProjectiles.remove(i);
       }
-        
-      
+
+
       break;
     }
     getProjectile.refresh();
@@ -856,23 +803,22 @@ void slowTimeTimer() {
 }
 
 void slowTime() {
- if (timeTimer > millis()) {
-   tint(255, 50); //50
-   image(slowFilter, 0, 0);
-   println("TIME SLOWED" + millis());
-   
-  if (goTime == true) {
-   goTime = false; 
-   slowCounter = 0;
+  if (timeTimer > millis()) {
+    tint(255, 50);
+    image(slowFilter, 0, 0);
+    println("TIME SLOWED" + millis());
+
+    if (goTime == true) {
+      goTime = false; 
+      slowCounter = 0;
+    }
+    if (goTime == false) {
+      slowCounter += 1;
+    }
+    if (goTime == false && slowCounter >= 3) {
+      goTime = true;
+    }
+  } else {
+    goTime = true;
   }
-  if (goTime == false) {
-   slowCounter += 1; 
-  }
-  if (goTime == false && slowCounter >= 3) {
-  goTime = true;
-  }
-  
- } else{
-  goTime = true; 
- }
 }

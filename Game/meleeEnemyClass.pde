@@ -11,7 +11,10 @@ class meleeEnemy { // NOTE: I havent made the attack yet for these guys. Just ma
   int lastSlash;
   boolean canMove = true;
   int canMoveTimer;
-
+  int flip;
+  int frame;
+  int x;
+  int y;
 
   int topspeed = 40;
 
@@ -38,9 +41,17 @@ class meleeEnemy { // NOTE: I havent made the attack yet for these guys. Just ma
       position.y -= towardPlayer.y;
     }
 
+    rect(position.x, position.y, size, size);
+    pushMatrix(); // save the origin 
+    image(ogre[frame], position.x, position.y);
+    popMatrix();  // restore the origin
+
+    //Animate
+    if (frameCount %5 ==0) frame++;
+    if (frame>= ogre.length) frame = 0;
+    
     fill(155, 155, 25);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
-    rect(position.x, position.y, size, size);
   }
 
   void collide() {

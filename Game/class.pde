@@ -12,6 +12,7 @@ class projectile {
   float reflectedSpeed;
   float angle;
   boolean isRotated;
+  int frame;
 
   projectile() {
     mouse = new PVector(mouseX, mouseY);
@@ -31,6 +32,7 @@ class projectile {
     projectileVec.normalize();
     projectileVec.mult(10);
   }
+  
   void update() {
 
     //PVector acceleration = PVector.sub(mouse, position);
@@ -47,10 +49,17 @@ class projectile {
       }
   }
 
-  void display() {
+  void display() { 
+    
+    pushMatrix();
+    image(magicFrames[frame], position.x, position.y);
+    popMatrix();
+    //Animate
+    if (frameCount %5 ==0) frame++;
+    if (frame>= magicFrames.length) frame = 0;     
+    
     hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
-    fill(c);
-    ellipse(position.x, position.y, size, size);
+    
   }
 
   void refresh() {
@@ -82,6 +91,20 @@ class enemyProjectile extends projectile {
     if (isRotated == true) {
      projectileVec.rotate(angle); 
     }
+    
+  }
+  
+   void display() { 
+     
+    pushMatrix();
+    image(magicFramesv2[frame], position.x, position.y);
+    popMatrix();
+
+    //Animate
+    if (frameCount %5 ==0) frame++;
+    if (frame>= magicFramesv2.length) frame = 0;     
+    
+    hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
     
   }
 }

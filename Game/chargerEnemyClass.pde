@@ -11,6 +11,7 @@ class chargerEnemy {
   int lastSlash;
   boolean canMove = true;
   int canMoveTimer;
+  int frame;
 
   chargerEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
     size = _size;
@@ -22,7 +23,7 @@ class chargerEnemy {
   }
 
   void display() {
-if (canMoveTimer < millis()) {
+    if (canMoveTimer < millis()) {
       canMove = true;
     }
 
@@ -30,14 +31,22 @@ if (canMoveTimer < millis()) {
     towardPlayer = new PVector(position.x - player.x, position.y - player.y);
     towardPlayer.setMag(4);
 
-if (canMove == true && goTime == true) {
-    position.x -= towardPlayer.x;
-    position.y -= towardPlayer.y;
-}
+    if (canMove == true && goTime == true) {
+      position.x -= towardPlayer.x;
+      position.y -= towardPlayer.y;
+    }
+    //rect(position.x, position.y, size, size);
+    
+    pushMatrix();
+    //enemyLarge[s].resize(int(size), int (size));
+    image(enemyLarge[frame], position.x, position.y);
+    popMatrix();
+    //Animate
+    if (frameCount %5 ==0) frame++;
+    if (frame>= enemyLarge.length) frame = 0;     
 
-    fill(0, 255, 0);
+    // fill(0, 255, 0);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
-    rect(position.x, position.y, size, size);
   }
 
 
@@ -45,23 +54,22 @@ if (canMove == true && goTime == true) {
   void refresh() {
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
   }
-  
-    void stun(int stunTime) {
+
+  void stun(int stunTime) {
     canMove = false;
     canMoveTimer = millis() + stunTime;
   }
-  
 }
 
-  void collideCharger() {
+void collideCharger() {
   for (int i=0; i < chargerEnemies.size(); i++) {
     chargerEnemy getCharger = chargerEnemies.get(i);
 
     getCharger.hbox.intersect(p1.hbox); 
 
     if (getCharger.hbox.isEmpty() == false) {
-      //DAMAGE PLAYER
-    damage(getCharger.position, 7, 1);
+      //DAMAGE PLAYER////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //  println("boon");
       chargerEnemies.remove(i);
     } else {
     }

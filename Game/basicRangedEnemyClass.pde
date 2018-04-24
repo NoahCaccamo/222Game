@@ -14,8 +14,13 @@ class basicRangedEnemy {
   int shootTimer;
   int shootDelay = 1000;
   int atkAnimTimer = 0; // Use this timer to make the animation happen right before the shoot timer goes off so they align
+  int frame = 0;  // our current frame 
+  int flip = 1;
+  float x;
+  float y; 
 
-  basicRangedEnemy(){}
+  basicRangedEnemy() {
+  }
   basicRangedEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
     size = _size;
     xpos = _xpos;
@@ -26,11 +31,19 @@ class basicRangedEnemy {
     shootTimer = 0;
   }
 
-  void display() {
+  void animate() {
+    int frame = 0;
+    // animate the player 
+    // we want to increase the frame counter every 4 frames
+    if (frameCount % 4 == 0) frame++;   
+    if (frame >= dragon.length) frame = 0;
+  }
 
+  void display() {  
     if (canMoveTimer < millis()) {
       canMove = true;
     }
+
     if (shootTimer >= 60) {
       shoot(); 
       shootTimer = 0;
@@ -40,15 +53,24 @@ class basicRangedEnemy {
     towardPlayer = new PVector(position.x - player.x, position.y - player.y);
     towardPlayer.setMag(0.5);
 
-if (goTime == true) {
-    position.x -= towardPlayer.x;
-    position.y -= towardPlayer.y;
-shootTimer ++;
-}
+    if (goTime == true) {
+      position.x -= towardPlayer.x;
+      position.y -= towardPlayer.y;
+      shootTimer ++;
+    }
 
     fill(0, 255, 255);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
-    rect(position.x, position.y, size, size);
+    // rect(position.x, position.y, size, size);
+
+
+    pushMatrix(); // save the origin 
+    image(dragon[frame], position.x, position.y);
+    popMatrix();  // restore the origin
+
+    //Animate
+    if (frameCount %5 ==0) frame++;
+    if (frame>= dragon.length) frame = 0;
   }
 
   void collide() {

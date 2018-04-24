@@ -9,6 +9,9 @@ class Player {
   int maxHp = 6;
   boolean isStaggered;
   boolean invulnerable;
+  int frame;
+  float prevXpos;
+  float prevYpos;
 
   Player(float isize, float ixpos, float iypos, float imvspeed) {
     size = isize;
@@ -18,9 +21,14 @@ class Player {
   }
 
   void display() {
-    fill(255, 0, 0);
-    if (invulnerable == true) fill(0,0,255);
-    rect(xpos, ypos, size, size);
+    //image(playerFrames[frame], xpos, ypos);
+    if (p1Animate == true) {
+      if (frameCount %5 ==0) frame++;
+      if (frame>= playerFrames.length) frame = 0;
+    }
+   // fill(255, 0, 0);
+    if (invulnerable == true) fill(0, 0, 255);
+    //rect(xpos, ypos, size, size);
     hbox = new Area(new Rectangle2D.Float(p1.xpos - size/2, p1.ypos - size/2, size, size));
   }
 
@@ -55,41 +63,93 @@ class Player {
   void keysCheckR() {
     if (key == 'w' || key == 'W') {
       keys[0] = false;
+      lastU = true;
+      lastD = false; 
+      lastR = false; 
+      lastL = false;
     }
 
     if (key == 's' || key == 'S') {
       keys[1] = false;
+      lastU = false;
+      lastD = true; 
+      lastR = false; 
+      lastL = false;
     }
 
     if (key == 'a' || key == 'A') {
       keys[2] = false;
+      lastU = false;
+      lastD = false; 
+      lastR = false; 
+      lastL = true;
     }
 
     if (key == 'd' || key == 'D') {
       keys[3] = false;
+      lastU = false;
+      lastD = false; 
+      lastR = true; 
+      lastL = false;
     }
   }
 
 
-
   void move() {
 
-    if (keys[0] == true && cantMove == false && p1.isStaggered == false) {
+    prevXpos = xpos;
+    prevYpos = ypos;
+
+    if (keys[0] == true && isSlashing == false) {
       ypos -= mvspeed;
     }
 
-
-    if (keys[1] == true && cantMove == false && p1.isStaggered == false) {
+    if (keys[1] == true && isSlashing == false) {
       ypos += mvspeed;
     }
 
 
-    if (keys[2] == true && cantMove == false && p1.isStaggered == false) {
+    if (keys[2] == true && isSlashing == false) {
       xpos -= mvspeed;
     }
 
-    if (keys[3] == true && cantMove == false && p1.isStaggered == false) {
+    if (keys[3] == true && isSlashing == false) {
       xpos += mvspeed;
+    }
+
+    // check for walls
+    loadPixels();
+    if ( get((int)xpos, (int)ypos) == color(96.5, 85.9, 53.7) ) {
+      xpos = prevXpos;
+      ypos = prevYpos;
+    }
+  }
+
+  void animate() {
+    noTint();
+    if (keys[0] == true && isSlashing == false) {
+      p1Animate = true;
+      image(playerFramesUp[frame], xpos, ypos);
+    } else if (keys[1] == true && isSlashing == false) {
+      p1Animate = true;
+      image(playerFrames[frame], xpos, ypos);
+    } else if (keys[2] == true && isSlashing == false) {
+      p1Animate = true;
+      image(playerFramesLeft[frame], xpos, ypos);
+    } else if (keys[3] == true && isSlashing == false) {
+      p1Animate = true;
+      image(playerFramesRight[frame], xpos, ypos);
+    } else {
+      p1Animate = false;
+      if (lastU == true) {
+        image(playerFramesUp[frame], xpos, ypos);
+      } else if (lastD == true) {
+        image(playerFrames[frame], xpos, ypos);
+      } else if (lastR == true) {
+        image(playerFramesRight[frame], xpos, ypos);
+      } else if (lastL == true) {
+        image(playerFramesLeft[frame], xpos, ypos);
+      }
     }
   }
 
@@ -130,21 +190,31 @@ class fadePlayer {
   float ypos;
   int timer;
   int trans = 255;
+  int frame = 0;
 
   fadePlayer(float isize, float ixpos, float iypos, int itimer) {
     size = isize;
     xpos = ixpos;
     ypos = iypos;
     timer = itimer;
+    frame = 0;
   }
   void fade() {
-    trans -= 40;
+   trans -= 40;
   }
 
   void display() {
-
-    fill(255, 0, 0, trans);
-    rect(xpos, ypos, size, size);
+    //fill (255, 0, 0);
+    pushMatrix();
+    tint(255, trans);
+    image(playerFrames[frame], xpos, ypos);
+    popMatrix();
+    tint(255);
+    //fill(255, 0, 0, trans);
+   // rect(xpos, ypos, size, size);
+      //Animate
+    if (frameCount %5 ==0) frame++;
+    if (frame>= playerFrames.length) frame = 0;
   }
 }
 
