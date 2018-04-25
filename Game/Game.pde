@@ -95,9 +95,9 @@ int swarmCost = 3;
 
 int collideTimer = 1000;
 int pickupTimer;
-int normalRate = 20;
+int normalRate = 25;
 int lowRate = 5;
-int highRate = 75;
+int highRate = 80;
 
 color cd = color(255, 0, 0);
 void setup() {
@@ -362,8 +362,18 @@ void draw () {
   }
   for (int i=0; i < pickups.size(); i++) {
     pickup getPickup = pickups.get(i);
+    if (getPickup.life < millis) {
+      pickups.remove(i);
+    }
+  }
+
+
+  for (int i=0; i < pickups.size(); i++) {
+    pickup getPickup = pickups.get(i);
     getPickup.display();
   }
+
+
 
 
   //Check stuff
@@ -380,7 +390,6 @@ void draw () {
   textSize(40);
   text("Ammo: " + ammo, 20, 100); 
   displayHealth();
-  calcChances(20, 20, 20, 20, 5, 5, 10);
   spawner();
   //////////end of draw
 }
@@ -523,8 +532,8 @@ void slashEnemy() {
 
           if (getEnemy.hp <= 0) {
             if (getEnemy.size >= 30) {
-            rollPickup(getEnemy.position, normalRate);
-            }else rollPickup(getEnemy.position, lowRate);
+              rollPickup(getEnemy.position, normalRate);
+            } else rollPickup(getEnemy.position, lowRate);
             chargerEnemies.remove(i);
           }
         }
@@ -770,8 +779,8 @@ void shootChargerEnemy() {
 
         if (getEnemy.hp <= 0) {
           if (getEnemy.size >= 30) {
-          rollPickup(getEnemy.position, normalRate);
-          }else rollPickup(getEnemy.position, lowRate);
+            rollPickup(getEnemy.position, normalRate);
+          } else rollPickup(getEnemy.position, lowRate);
           chargerEnemies.remove(a);
         }
         break;
@@ -1039,11 +1048,17 @@ void spawner() {
   if (meleeEnemies.isEmpty() && chargerEnemies.isEmpty() && basicRangedEnemies.isEmpty() && tripleRangedEnemies.isEmpty() && spiralRangedEnemies.isEmpty() && turrets.isEmpty() && collideTimer < millis()) {
     wave ++;
     collideTimer = millis() + 1000;
-    if (wave < 3) {
+    if (wave <= 2) {
+        calcChances(25, 25, 25, 25, 0, 0, 0);
       wavePoints = 1;
-    } else if (wave < 6) {
+    }else if( wave <= 5) {
+      wavePoints = 2;
+  }else if (wave < 6) {
       wavePoints = 5;
-    } else if (wave < 10) {
+    } else if (wave == 6) { 
+      spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
+  }else if (wave < 10) {
+      calcChances(20, 20, 20, 20, 5, 5, 10);
       wavePoints = 10;
     } else {
       wavePoints = 30;
@@ -1060,7 +1075,7 @@ void spawner() {
       }
     } else if (rand < chanceCharger) {
       if (wavePoints >= chargerCost) {
-        chargerEnemies.add(new chargerEnemy(10, random(width), random(height), 12));
+        chargerEnemies.add(new chargerEnemy(20, random(width), random(height), 12));
         wavePoints -= chargerCost;
       }
     } else if (rand < chanceRanged) {
@@ -1124,6 +1139,6 @@ void rollPickup(PVector position, int chance) {
   float rng = random(0, 100);
   if (rng < chance) {
     pickups.add(new pickup(20, position.x, position.y));
-    pickupTimer = millis() + 1000;
+    pickupTimer = millis() + 500;
   }
 }
