@@ -12,13 +12,16 @@ class projectile {
   float reflectedSpeed;
   float angle;
   boolean isRotated;
+  boolean canPen;
 
-  projectile() {
+projectile(){}
+  projectile(int _size, boolean _canPen) {
     mouse = new PVector(mouseX, mouseY);
     position = new PVector(p1.xpos, p1.ypos);
     projectileVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
 
-    size = 10;
+    size = _size;
+    canPen = _canPen;
     c = color(255, 24, 0);
 
     velocity = new PVector(0, 0);
@@ -45,6 +48,7 @@ class projectile {
     position.x -= projectileVec.x;
     position.y -= projectileVec.y;
       }
+      
   }
 
   void display() {
@@ -64,8 +68,8 @@ class enemyProjectile extends projectile {
   float speed;
   boolean canSlash;
   
-  enemyProjectile(PVector _enemyPos, float _speed, boolean _canSlash, float _angle, boolean _isRotated) {
-
+  enemyProjectile(int _size, PVector _enemyPos, float _speed, boolean _canSlash, float _angle, boolean _isRotated) {
+size = _size;
     speed = _speed;
     canSlash = _canSlash;
     angle = _angle;

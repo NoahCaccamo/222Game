@@ -150,6 +150,7 @@ class fadePlayer {
 
 void damage(PVector source, float force, int damage) {
   if (p1.invulnerable == false) {
+    damageTaken++;
     p1.invulnerable = true;
     p1.hp -= damage;
     lastSource = new PVector(source.x - p1.xpos, source.y - p1.ypos);

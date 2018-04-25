@@ -13,8 +13,6 @@ Area playerHbox;
 
 ArrayList<hitboxSlash> HboxSlashes = new ArrayList<hitboxSlash>();
 
-
-
 Player p1;
 basicRangedEnemy e1, e2;
 
@@ -26,6 +24,7 @@ ArrayList<enemyProjectile> enemyProjectiles = new ArrayList <enemyProjectile>();
 ArrayList<slashBox> slashes = new ArrayList<slashBox>();
 
 ArrayList<pickup> pickups = new ArrayList<pickup>();
+ArrayList<maxPickup> maxPickups = new ArrayList<maxPickup>();
 //Enemy Arrays
 ArrayList<meleeEnemy> meleeEnemies = new ArrayList<meleeEnemy>();
 ArrayList<chargerEnemy> chargerEnemies = new ArrayList<chargerEnemy>();
@@ -99,6 +98,7 @@ int normalRate = 25;
 int lowRate = 5;
 int highRate = 80;
 
+int damageTaken;
 color cd = color(255, 0, 0);
 void setup() {
   fullScreen();
@@ -266,11 +266,29 @@ void draw () {
 
 
   //DISPLAY BULLETS AND SLASHES
+
+  //despawn bullets out of bounds
+  for (int i=0; i < bullets.size(); i++) {
+    projectile getBullets = bullets.get(i);
+    if (getBullets.position.x > width || getBullets.position.x < 0 || getBullets.position.y > height || getBullets.position.y < 0) {
+      bullets.remove(i);
+      break;
+    }
+  }
+
   for (int i=0; i<bullets.size(); i++) {
     projectile getBullets = bullets.get(i);
 
     getBullets.display();
     getBullets.update();
+  }
+
+  for (int i=0; i < enemyProjectiles.size(); i++) {
+    enemyProjectile getProjectile = enemyProjectiles.get(i);
+    if (getProjectile.position.x > width || getProjectile.position.x < 0 || getProjectile.position.y > height || getProjectile.position.y < 0) {
+      enemyProjectiles.remove(i);
+      break;
+    }
   }
 
   for (int i=0; i<enemyProjectiles.size(); i++) {
@@ -325,6 +343,17 @@ void draw () {
     slashEnemy();
   }
 
+  if (p1.xpos + p1.size/2 > width) {
+    p1.xpos = width - p1.size/2;
+  } else if (p1.xpos - p1.size/2 < 0) {
+    p1.xpos = 0 + p1.size/2;
+  }
+
+  if (p1.ypos + p1.size/2 > height) {
+    p1.ypos = height - p1.size/2;
+  } else if (p1.ypos - p1.size/2 < 0) {
+    p1.ypos = 0 + p1.size/2;
+  }
 
   //display player
   p1.move();
@@ -367,9 +396,12 @@ void draw () {
     }
   }
 
-
   for (int i=0; i < pickups.size(); i++) {
     pickup getPickup = pickups.get(i);
+    getPickup.display();
+  }
+  for (int i=0; i < maxPickups.size(); i++) {
+    maxPickup getPickup = maxPickups.get(i);
     getPickup.display();
   }
 
@@ -380,6 +412,7 @@ void draw () {
   slowTime();
   collideCharger();
   if (pickupTimer < millis) collidePickup();
+  collideMaxPickup();
   checkEnemies();
   stagger();
   invulCheck();
@@ -435,7 +468,7 @@ void mousePressed() {
   if (mouseButton == RIGHT) {
     if (ammo > 0) {
       ammo -= 1;
-      bullets.add (new projectile());
+      bullets.add (new projectile(10, false));
     }
   }
 }
@@ -710,7 +743,7 @@ void slashEnemy() {
 
     if (getSlash.a1.isEmpty() == false) {
       if (getProjectile.canSlash == true) {
-        bullets.add(new projectile());
+        bullets.add(new projectile(10, false));
         projectile getBullet = bullets.get(bullets.size()-1);
 
         getBullet.position = getProjectile.position;
@@ -984,9 +1017,6 @@ void shootPlayer() {
       //DAMAGE PLAYER
       damage(getProjectile.position, 7, 1);
 
-
-
-
       if (p1.invulnerable == true && isDashing == true && p1.isStaggered == false && timeTimer < millis() + 1000) {
         ///SLOW TIME 
         slowTimeTimer();
@@ -995,7 +1025,6 @@ void shootPlayer() {
       } else {
         enemyProjectiles.remove(i);
       }
-
 
       break;
     }
@@ -1029,35 +1058,37 @@ void slowTime() {
   }
 }
 
-
 void displayHealth() {
   text("Health: ", 50, 45);
   tint(255);
   for (int i=0; i < p1.maxHp; i++) {
-    image(emptyHeart, 200+ i*100, 0);
+    image(emptyHeart, 200+ i*70, 0);
   }
 
   for (int i=0; i < p1.hp; i++) {
-    image(fullHeart, 200+ i*100, 0);
+    image(fullHeart, 200+ i*70, 0);
   }
 }
 
 void spawner() {
   text(wave, width/2, height/2);
 
-  if (meleeEnemies.isEmpty() && chargerEnemies.isEmpty() && basicRangedEnemies.isEmpty() && tripleRangedEnemies.isEmpty() && spiralRangedEnemies.isEmpty() && turrets.isEmpty() && collideTimer < millis()) {
+  if (meleeEnemies.isEmpty() && chargerEnemies.isEmpty() && basicRangedEnemies.isEmpty() && tripleRangedEnemies.isEmpty() && spiralRangedEnemies.isEmpty() && turrets.isEmpty() && maxPickups.isEmpty() && collideTimer < millis()) {
     wave ++;
     collideTimer = millis() + 1000;
     if (wave <= 2) {
-        calcChances(25, 25, 25, 25, 0, 0, 0);
+      calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
       wavePoints = 1;
-    }else if( wave <= 5) {
+    } else if ( wave <= 5) {
+      calcChances(30, 30, 30, 10, 0, 0, 0);
       wavePoints = 2;
-  }else if (wave < 6) {
+    } else if (wave < 6) {
       wavePoints = 5;
     } else if (wave == 6) { 
       spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
-  }else if (wave < 10) {
+      if (damageTaken == 0)maxPickups.add(new maxPickup(30, width/2, height/2));
+      damageTaken = 0;
+    } else if (wave < 10) {
       calcChances(20, 20, 20, 20, 5, 5, 10);
       wavePoints = 10;
     } else {
@@ -1070,47 +1101,55 @@ void spawner() {
 
     if (rand < chanceMelee) {
       if (wavePoints >= meleeCost) {
-        meleeEnemies.add( new meleeEnemy(30, random(width), random(height), 3));
+        PVector pos = securePos(0, width, 0, height, 400);
+        meleeEnemies.add( new meleeEnemy(30, pos.x, pos.y, 3));
         wavePoints -= meleeCost;
       }
     } else if (rand < chanceCharger) {
       if (wavePoints >= chargerCost) {
-        chargerEnemies.add(new chargerEnemy(20, random(width), random(height), 12));
+        PVector pos = securePos(0, width, 0, height, 515);
+        chargerEnemies.add(new chargerEnemy(20, pos.x, pos.y, 12));
         wavePoints -= chargerCost;
       }
     } else if (rand < chanceRanged) {
       if (wavePoints >= rangedCost) {
-        basicRangedEnemies.add( new basicRangedEnemy(50, random(width), random(height), 56));
+        PVector pos = securePos(0, width, 0, height, 800);
+        basicRangedEnemies.add( new basicRangedEnemy(50, pos.x, pos.y, 56));
         wavePoints -= rangedCost;
       }
     } else if (rand < chanceTriple) {
       if (wavePoints >= tripleCost) {
-        tripleRangedEnemies.add( new tripleRangedEnemy(50, random(width), random(height), 56));
+        PVector pos = securePos(0, width, 0, height, 800);
+        tripleRangedEnemies.add( new tripleRangedEnemy(50, pos.x, pos.y, 56));
         wavePoints -= tripleCost;
       }
     } else if (rand < chanceSpiral) {
       if (wavePoints >= spiralCost) {
-        spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
+        PVector pos = securePos(0, width, 0, height, 400);
+        spiralRangedEnemies.add(new spiralRangedEnemy(30, pos.x, pos.y, 0.3));
         wavePoints -= spiralCost;
       }
     } else if (rand < chanceTurret) {
       if (wavePoints >= turretCost) {
-        turrets.add(new turret(30, random(width), random(height)));
+        PVector pos = securePos(0, width, 0, height, 400);
+        turrets.add(new turret(30, pos.x, pos.y));
         wavePoints -= turretCost;
       }
-    } else {
+    } else if (rand < chanceSwarm) {
       if (wavePoints >= swarmCost) {
         float swarmNum = random(3, 8);
+        PVector pos = securePos(0, width, 0, height, 1000);
         for (int i=0; i < swarmNum; i++) {
-          chargerEnemies.add(new chargerEnemy(10, width, i, 12));
+          chargerEnemies.add(new chargerEnemy(10, pos.x + i, pos.y + i, 12));
         }
         wavePoints -= swarmCost;
       }
+    } else {
     }
   }
 }
 
-void calcChances(int _chanceMelee, int _chanceCharger, int _chanceRanged, int _chanceTriple, int _chanceSpiral, int _chanceTurret, int _chanceSwarm) {
+void calcChances(float _chanceMelee, float _chanceCharger, float _chanceRanged, float _chanceTriple, float _chanceSpiral, float _chanceTurret, float _chanceSwarm) {
   int currentMax = 0;
 
   currentMax += _chanceMelee;
@@ -1131,7 +1170,7 @@ void calcChances(int _chanceMelee, int _chanceCharger, int _chanceRanged, int _c
   currentMax += _chanceTurret;
   chanceTurret = currentMax;
 
-  currentMax += +chanceSwarm;
+  currentMax += _chanceSwarm;
   chanceSwarm = currentMax;
 }
 
@@ -1140,5 +1179,16 @@ void rollPickup(PVector position, int chance) {
   if (rng < chance) {
     pickups.add(new pickup(20, position.x, position.y));
     pickupTimer = millis() + 500;
+  }
+}
+
+PVector securePos(float minPosX, float maxPosX, float minPosY, float maxPosY, float minDist) {
+  float tempRandomX = random(minPosX, maxPosX);
+  float tempRandomY = random(minPosY, maxPosY);
+
+  if (dist(tempRandomX, tempRandomY, p1.xpos, p1.ypos) >= minDist) {
+    return new PVector(tempRandomX, tempRandomY);
+  } else {
+    return securePos(minPosX, maxPosX, minPosY, maxPosY, minDist);
   }
 }

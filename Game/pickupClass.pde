@@ -6,6 +6,7 @@ int life;
 
   Area hbox;
 
+pickup(){}
   pickup(float _size, float _xpos, float _ypos) {
     size = _size;
     xpos = _xpos;
@@ -39,6 +40,36 @@ void collidePickup() {
       p1.hp ++;
       }
       pickups.remove(i);
+      break;
+    } else {
+    }
+    getPickup.refresh();
+    p1.refresh();
+  }
+}
+
+class maxPickup extends pickup {
+  
+  maxPickup(float _size, float _xpos, float _ypos) {
+    size = _size;
+    xpos = _xpos;
+    ypos = _ypos;
+  }
+  
+}
+
+void collideMaxPickup() {
+   for (int i=0; i < maxPickups.size(); i++) {
+    maxPickup getPickup = maxPickups.get(i);
+
+
+    getPickup.hbox.intersect(p1.hbox); 
+
+    if (getPickup.hbox.isEmpty() == false) {
+      //HEAL PLAYER
+      p1.maxHp ++;
+      p1.hp ++;
+      maxPickups.remove(i);
       break;
     } else {
     }

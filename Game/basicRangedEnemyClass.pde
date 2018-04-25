@@ -71,6 +71,6 @@ shootTimer ++;
   }
 
   void shoot() {
-    enemyProjectiles.add(new enemyProjectile(position, 5, true, 0, false));
+    enemyProjectiles.add(new enemyProjectile(10, position, 5, true, 0, false));
   }
 }

@@ -58,9 +58,9 @@ class spiralRangedEnemy extends basicRangedEnemy {
    void shoot() {
      angleNum += 10;
      angle = radians(angleNum);
-    enemyProjectiles.add(new enemyProjectile(position, 1, false, angle, true));
-    enemyProjectiles.add(new enemyProjectile(position, 1, false, -angle, true));
-    enemyProjectiles.add(new enemyProjectile(position, 1, false, angle + PI/2, true));
-    enemyProjectiles.add(new enemyProjectile(position, 1, false, -angle + PI/2, true));
+    enemyProjectiles.add(new enemyProjectile(10, position, 1, false, angle, true));
+    enemyProjectiles.add(new enemyProjectile(10, position, 1, false, -angle, true));
+    enemyProjectiles.add(new enemyProjectile(10, position, 1, false, angle + PI/2, true));
+    enemyProjectiles.add(new enemyProjectile(10, position, 1, false, -angle + PI/2, true));
   }
 }
