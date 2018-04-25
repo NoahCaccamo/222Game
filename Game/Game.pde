@@ -16,6 +16,7 @@ SoundFile playMusic;
 Ptmx map;
 
 PImage slowFilter;
+PImage newcursor;
 PGraphics wall;
 PImage [] enemyLarge = new PImage [5];
 PImage [] enemyLargeflip = new PImage [5];
@@ -140,37 +141,37 @@ void setup() {
   //chargerEnemies.add(new chargerEnemy(10, width + 2, height/2, 12));
   //chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
   //chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
-  
+
   //Loads Larger Enemy
   for (int i=0; i< enemyLarge.length; i++) {
     String filename = "enemybigger" + i + ".png";
-    enemyLarge[i] = loadImage(filename);    
+    enemyLarge[i] = loadImage(filename);
   }
-  
-    for (int i=0; i< enemyLarge.length; i++) {
+
+  for (int i=0; i< enemyLarge.length; i++) {
     String filename = "enemybigger" + i + " copy" + ".png";
-    enemyLargeflip[i] = loadImage(filename);    
+    enemyLargeflip[i] = loadImage(filename);
   }
-  
+
 
   //Loads Ogre
   for (int i=0; i< ogre.length; i++) {
     String filename = "OGRESPRITE_" + i + ".png";
     ogre[i] = loadImage(filename);
   }
-  
- for (int i =0; i < ogreflip.length; i++) {
-   String filename = "OGRESPRITE_" + i + " copy" + ".png";
-   ogreflip[i] = loadImage (filename);
- }
- 
+
+  for (int i =0; i < ogreflip.length; i++) {
+    String filename = "OGRESPRITE_" + i + " copy" + ".png";
+    ogreflip[i] = loadImage (filename);
+  }
+
   //Loads Dragon
   for (int i=0; i< dragon.length; i++) {
     String filename = "dragonsprite_" + i + ".png";
     dragon[i] = loadImage(filename);
   }
-  
-   for (int i=0; i< dragonflip.length; i++) {
+
+  for (int i=0; i< dragonflip.length; i++) {
     String filename = "dragonsprite_" + i + " copy" + ".png";
     dragonflip[i] = loadImage(filename);
   }
@@ -230,9 +231,12 @@ void draw () {
 
   //temp mouse display hitbox
   pushMatrix(); 
+  noCursor();
+  newcursor = loadImage("cursor.png");
+  image(newcursor, mouseX, mouseY);
   translate(mouseX, mouseY);
   fill(cd);
-  rect(0, 0, 25, 25); 
+  //rect(0, 0, 25, 25); 
   popMatrix();
 
 
