@@ -41,6 +41,7 @@ PImage maxPotion;
 PFont bit;
 
 PImage newcursor;
+PImage brick;
 PImage[] turret = new PImage[3];
 PImage[] turretflip = new PImage[3];
 PGraphics wall;
@@ -322,6 +323,8 @@ void setup() {
     bit = createFont("GROBOLD.ttf", 32);
 
     textFont(bit);
+    
+    brick = loadImage("brick.jpg");
   
     
     
@@ -398,7 +401,7 @@ void draw() {
 void runGame () {
   float millis = millis();
   background(map.getBackgroundColor());
-  map.draw(0, 0);
+  image(brick, width/2, height/2, width, height);
   // println(canSlash, millis(), cdSlash1, isSlashing);
 
   //reticle
@@ -1382,7 +1385,7 @@ void slowTime() {
   if (timeTimer > millis()) {
     tint(255, 50); //50
     eHboxSlashes.clear();
-    image(slowFilter, 0, 0);
+    image(slowFilter, width/2, height/2);
 
     if (goTime == true) {
       goTime = false; 
@@ -1404,10 +1407,10 @@ void displayHealth() {
   text("Health: ", 20, 52);
   tint(255);
   for (int i=0; i < p1.maxHp; i++) {
-    image(emptyHeart, 180+ i*70, 10);
+    image(emptyHeart, 191+ i*70, 40);
   }
   for (int i=0; i < p1.hp; i++) {
-    image(fullHeart, 180+ i*70, 10);
+    image(fullHeart, 191+ i*70, 40);
   }
 }
 
@@ -1418,7 +1421,7 @@ void spawner() {
     collideTimer = millis() + 1000;
     if (wave <= 2) {
       calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
-meleeEnemies.add( new meleeEnemy(30, width/2+400, height/2, 3));
+spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 400, height/2, 0.3));
       wavePoints = 1;
     } else if ( wave <= 5) {
       calcChances(30, 30, 30, 10, 0, 0, 0);
