@@ -46,6 +46,9 @@ class meleeEnemy {
       if (meleeIncrement > meleeTimer) {
       if (displayIncr < displayMax) {
              slash();
+             if (displayIncr == displayMax) {
+              eHboxSlashes.add(new meleeEnemy.eHitboxSlash(50,50)); 
+             }
       }else {
        meleeIncrement = 0;
        displayIncr = 0;
@@ -90,7 +93,6 @@ class meleeEnemy {
     }
     angle = tAngle;
     }
-    eHboxSlashes.add(new meleeEnemy.eHitboxSlash(50,50));
     displayIncr++;
     pushMatrix();
     translate(position.x, position.y);
