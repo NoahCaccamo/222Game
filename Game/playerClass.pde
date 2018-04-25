@@ -10,9 +10,10 @@ class Player {
   boolean isStaggered;
   boolean invulnerable;
   int frame;
-  float scaleRatio;
+  float scaleRatio = 1.3;
   boolean animate;
-  boolean lastU, lastD, lastR, lastL;
+  boolean lastU, lastR, lastL;
+  boolean lastD = true;
 
   Player(float isize, float ixpos, float iypos, float imvspeed) {
     size = isize;
@@ -24,15 +25,15 @@ class Player {
   void display() {
     fill(255, 0, 0);
     if (invulnerable == true) fill(0,0,255);
-    
+    rect(xpos, ypos, size, size);
+    animate();
     if (animate == true) {
       if (frameCount %5 ==0) frame++;
       if (frame>= playerFrames.length) frame = 0;
     }else {
-     frame = 2; 
+     frame = 1; 
     }
     
-   // rect(xpos, ypos, size, size);
     hbox = new Area(new Rectangle2D.Float(p1.xpos - size/2, p1.ypos - size/2, size, size));
   }
 
@@ -102,26 +103,26 @@ void animate() {
     noTint();
     if (keys[0] == true && isSlashing == false) {
       animate = true;
-      image(playerFramesUp[frame], xpos, ypos);
+      image(playerFramesUp[frame], xpos, ypos, size*scaleRatio, size*scaleRatio);
     } else if (keys[1] == true && isSlashing == false) {
       animate = true;
-      image(playerFrames[frame], xpos, ypos);
+      image(playerFrames[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
     } else if (keys[2] == true && isSlashing == false) {
       animate = true;
-      image(playerFramesLeft[frame], xpos, ypos);
+      image(playerFramesLeft[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
     } else if (keys[3] == true && isSlashing == false) {
       animate = true;
-      image(playerFramesRight[frame], xpos, ypos);
+      image(playerFramesRight[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
     } else {
       animate = false;
       if (lastU == true) {
-        image(playerFramesUp[frame], xpos, ypos);
+        image(playerFramesUp[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
       } else if (lastD == true) {
-        image(playerFrames[frame], xpos, ypos);
+        image(playerFrames[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
       } else if (lastR == true) {
-        image(playerFramesRight[frame], xpos, ypos);
+        image(playerFramesRight[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
       } else if (lastL == true) {
-        image(playerFramesLeft[frame], xpos, ypos);
+        image(playerFramesLeft[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
       }
     }
   }
@@ -199,9 +200,16 @@ class fadePlayer {
 
     //fill(255, 0, 0, trans);
     //rect(xpos, ypos, size, size);
-    
     tint(255, trans);
-    image(playerFrames[p1.frame], xpos, ypos);
+    if (p1.keys[0] == true && isSlashing == false) {
+      image(playerFramesUp[p1.frame], xpos, ypos, size*p1.scaleRatio, size*p1.scaleRatio);
+    } else if (p1.keys[1] == true && isSlashing == false) {
+      image(playerFrames[p1.frame], xpos, ypos,size*p1.scaleRatio,size*p1.scaleRatio);
+    } else if (p1.keys[2] == true && isSlashing == false) {
+      image(playerFramesLeft[p1.frame], xpos, ypos,size*p1.scaleRatio,size*p1.scaleRatio);
+    } else if (p1.keys[3] == true && isSlashing == false) {
+      image(playerFramesRight[p1.frame], xpos, ypos,size*p1.scaleRatio,size*p1.scaleRatio);
+    }
     tint(255);
   }
 }

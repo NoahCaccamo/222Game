@@ -19,7 +19,7 @@ class meleeEnemy {
   color c = color(155, 155, 25);
   boolean isSlashing;
 int frame;
-float scaleRatio = 1.0000;
+float scaleRatio = 1.2;
 
   int topspeed = 40;
 
