@@ -14,7 +14,7 @@ class meleeEnemy {
   float angle;
   int displayIncr;
   int displayMax = 10;
-  int meleeTimer = 75;
+  int meleeTimer = 60;
   int meleeIncrement;
   color c = color(155, 155, 25);
   boolean isSlashing;
