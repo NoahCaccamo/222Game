@@ -56,7 +56,7 @@ PImage[] playerFramesLeft = new PImage [3];
 PImage[] magicFrames = new PImage [9];
 PImage[] magicFramesv2 = new PImage[9];
 PImage[] magicFramesv3 = new PImage [9];
-PImage[] meleeFrames = new PImage [9];
+PImage[] meleeFrames = new PImage [5];
 PImage[] backgroundFrames = new PImage [3];
 PImage[] tripleranged = new PImage [4];
 PImage [] triplerangedflip = new PImage [4];
@@ -310,7 +310,7 @@ void setup() {
 
   //Loads Melee
   for (int i=0; i< meleeFrames.length; i++) {
-    String filename = "melee_0" + i + ".png";
+    String filename = i + ".png";
     meleeFrames[i] = loadImage(filename);
   }
   

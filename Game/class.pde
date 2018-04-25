@@ -177,6 +177,7 @@ class slashBox {
 
   float plx;
   float ply;
+  int frame = 0;
 
   int life = millis() + 50;
   color c;
@@ -213,9 +214,15 @@ class slashBox {
     translate(50, 0);
     fill(c);
     rect(0, 0, bwidth, bheight);
+    image(meleeFrames[frame], 0, 0, bwidth, bheight);
     popMatrix();
+    
+    if (goTime == true) {
+    if (frameCount %5 ==0) frame++;
+    if (frame>= meleeFrames.length) frame = 0;
+    }
   }
 }
 
 
-///////////
+//////////
