@@ -49,10 +49,24 @@ class spiralRangedEnemy extends basicRangedEnemy {
       shootTimer ++;
       }
     }
+    
+     if (towardPlayer.x >= 0) {
+      image(spiralflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    }
+    
+    else {
+      image(spiral[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    }
+
+    //Animate
+    if (frameCount %5 ==0) frame++;
+    if (frame>= spiral.length) frame = 0;  
+   
+
 
     fill(0, 255, 255);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
-    rect(position.x, position.y, size, size);
+    //rect(position.x, position.y, size, size);
   }
   
    void shoot() {

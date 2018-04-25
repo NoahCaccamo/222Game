@@ -36,7 +36,8 @@ class chargerEnemy {
       position.x -= towardPlayer.x;
       position.y -= towardPlayer.y;
     }
-    rect(position.x, position.y, size, size);
+    
+   //rect(position.x, position.y, size, size);
     
     if (towardPlayer.x >= 0) {
       image(enemyLargeflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);

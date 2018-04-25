@@ -50,7 +50,6 @@ class projectile {
   }
 
   void display() { 
-    
     pushMatrix();
     image(magicFrames[frame], position.x, position.y);
     popMatrix();
@@ -96,13 +95,30 @@ class enemyProjectile extends projectile {
   
    void display() { 
      
+     if (canSlash == true) {
+       
     pushMatrix();
     image(magicFramesv2[frame], position.x, position.y);
     popMatrix();
+       
+     }
+     
+     else {
+       
+     pushMatrix();
+    image(magicFramesv3[frame], position.x, position.y);
+    popMatrix();
+       
+     }
+     
 
     //Animate
     if (frameCount %5 ==0) frame++;
     if (frame>= magicFramesv2.length) frame = 0;     
+    
+     //Animate
+    if (frameCount %5 ==0) frame++;
+    if (frame>= magicFramesv3.length) frame = 0; 
     
     hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
     

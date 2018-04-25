@@ -19,4 +19,49 @@ class tripleRangedEnemy extends basicRangedEnemy{ //just make this one a recolou
     enemyProjectiles.add(new enemyProjectile(position, 5, true, PI/7, true));
     enemyProjectiles.add(new enemyProjectile(position, 5, true, -PI/7, true));
   }
-}
+  
+   void display() {  
+    if (canMoveTimer < millis()) {
+      canMove = true;
+    }
+
+    if (shootTimer >= 60) {
+      shoot(); 
+      shootTimer = 0;
+    }
+
+    player = new PVector(p1.xpos, p1.ypos);
+    towardPlayer = new PVector(position.x - player.x, position.y - player.y);
+    towardPlayer.setMag(0.5);
+
+    if (goTime == true) {
+      position.x -= towardPlayer.x;
+      position.y -= towardPlayer.y;
+      shootTimer ++;
+    }
+
+    fill(0, 255, 255);
+    hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
+    // rect(position.x, position.y, size, size);
+
+
+    pushMatrix(); // save the origin 
+    if (towardPlayer.x >= 0) {
+      image(triplerangedflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    }
+    
+    else {
+      image(tripleranged[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    }
+
+    popMatrix();  // restore the origin   
+    //Animate
+    if (frameCount %5 ==0) frame++;
+    if (frame>= dragon.length) frame = 0;
+  }
+
+
+    
+    
+    
+  }

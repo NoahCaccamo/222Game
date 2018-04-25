@@ -20,6 +20,8 @@ PImage newcursor;
 PImage[] turret = new PImage[3];
 PImage[] turretflip = new PImage[3];
 PGraphics wall;
+PImage [] spiral = new PImage [4];
+PImage [] spiralflip = new PImage [4];
 PImage [] enemyLarge = new PImage [5];
 PImage [] enemyLargeflip = new PImage [5];
 PImage[] playerFrames = new PImage [9];
@@ -28,8 +30,11 @@ PImage[] playerFramesRight = new PImage [9];
 PImage[] playerFramesLeft = new PImage [9];
 PImage[] magicFrames = new PImage [9];
 PImage[] magicFramesv2 = new PImage[9];
+PImage[] magicFramesv3 = new PImage [9];
 PImage[] meleeFrames = new PImage [9];
 PImage[] backgroundFrames = new PImage [3];
+PImage[] tripleranged = new PImage [4];
+PImage [] triplerangedflip = new PImage [4];
 PImage [] dragon = new PImage [4];
 PImage [] dragonflip = new PImage [4];
 PImage [] ogre = new PImage [8];
@@ -132,7 +137,7 @@ void setup() {
   basicRangedEnemies.add( new basicRangedEnemy(125, width/2, height/2, 1));
   //basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
 
-  //tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
+  tripleRangedEnemies.add( new tripleRangedEnemy(125, 800, 0, 56));
   turrets.add(new turret(30, width/2, height/2));
 
   //chargerEnemies.add(new chargerEnemy(50, width/2, height/2, 12));
@@ -168,7 +173,21 @@ void setup() {
     String filename = "enemybigger" + i + " copy" + ".png";
     enemyLargeflip[i] = loadImage(filename);
   }
-
+  
+  //Loads Spiral
+  
+  for (int i = 0; i < spiral.length; i++) {
+    String filename = "spiral_" + i + ".png";
+    spiral[i] = loadImage(filename);  
+  }
+  
+  //Loads Spiral flip
+  
+   for (int i = 0; i < spiral.length; i++) {
+    String filename = "spiral_" + i + " copy" + ".png";
+    spiralflip[i] = loadImage(filename);  
+  }
+  
 
   //Loads Ogre
   for (int i=0; i< ogre.length; i++) {
@@ -190,6 +209,17 @@ void setup() {
   for (int i=0; i< dragonflip.length; i++) {
     String filename = "dragonsprite_" + i + " copy" + ".png";
     dragonflip[i] = loadImage(filename);
+  }
+  
+  //Loads Triple Ranged
+   for (int i=0; i< triplerangedflip.length; i++) {
+    String filename = "tripleranged_" + i + ".png";
+    triplerangedflip[i] = loadImage(filename);
+  }
+
+  for (int i=0; i< tripleranged.length; i++) {
+    String filename = "tripleranged_" + i + " copy" + ".png";
+    tripleranged[i] = loadImage(filename);
   }
 
   //Loads Player
@@ -230,6 +260,13 @@ void setup() {
     magicFramesv2[i].resize(16, 16);
   }
 
+  //Loads Magicv3
+    for (int i=0; i <magicFramesv3.length; i++) {
+    String filename = "enemyprojectile_" + i + ".png";
+    magicFramesv3[i] = loadImage(filename);
+    magicFramesv3[i].resize(16, 16);
+  }
+  
   //Loads Melee
   for (int i=0; i< meleeFrames.length; i++) {
     String filename = "melee_0" + i + ".png";
