@@ -131,8 +131,7 @@ int maxPickupWorth = 2000;
 color cd = color(255, 0, 0);
 
 void setup() {
-  fullScreen();
-  frameRate(60);
+  fullScreen(P3D);
   //size(900, 900);
   noStroke();
   rectMode(CENTER);
