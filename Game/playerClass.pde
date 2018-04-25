@@ -9,6 +9,10 @@ class Player {
   int maxHp = 6;
   boolean isStaggered;
   boolean invulnerable;
+  int frame;
+  float scaleRatio;
+  boolean animate;
+  boolean lastU, lastD, lastR, lastL;
 
   Player(float isize, float ixpos, float iypos, float imvspeed) {
     size = isize;
@@ -20,7 +24,15 @@ class Player {
   void display() {
     fill(255, 0, 0);
     if (invulnerable == true) fill(0,0,255);
-    rect(xpos, ypos, size, size);
+    
+    if (animate == true) {
+      if (frameCount %5 ==0) frame++;
+      if (frame>= playerFrames.length) frame = 0;
+    }else {
+     frame = 2; 
+    }
+    
+   // rect(xpos, ypos, size, size);
     hbox = new Area(new Rectangle2D.Float(p1.xpos - size/2, p1.ypos - size/2, size, size));
   }
 
@@ -55,22 +67,64 @@ class Player {
   void keysCheckR() {
     if (key == 'w' || key == 'W') {
       keys[0] = false;
+      lastU = true;
+      lastD = false; 
+      lastR = false; 
+      lastL = false;
     }
 
     if (key == 's' || key == 'S') {
       keys[1] = false;
+      lastU = false;
+      lastD = true; 
+      lastR = false; 
+      lastL = false;
     }
 
     if (key == 'a' || key == 'A') {
       keys[2] = false;
+      lastU = false;
+      lastD = false; 
+      lastR = false; 
+      lastL = true;
     }
 
     if (key == 'd' || key == 'D') {
       keys[3] = false;
+      lastU = false;
+      lastD = false; 
+      lastR = true; 
+      lastL = false;
     }
   }
 
-
+void animate() {
+    noTint();
+    if (keys[0] == true && isSlashing == false) {
+      animate = true;
+      image(playerFramesUp[frame], xpos, ypos);
+    } else if (keys[1] == true && isSlashing == false) {
+      animate = true;
+      image(playerFrames[frame], xpos, ypos);
+    } else if (keys[2] == true && isSlashing == false) {
+      animate = true;
+      image(playerFramesLeft[frame], xpos, ypos);
+    } else if (keys[3] == true && isSlashing == false) {
+      animate = true;
+      image(playerFramesRight[frame], xpos, ypos);
+    } else {
+      animate = false;
+      if (lastU == true) {
+        image(playerFramesUp[frame], xpos, ypos);
+      } else if (lastD == true) {
+        image(playerFrames[frame], xpos, ypos);
+      } else if (lastR == true) {
+        image(playerFramesRight[frame], xpos, ypos);
+      } else if (lastL == true) {
+        image(playerFramesLeft[frame], xpos, ypos);
+      }
+    }
+  }
 
   void move() {
 
@@ -143,8 +197,12 @@ class fadePlayer {
 
   void display() {
 
-    fill(255, 0, 0, trans);
-    rect(xpos, ypos, size, size);
+    //fill(255, 0, 0, trans);
+    //rect(xpos, ypos, size, size);
+    
+    tint(255, trans);
+    image(playerFrames[p1.frame], xpos, ypos);
+    tint(255);
   }
 }
 

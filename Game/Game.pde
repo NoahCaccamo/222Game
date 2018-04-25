@@ -42,10 +42,10 @@ PImage [] spiral = new PImage [4];
 PImage [] spiralflip = new PImage [4];
 PImage [] enemyLarge = new PImage [5];
 PImage [] enemyLargeflip = new PImage [5];
-PImage[] playerFrames = new PImage [9];
-PImage[] playerFramesUp = new PImage [9];
-PImage[] playerFramesRight = new PImage [9];
-PImage[] playerFramesLeft = new PImage [9];
+PImage[] playerFrames = new PImage [3];
+PImage[] playerFramesUp = new PImage [3];
+PImage[] playerFramesRight = new PImage [3];
+PImage[] playerFramesLeft = new PImage [3];
 PImage[] magicFrames = new PImage [9];
 PImage[] magicFramesv2 = new PImage[9];
 PImage[] magicFramesv3 = new PImage [9];
@@ -375,7 +375,7 @@ void runGame () {
   background(map.getBackgroundColor());
   map.draw(0, 0);
   // println(canSlash, millis(), cdSlash1, isSlashing);
-  //p1.animate();/////////////////////////////////////////////////////////////
+  p1.animate();/////////////////////////////////////////////////////////////
 
   //reticle
   //pushMatrix(); 
