@@ -494,13 +494,9 @@ void runGame () {
   //DISPLAY HUD
   fill(0);
   textSize(40);
-<<<<<<< HEAD
   text("Ammo: " + ammo, 20, 112);
   text("Score: " + score, width-370, 40);
   text("Wave " + wave, width/2, 80);
-=======
-  text("Ammo: " + ammo, 30, 110); 
->>>>>>> origin/master
   displayHealth();
   spawner();
   //////////end of draw
@@ -647,11 +643,6 @@ void slashEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += meleeWorth;
           meleeEnemies.remove(i);
-<<<<<<< HEAD
-=======
-          score++; // increase score if player kills enemy
-          ///TEMP REMOVE
->>>>>>> origin/master
         }
       }
     }
@@ -703,7 +694,6 @@ void slashEnemy() {
               score += sChargerWorth;
             }
             chargerEnemies.remove(i);
-            score++;
           }
         }
       }
@@ -748,7 +738,6 @@ void slashEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += rangedWorth;
           basicRangedEnemies.remove(i);
-          score++;
         }
       }
     }
@@ -789,7 +778,6 @@ void slashEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += tripleWorth;
           tripleRangedEnemies.remove(i);
-          score++;
         }
       }
     }
@@ -830,7 +818,6 @@ void slashEnemy() {
           rollPickup(getEnemy.position, highRate);
           score += spiralWorth;
           spiralRangedEnemies.remove(i);
-          score++;
         }
       }
     }
@@ -862,7 +849,6 @@ void slashEnemy() {
           rollPickup(getEnemy.position, highRate);
           score += turretWorth;
           turrets.remove(i);
-          score++;
         }
       }
     }
@@ -928,7 +914,6 @@ void shootMeleeEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += meleeWorth;
           meleeEnemies.remove(a);
-          score++;
         }
         break;
       }
@@ -965,7 +950,6 @@ void shootChargerEnemy() {
             score += sChargerWorth;
           }
           chargerEnemies.remove(a);
-          score++;
         }
         break;
       }
@@ -1000,7 +984,6 @@ void shootBasicRangedEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += rangedWorth;
           basicRangedEnemies.remove(a);
-          score++;
         }
         break;
       }
@@ -1035,7 +1018,6 @@ void shootTripleRangedEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += tripleWorth;
           tripleRangedEnemies.remove(a);
-          score++;
         }
         break;
       }
@@ -1063,7 +1045,6 @@ void shootSpiralRangedEnemy() {
           rollPickup(getEnemy.position, highRate);
           score += spiralWorth;
           spiralRangedEnemies.remove(a);
-          score++;
         }
         break;
       }
@@ -1091,7 +1072,6 @@ void shootTurrets() {
           rollPickup(getEnemy.position, highRate);
           score += turretWorth;
           turrets.remove(a);
-          score++;
         }
         break;
       }
@@ -1218,25 +1198,14 @@ void slowTime() {
 }
 
 void displayHealth() {
-<<<<<<< HEAD
-  text("Health: ", 20, 45);
+
+  text("Health: ", 20, 52);
   tint(255);
   for (int i=0; i < p1.maxHp; i++) {
-    image(emptyHeart, 180+ i*70, 5);
+    image(emptyHeart, 180+ i*70, 10);
   }
-
   for (int i=0; i < p1.hp; i++) {
-    image(fullHeart, 180+ i*70, 5);
-=======
-  text("Health: ", 30, 55);
-  tint(255);
-  for (int i=0; i < p1.maxHp; i++) {
-    image(emptyHeart, 200+ i*70, 10);
-  }
-
-  for (int i=0; i < p1.hp; i++) {
-    image(fullHeart, 200+ i*70, 10);
->>>>>>> origin/master
+    image(fullHeart, 180+ i*70, 10);
   }
 }
 
