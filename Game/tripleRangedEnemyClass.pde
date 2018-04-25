@@ -1,7 +1,6 @@
 class tripleRangedEnemy extends basicRangedEnemy{ //just make this one a recolour of the basic ranged enemy sprite
 
 
-
   tripleRangedEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
 
     size = _size;
@@ -36,6 +35,19 @@ shootTimer ++;
     fill(0, 255, 255);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
     rect(position.x, position.y, size, size);
+    
+    //anim
+    if (towardPlayer.x >= 0) {
+      image(triplerangedflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    }
+    else {
+      image(tripleranged[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    }
+    if (goTime == true) {
+    //Animate
+    if (frameCount %5 ==0) frame++;
+    if (frame>= dragon.length) frame = 0;
+    }
   }
 
 

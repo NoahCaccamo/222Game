@@ -5,6 +5,8 @@
 // Right Click - shoot
 import java.awt.geom.*;
 import java.awt.*;
+import ptmx.*;
+import processing.sound.*;
 
 //////////////////////////////////////////
 
@@ -24,8 +26,37 @@ gameOver gO;
 
 //////////////////////////////////////////
 
+SoundFile introMusic;
+SoundFile playMusic;
+
+Ptmx map;
+
 PImage slowFilter;
 PImage emptyHeart, fullHeart;
+
+PImage newcursor;
+PImage[] turret = new PImage[3];
+PImage[] turretflip = new PImage[3];
+PGraphics wall;
+PImage [] spiral = new PImage [4];
+PImage [] spiralflip = new PImage [4];
+PImage [] enemyLarge = new PImage [5];
+PImage [] enemyLargeflip = new PImage [5];
+PImage[] playerFrames = new PImage [9];
+PImage[] playerFramesUp = new PImage [9];
+PImage[] playerFramesRight = new PImage [9];
+PImage[] playerFramesLeft = new PImage [9];
+PImage[] magicFrames = new PImage [9];
+PImage[] magicFramesv2 = new PImage[9];
+PImage[] magicFramesv3 = new PImage [9];
+PImage[] meleeFrames = new PImage [9];
+PImage[] backgroundFrames = new PImage [3];
+PImage[] tripleranged = new PImage [4];
+PImage [] triplerangedflip = new PImage [4];
+PImage [] dragon = new PImage [4];
+PImage [] dragonflip = new PImage [4];
+PImage [] ogre = new PImage [8];
+PImage [] ogreflip = new PImage [8];
 
 Area playerHbox;
 
@@ -134,7 +165,10 @@ void setup() {
   fullScreen(P3D);
   //size(900, 900);
   noStroke();
+  imageMode(CENTER);
   rectMode(CENTER);
+
+  map = new Ptmx(this, "brick.tmx");
 
   // add menus
   mM = new mainMenu();
@@ -145,6 +179,131 @@ void setup() {
   slowFilter.resize(width, height);
   fullHeart = loadImage("fill.png");
   emptyHeart = loadImage("empty.png");
+
+  //LOAD ANIMATIONS
+  //Loads Turret
+  for (int i=0; i< turret.length; i++) {
+    String filename = "turret_" + i + ".png";
+    turret[i] = loadImage(filename);
+  }
+
+  //Loads Turret Flip
+
+  for (int i=0; i< turretflip.length; i++) {
+    String filename = "turret_" + i + " copy" + ".png";
+    turretflip[i] = loadImage(filename);
+  }
+
+  //Loads Larger Enemy
+  for (int i=0; i< enemyLarge.length; i++) {
+    String filename = "enemybigger" + i + ".png";
+    enemyLarge[i] = loadImage(filename);
+  }
+
+  for (int i=0; i< enemyLarge.length; i++) {
+    String filename = "enemybigger" + i + " copy" + ".png";
+    enemyLargeflip[i] = loadImage(filename);
+  }
+
+  //Loads Spiral
+
+  for (int i = 0; i < spiral.length; i++) {
+    String filename = "spiral_" + i + ".png";
+    spiral[i] = loadImage(filename);
+  }
+
+  //Loads Spiral flip
+
+  for (int i = 0; i < spiral.length; i++) {
+    String filename = "spiral_" + i + " copy" + ".png";
+    spiralflip[i] = loadImage(filename);
+  }
+
+
+  //Loads Ogre
+  for (int i=0; i< ogre.length; i++) {
+    String filename = "OGRESPRITE_" + i + ".png";
+    ogre[i] = loadImage(filename);
+  }
+
+  for (int i =0; i < ogreflip.length; i++) {
+    String filename = "OGRESPRITE_" + i + " copy" + ".png";
+    ogreflip[i] = loadImage (filename);
+  }
+
+  //Loads Dragon
+  for (int i=0; i< dragon.length; i++) {
+    String filename = "dragonsprite_" + i + ".png";
+    dragon[i] = loadImage(filename);
+  }
+
+  for (int i=0; i< dragonflip.length; i++) {
+    String filename = "dragonsprite_" + i + " copy" + ".png";
+    dragonflip[i] = loadImage(filename);
+  }
+
+  //Loads Triple Ranged
+  for (int i=0; i< triplerangedflip.length; i++) {
+    String filename = "tripleranged_" + i + ".png";
+    triplerangedflip[i] = loadImage(filename);
+  }
+
+  for (int i=0; i< tripleranged.length; i++) {
+    String filename = "tripleranged_" + i + " copy" + ".png";
+    tripleranged[i] = loadImage(filename);
+  }
+
+  //Loads Player
+  for (int i=0; i< playerFrames.length; i++) {
+    String filename = "sprite_0" + i + ".png";
+    playerFrames[i] = loadImage(filename);
+  }
+
+
+  for (int i=0; i< playerFramesUp.length; i++) {
+    String filename = "spriteUp_0" + i + ".png";
+    playerFramesUp[i] = loadImage(filename);
+  }
+
+
+  for (int i=0; i< playerFramesRight.length; i++) {
+    String filename = "spriteRightLeft_0" + i + ".png";
+    playerFramesRight[i] = loadImage(filename);
+  }
+
+  for (int i=0; i< playerFramesLeft.length; i++) {
+    String filename = "spriteLeft_0" + i + ".png";
+    playerFramesLeft[i] = loadImage(filename);
+  }
+
+  //Loads Magic
+  for (int i=0; i <magicFrames.length; i++) {
+    String filename = "fireball_0" + i + ".png";
+    magicFrames[i] = loadImage(filename);
+    magicFrames[i].resize(16, 16);
+  }
+
+  //Loads Magicv2
+
+  for (int i=0; i <magicFramesv2.length; i++) {
+    String filename = "enemyfireball_0" + i + ".png";
+    magicFramesv2[i] = loadImage(filename);
+    magicFramesv2[i].resize(16, 16);
+  }
+
+  //Loads Magicv3
+  for (int i=0; i <magicFramesv3.length; i++) {
+    String filename = "enemyprojectile_" + i + ".png";
+    magicFramesv3[i] = loadImage(filename);
+    magicFramesv3[i].resize(16, 16);
+  }
+
+  //Loads Melee
+  for (int i=0; i< meleeFrames.length; i++) {
+    String filename = "melee_0" + i + ".png";
+    meleeFrames[i] = loadImage(filename);
+  }
+  //END OF LOAD ANIMATIONS
 
   //add the player
   p1 = new Player(40, 1, 1, 3);
@@ -213,17 +372,20 @@ void draw() {
 
 void runGame () {
   float millis = millis();
-  background(135);
+  background(map.getBackgroundColor());
+  map.draw(0, 0);
   // println(canSlash, millis(), cdSlash1, isSlashing);
+  //p1.animate();/////////////////////////////////////////////////////////////
 
-
-  //temp mouse display hitbox///Make reticle here later
-  pushMatrix(); 
-  // translate(mouseX, mouseY);
-  fill(cd);
-  rect(mouseX, mouseY, 25, 25); 
-  popMatrix();
-  ////////////////////////
+  //reticle
+  //pushMatrix(); 
+  //noCursor();
+  //newcursor = loadImage("cursor.png");
+  //image(newcursor, mouseX, mouseY);
+  //translate(mouseX, mouseY);
+  //fill(cd);
+  ////rect(0, 0, 25, 25); 
+  //popMatrix();
 
   //DASHING
 
@@ -1229,7 +1391,7 @@ void spawner() {
     } else if ( wave <= 5) {
       calcChances(30, 30, 30, 10, 0, 0, 0);
       wavePoints = 2;
-    }  else if (wave == 6) {
+    } else if (wave == 6) {
       spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
       if (damageTaken == 0)maxPickups.add(new maxPickup(30, width/2, height/2));
       damageTaken = 0;
