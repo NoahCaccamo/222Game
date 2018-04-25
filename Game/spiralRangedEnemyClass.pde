@@ -4,7 +4,7 @@ class spiralRangedEnemy extends basicRangedEnemy { //WHERE IS FRAME?
   float angleNum;
   int activeTimer;
   boolean active;
-  float scaleRatio = 1.000;
+  float scaleRatio = 3;
   
   spiralRangedEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
 

@@ -10,6 +10,6 @@ class controlMenu {
   // display graphic
   void display() {
     controlMenu.resize(width, height);
-    image(controlMenu, 0, 0);
+    image(controlMenu, width/2, height/2);
   }
 }

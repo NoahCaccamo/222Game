@@ -15,7 +15,7 @@ class basicRangedEnemy {
   int shootDelay = 1000;
   int atkAnimTimer = 0; // Use this timer to make the animation happen right before the shoot timer goes off so they align
 int frame = 0;
-float scaleRatio = 1.0000;
+float scaleRatio = 3;
 
   basicRangedEnemy(){}
   basicRangedEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {

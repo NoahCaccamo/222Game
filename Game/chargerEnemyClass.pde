@@ -2,7 +2,7 @@ class chargerEnemy {
   float size;
   float xpos;
   float ypos;
-  float scaleRatio = 1.0000;
+  float scaleRatio = 2;
   int hp;
   PVector position;
   float mvspeed;
