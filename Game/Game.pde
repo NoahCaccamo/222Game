@@ -7,7 +7,7 @@ import java.awt.geom.*;
 import java.awt.*;
 import ptmx.*;
 import processing.sound.*;
-
+import processing.opengl.*;
 //////////////////////////////////////////
 
 // declare game state variables
@@ -36,8 +36,7 @@ Ptmx map;
 
 PImage slowFilter;
 PImage emptyHeart, fullHeart;
-
-PFont bit;
+PImage maxPotion;
 
 PImage newcursor;
 PImage[] turret = new PImage[3];
@@ -167,8 +166,10 @@ int maxPickupWorth = 2000;
 color cd = color(255, 0, 0);
 
 void setup() {
-  fullScreen(P3D);
+  fullScreen(P2D);
   //size(900, 900);
+  ((PGraphicsOpenGL)g).textureSampling(3);
+  noSmooth();
   noStroke();
   imageMode(CENTER);
   rectMode(CENTER);
@@ -184,6 +185,7 @@ void setup() {
   slowFilter.resize(width, height);
   fullHeart = loadImage("fill.png");
   emptyHeart = loadImage("empty.png");
+  maxPotion = loadImage("maxPotion.png");
 
   //LOAD ANIMATIONS
   //Loads Turret
@@ -314,10 +316,8 @@ void setup() {
   menuMusic = new SoundFile(this, "MenuMusic.mp3");
   
     introMusic.loop();
-
-    bit = loadFont("GROBOLD.ttf"); 
-
-    textFont(bit, 24);
+  
+    
     
 
   
@@ -394,7 +394,6 @@ void runGame () {
   background(map.getBackgroundColor());
   map.draw(0, 0);
   // println(canSlash, millis(), cdSlash1, isSlashing);
-  p1.animate();/////////////////////////////////////////////////////////////
 
   //reticle
   //pushMatrix(); 
@@ -709,7 +708,7 @@ void mousePressed() {
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
       introMusic.stop();
-      playMusic.loop();
+     // playMusic.loop();
     }
     //To switch game state from main menu to controls menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= height/2 && mouseY <= height)) {
@@ -1413,6 +1412,7 @@ void spawner() {
     collideTimer = millis() + 1000;
     if (wave <= 2) {
       calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
+meleeEnemies.add( new meleeEnemy(30, width/2+400, height/2, 3));
       wavePoints = 1;
     } else if ( wave <= 5) {
       calcChances(30, 30, 30, 10, 0, 0, 0);
