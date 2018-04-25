@@ -203,7 +203,7 @@ void draw() {
     gO.display(); // display game over screen
     fill(255);
     textSize(48);
-    text(score + " points", (width/4)*2.9, (height/4)*3.1);
+    text(score + " points", (width/4)*2.8, (height/4)*3.1);
   }
 }
 
@@ -495,8 +495,8 @@ void runGame () {
   fill(0);
   textSize(40);
   text("Ammo: " + ammo, 20, 112);
-  text("Score: " + score, width-370, 40);
-  text("Wave " + wave, width/2, 80);
+  text("Score: " + score, width-280, 112);
+  text("Wave " + wave, width/2.2, 112);
   displayHealth();
   spawner();
   //////////end of draw
