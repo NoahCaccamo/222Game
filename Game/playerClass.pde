@@ -165,6 +165,7 @@ void damage(PVector source, float force, int damage) {
     if (p1.hp <= 0) {
       //game over
       println("game over");
+      gameState = gameO;
     }
   }
 }

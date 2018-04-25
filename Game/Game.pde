@@ -6,6 +6,24 @@
 import java.awt.geom.*;
 import java.awt.*;
 
+//////////////////////////////////////////
+
+// declare game state variables
+int mainM = 0;
+int controlM = 1;
+int runGame = 2;
+int gameO = 3;
+
+// current game state
+int gameState = mainM;
+
+// declare obj variables for menus
+mainMenu mM;
+controlMenu cM;
+gameOver gO;
+
+//////////////////////////////////////////
+
 PImage slowFilter;
 PImage emptyHeart, fullHeart;
 
@@ -100,11 +118,17 @@ int highRate = 80;
 
 int damageTaken;
 color cd = color(255, 0, 0);
+
 void setup() {
   fullScreen();
   //size(900, 900);
   noStroke();
   rectMode(CENTER);
+
+  // add menus
+  mM = new mainMenu();
+  cM = new controlMenu();
+  gO = new gameOver();
 
   slowFilter = loadImage("purp-FILTER.png");
   slowFilter.resize(width, height);
@@ -137,7 +161,42 @@ void setup() {
   //spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 200, height/2+ 300, 0.3));
 }
 
-void draw () {
+void draw() {
+  // for changing game states
+  if (gameState == mainM) {
+    mM.display(); // display main menu
+    // reset game elements
+    score = 0;
+    p1.hp = 6;
+    ammo = 0;
+    ammoParts = 0;
+    wave = 0;
+    wavePoints = 0;
+    p1.xpos = 0;
+    p1.ypos = 0;
+    collideTimer = 1000;
+    meleeEnemies.clear();
+    chargerEnemies.clear();
+    basicRangedEnemies.clear();
+    tripleRangedEnemies.clear(); 
+    spiralRangedEnemies.clear(); 
+    turrets.clear();
+    maxPickups.clear();
+    bullets.clear();
+    enemyProjectiles.clear();
+  } else if (gameState == runGame) { 
+    runGame(); // run the game
+  } else if (gameState == controlM) { 
+    cM.display(); // display controls menu
+  } else if (gameState == gameO) {
+    gO.display(); // display game over screen
+    fill(255);
+    textSize(48);
+    text(score + " points", (width/4)*2.9, (height/4)*3.1);
+  }
+}
+
+void runGame () {
   int millis = millis();
   background(135);
   // println(canSlash, millis(), cdSlash1, isSlashing);
@@ -421,7 +480,7 @@ void draw () {
   //DISPLAY HUD
   fill(0);
   textSize(40);
-  text("Ammo: " + ammo, 20, 100); 
+  text("Ammo: " + ammo, 30, 110); 
   displayHealth();
   spawner();
   //////////end of draw
@@ -442,6 +501,34 @@ void keyReleased() {
 }
 
 void mousePressed() {
+
+  // To switch game states on main menu screen
+  if (gameState == mainM) {
+    // To switch game state from main menu to run game
+    if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
+      gameState = runGame;
+    }
+    //To switch game state from main menu to controls menu
+    if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= height/2 && mouseY <= height)) {
+      gameState = controlM;
+    }
+  }
+
+  // To switch game state on controls screen
+  if (gameState == controlM) {
+    // To switch game state from controls menu to run game
+    if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
+      gameState = runGame;
+    }
+  }
+
+  // To switch game state on game over screen
+  if (gameState == gameO) {
+    // To switch game state from game over to main menu
+    if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
+      gameState = mainM;
+    }
+  }
 
   if (mouseButton == LEFT) {
     int tempT = millis();
@@ -520,6 +607,7 @@ void slashEnemy() {
           ammoParts += 3;
           rollPickup(getEnemy.position, normalRate);
           meleeEnemies.remove(i);
+          score++; // increase score if player kills enemy
           ///TEMP REMOVE
         }
       }
@@ -568,6 +656,7 @@ void slashEnemy() {
               rollPickup(getEnemy.position, normalRate);
             } else rollPickup(getEnemy.position, lowRate);
             chargerEnemies.remove(i);
+            score++;
           }
         }
       }
@@ -611,6 +700,7 @@ void slashEnemy() {
           ammoParts += 3;
           rollPickup(getEnemy.position, normalRate);
           basicRangedEnemies.remove(i);
+          score++;
         }
       }
     }
@@ -650,6 +740,7 @@ void slashEnemy() {
           ammoParts += 3;
           rollPickup(getEnemy.position, normalRate);
           tripleRangedEnemies.remove(i);
+          score++;
         }
       }
     }
@@ -689,6 +780,7 @@ void slashEnemy() {
           ammoParts += 3;
           rollPickup(getEnemy.position, highRate);
           spiralRangedEnemies.remove(i);
+          score++;
         }
       }
     }
@@ -719,6 +811,7 @@ void slashEnemy() {
           ammoParts += 3;
           rollPickup(getEnemy.position, highRate);
           turrets.remove(i);
+          score++;
         }
       }
     }
@@ -783,6 +876,7 @@ void shootMeleeEnemy() {
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, normalRate);
           meleeEnemies.remove(a);
+          score++;
         }
         break;
       }
@@ -815,6 +909,7 @@ void shootChargerEnemy() {
             rollPickup(getEnemy.position, normalRate);
           } else rollPickup(getEnemy.position, lowRate);
           chargerEnemies.remove(a);
+          score++;
         }
         break;
       }
@@ -848,6 +943,7 @@ void shootBasicRangedEnemy() {
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, normalRate);
           basicRangedEnemies.remove(a);
+          score++;
         }
         break;
       }
@@ -881,6 +977,7 @@ void shootTripleRangedEnemy() {
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, normalRate);
           tripleRangedEnemies.remove(a);
+          score++;
         }
         break;
       }
@@ -907,6 +1004,7 @@ void shootSpiralRangedEnemy() {
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, highRate);
           spiralRangedEnemies.remove(a);
+          score++;
         }
         break;
       }
@@ -933,6 +1031,7 @@ void shootTurrets() {
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, highRate);
           turrets.remove(a);
+          score++;
         }
         break;
       }
@@ -1059,14 +1158,14 @@ void slowTime() {
 }
 
 void displayHealth() {
-  text("Health: ", 50, 45);
+  text("Health: ", 30, 55);
   tint(255);
   for (int i=0; i < p1.maxHp; i++) {
-    image(emptyHeart, 200+ i*70, 0);
+    image(emptyHeart, 200+ i*70, 10);
   }
 
   for (int i=0; i < p1.hp; i++) {
-    image(fullHeart, 200+ i*70, 0);
+    image(fullHeart, 200+ i*70, 10);
   }
 }
 
