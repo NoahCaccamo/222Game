@@ -132,6 +132,7 @@ color cd = color(255, 0, 0);
 
 void setup() {
   fullScreen();
+  frameRate(60);
   //size(900, 900);
   noStroke();
   rectMode(CENTER);
@@ -179,12 +180,13 @@ void draw() {
     // reset game elements
     score = 0;
     p1.hp = 6;
+    p1.maxHp = 6;
     ammo = 0;
     ammoParts = 0;
     wave = 0;
     wavePoints = 0;
-    p1.xpos = 0;
-    p1.ypos = 0;
+    p1.xpos = width/2;
+    p1.ypos = height/2;
     collideTimer = 1000;
     meleeEnemies.clear();
     chargerEnemies.clear();
@@ -192,8 +194,11 @@ void draw() {
     tripleRangedEnemies.clear(); 
     spiralRangedEnemies.clear(); 
     turrets.clear();
+    pickups.clear();
     maxPickups.clear();
     bullets.clear();
+    eHboxSlashes.clear();
+    HboxSlashes.clear();
     enemyProjectiles.clear();
   } else if (gameState == runGame) { 
     runGame(); // run the game
@@ -208,28 +213,28 @@ void draw() {
 }
 
 void runGame () {
-  int millis = millis();
+  float millis = millis();
   background(135);
   // println(canSlash, millis(), cdSlash1, isSlashing);
 
 
   //temp mouse display hitbox///Make reticle here later
   pushMatrix(); 
-  translate(mouseX, mouseY);
+  // translate(mouseX, mouseY);
   fill(cd);
-  rect(0, 0, 25, 25); 
+  rect(mouseX, mouseY, 25, 25); 
   popMatrix();
   ////////////////////////
 
   //DASHING
 
   //stop dashing when the dash timer ends
-  if (dTimer < millis()) {
+  if (dTimer < millis) {
     isDashing = false;
   }
 
   //Dash movement + FX
-  if (timer > millis()) {
+  if (timer > millis) {
     streak.add(new fadePlayer(40, p1.xpos, p1.ypos, 1000));
     if (dUp == true||dDown == true) {
       p1.ypos += dDist*dVert;
@@ -257,12 +262,12 @@ void runGame () {
   //SLASHING
 
   //cant move while slashing
-  if (cdSlash1 < millis() && cdSlash2 < millis() && cdSlash3 < millis()) {
+  if (cdSlash1 < millis && cdSlash2 < millis && cdSlash3 < millis) {
     cantMove = false;
   }
 
   //End combo state
-  if (cdSlash1 + 100 < millis() && cdSlash2 + 100 < millis() && cdSlash3 < millis()) {
+  if (cdSlash1 + 100 < millis && cdSlash2 + 100 < millis && cdSlash3 < millis) {
     combo1 = false; 
     combo2 = false; 
     combo3 = false;
@@ -274,7 +279,7 @@ void runGame () {
 
 
   //Execute slashes based on flags and timers
-  if (cdSlash1 > millis() && isDashing == false && combo1 == false && combo2 == false && combo3 == false && lag1 <= millis()) {
+  if (cdSlash1 > millis && isDashing == false && combo1 == false && combo2 == false && combo3 == false && lag1 <= millis) {
     lag1 = 0;
     slashPunch = 10;
 
@@ -287,7 +292,7 @@ void runGame () {
     combo1 = true;
     cantMove = true;
   }
-  if (cdSlash2 > millis() && isSlashing == true && combo1 == true && combo2 == false && combo3 == false && cdSlash1 <= millis() && lag2 <= millis()) {
+  if (cdSlash2 > millis && isSlashing == true && combo1 == true && combo2 == false && combo3 == false && cdSlash1 <= millis && lag2 <= millis) {
     lag2 = 0;
     slashPunch = 10;
 
@@ -298,7 +303,7 @@ void runGame () {
     combo2 = true;
     cantMove = true;
   }
-  if (cdSlash3 > millis() && isSlashing == true && combo1 == true && combo2 == true && combo3 == false && cdSlash2 <= millis() && lag3 <= millis()) {
+  if (cdSlash3 > millis && isSlashing == true && combo1 == true && combo2 == true && combo3 == false && cdSlash2 <= millis && lag3 <= millis) {
     //  while (cdSlash2 > millis()) {}
     //sd while(lag3 > millis()){}
     lag3 = 0;
@@ -372,7 +377,7 @@ void runGame () {
     slashBox getSlashes = slashes.get(i);
 
     getSlashes.display();
-    if (millis()>getSlashes.life) {
+    if (millis>getSlashes.life) {
       slashes.remove(i);
       HboxSlashes.clear();
     }
@@ -413,7 +418,7 @@ void runGame () {
     slashEnemy();
   }
   if (eHboxSlashes.size() >= 1 && collideTimer < millis) {
-   slashPlayer(); 
+    slashPlayer();
   }
 
   if (p1.xpos + p1.size/2 > width) {
@@ -588,22 +593,27 @@ void slash(color c) {
 }
 
 void slashPlayer() {
- for(int i=0; i < eHboxSlashes.size(); i++){
+  for (int i=0; i < eHboxSlashes.size(); i++) {
     meleeEnemy.eHitboxSlash getSlash = eHboxSlashes.get(i);
     getSlash.count();
-    
+
     getSlash.a1.intersect(p1.hbox);
-    
+
     if (getSlash.a1.isEmpty() == false) {
-     damage(getSlash.knockbackS, 7, 1); 
+      if (p1.invulnerable == true && isDashing == true && p1.isStaggered == false && timeTimer < millis() + 1000) {
+        ///SLOW TIME 
+        slowTimeTimer();
+        iTimer = dTimer;
+      } else {
+        damage(getSlash.knockbackS, 7, 1);
+      }
     }
     getSlash.refresh();
     p1.refresh();
     if (getSlash.incr >= getSlash.life) {
       eHboxSlashes.remove(i);
     }
- }
-  
+  }
 }
 
 void slashEnemy() {
@@ -1179,7 +1189,7 @@ void slowTimeTimer() {
 void slowTime() {
   if (timeTimer > millis()) {
     tint(255, 50); //50
-
+    eHboxSlashes.clear();
     image(slowFilter, 0, 0);
 
     if (goTime == true) {
@@ -1215,20 +1225,17 @@ void spawner() {
     wave ++;
     collideTimer = millis() + 1000;
     if (wave <= 2) {
-      //calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
-      calcChances(100, 0, 0, 0, 0, 0, 0);
+      calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
       wavePoints = 1;
     } else if ( wave <= 5) {
       calcChances(30, 30, 30, 10, 0, 0, 0);
       wavePoints = 2;
-    } else if (wave < 6) {
-      wavePoints = 5;
-    } else if (wave == 6) { 
+    }  else if (wave == 6) {
       spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
       if (damageTaken == 0)maxPickups.add(new maxPickup(30, width/2, height/2));
       damageTaken = 0;
     } else if (wave < 10) {
-      calcChances(20, 20, 20, 20, 5, 5, 10);
+      calcChances(24.33, 24.33, 24.33, 10, 5, 5, 7);
       wavePoints = 10;
     } else {
       wavePoints = 30;

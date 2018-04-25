@@ -14,8 +14,10 @@ class meleeEnemy {
   float angle;
   int displayIncr;
   int displayMax = 10;
-  int meleeTimer = 120;
+  int meleeTimer = 75;
   int meleeIncrement;
+  color c = color(155, 155, 25);
+  boolean isSlashing;
 
 
   int topspeed = 40;
@@ -41,22 +43,35 @@ class meleeEnemy {
     if (dist(position.x, position.y, player.x, player.y) >= 70 && canMove == true && goTime == true) {
       position.x -= towardPlayer.x;
       position.y -= towardPlayer.y;
-    }else {
+    } else {
+      isSlashing = true;
+    }
+
+    if (isSlashing == true && goTime == true) {
+      canMove = false;
       meleeIncrement++;
-      if (meleeIncrement > meleeTimer) {
-      if (displayIncr < displayMax) {
-             slash();
-             if (displayIncr == displayMax) {
-              eHboxSlashes.add(new meleeEnemy.eHitboxSlash(50,50)); 
-             }
-      }else {
-       meleeIncrement = 0;
-       displayIncr = 0;
+      if (meleeIncrement < meleeTimer && meleeIncrement > meleeTimer - 10) { 
+        c=color(255, 55, 25);
+      } else {    
+        c=color(155, 155, 25);
       }
+      if (meleeIncrement > meleeTimer) {
+
+        if (displayIncr < displayMax) {
+          slash();
+          if (displayIncr == displayMax) {
+            eHboxSlashes.add(new meleeEnemy.eHitboxSlash(50, 50));
+          }
+        } else {
+          meleeIncrement = 0;
+          displayIncr = 0;
+          isSlashing = false;
+          canMove = true;
+        }
       }
     }
 
-    fill(155, 155, 25);
+    fill(c);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
     rect(position.x, position.y, size, size);
   }
@@ -85,13 +100,13 @@ class meleeEnemy {
 
   void slash() {
     float tAngle;
-    if(displayIncr == 0) {
-    tAngle = atan2(p1.ypos - position.y, p1.xpos - position.x);
+    if (displayIncr == 0) {
+      tAngle = atan2(p1.ypos - position.y, p1.xpos - position.x);
 
-    if (tAngle < 0) {
-      tAngle += TWO_PI;
-    }
-    angle = tAngle;
+      if (tAngle < 0) {
+        tAngle += TWO_PI;
+      }
+      angle = tAngle;
     }
     displayIncr++;
     pushMatrix();
@@ -132,7 +147,7 @@ class meleeEnemy {
     void refresh() {
       a1 = new Area(t1.createTransformedShape(r1));
     }
-    
+
     void count() {
       incr ++;
     }
