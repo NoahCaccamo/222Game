@@ -28,6 +28,9 @@ gameOver gO;
 
 SoundFile introMusic;
 SoundFile playMusic;
+SoundFile menuMusic;
+
+
 
 Ptmx map;
 
@@ -227,7 +230,7 @@ void setup() {
   }
 
   for (int i =0; i < ogreflip.length; i++) {
-    String filename = "OGRESPRITE_" + i + " copy" + ".png";
+    String filename = "OGRESPRITECOPY_" + i + ".png";
     ogreflip[i] = loadImage (filename);
   }
 
@@ -255,7 +258,7 @@ void setup() {
 
   //Loads Player
   for (int i=0; i< playerFrames.length; i++) {
-    String filename = "sprite_0" + i + ".png";
+    String filename = "spriteDown_0" + i + ".png";
     playerFrames[i] = loadImage(filename);
   }
 
@@ -267,7 +270,7 @@ void setup() {
 
 
   for (int i=0; i< playerFramesRight.length; i++) {
-    String filename = "spriteRightLeft_0" + i + ".png";
+    String filename = "spriteRight_0" + i + ".png";
     playerFramesRight[i] = loadImage(filename);
   }
 
@@ -303,6 +306,17 @@ void setup() {
     String filename = "melee_0" + i + ".png";
     meleeFrames[i] = loadImage(filename);
   }
+  
+  introMusic = new SoundFile(this, "IntroMusic.mp3");
+  playMusic = new SoundFile(this, "GameplayMusic.mp3");
+  menuMusic = new SoundFile(this, "MenuMusic.mp3");
+  
+    introMusic.loop();
+  
+    
+    
+
+  
   //END OF LOAD ANIMATIONS
 
   //add the player
@@ -330,6 +344,7 @@ void setup() {
   //spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2, height/2, 0.3));
   //spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 200, height/2+ 300, 0.3));
 }
+
 
 void draw() {
   // for changing game states
@@ -689,6 +704,8 @@ void mousePressed() {
     // To switch game state from main menu to run game
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
+      introMusic.stop();
+      playMusic.loop();
     }
     //To switch game state from main menu to controls menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= height/2 && mouseY <= height)) {
@@ -701,6 +718,8 @@ void mousePressed() {
     // To switch game state from controls menu to run game
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
+      introMusic.stop();
+      playMusic.loop();
     }
   }
 
@@ -709,6 +728,9 @@ void mousePressed() {
     // To switch game state from game over to main menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = mainM;
+      playMusic.stop();
+      menuMusic.stop();
+      introMusic.loop();
     }
   }
 

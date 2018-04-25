@@ -225,6 +225,8 @@ void damage(PVector source, float force, int damage) {
       //game over
       println("game over");
       gameState = gameO;
+      playMusic.stop();
+      menuMusic.play();
     }
   }
 }
