@@ -38,6 +38,8 @@ PImage slowFilter;
 PImage emptyHeart, fullHeart;
 PImage maxPotion;
 
+PFont bit;
+
 PImage newcursor;
 PImage[] turret = new PImage[3];
 PImage[] turretflip = new PImage[3];
@@ -316,6 +318,10 @@ void setup() {
   menuMusic = new SoundFile(this, "MenuMusic.mp3");
   
     introMusic.loop();
+
+    bit = createFont("GROBOLD.ttf", 32);
+
+    textFont(bit);
   
     
     
