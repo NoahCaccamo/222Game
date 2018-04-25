@@ -10,6 +10,6 @@ class mainMenu {
   // displays main menu graphic
   void display() {
     mainMenu.resize(width, height);
-    image(mainMenu, width/2, height/2);
+    image(mainMenu, 0, 0);
   }
 }

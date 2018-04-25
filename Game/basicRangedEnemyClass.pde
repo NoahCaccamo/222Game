@@ -14,8 +14,6 @@ class basicRangedEnemy {
   int shootTimer;
   int shootDelay = 1000;
   int atkAnimTimer = 0; // Use this timer to make the animation happen right before the shoot timer goes off so they align
-int frame = 0;
-float scaleRatio = 3;
 
   basicRangedEnemy(){}
   basicRangedEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
@@ -26,16 +24,6 @@ float scaleRatio = 3;
     position = new PVector(xpos, ypos);
     hp = 12;
     shootTimer = 0;
-  }
-
-  void animate() {
-    if (goTime == true) {
-    int frame = 0;
-    // animate the player 
-    // we want to increase the frame counter every 4 frames
-    if (frameCount % 4 == 0) frame++;   
-    if (frame >= dragon.length) frame = 0;
-    }
   }
 
   void display() {
@@ -61,24 +49,6 @@ shootTimer ++;
     fill(0, 255, 255);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
     rect(position.x, position.y, size, size);
-    
-    
-    //anim stuff
-    
-    if (towardPlayer.x >= 0) {
-      image(dragonflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
-    }
-    
-    else {
-      image(dragon[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
-    }
-
-    if(goTime == true) {
-    //Animate
-    if (frameCount %5 ==0) frame++;
-    if (frame>= dragon.length) frame = 0;
-    }
-    
   }
 
   void collide() {

@@ -2,7 +2,6 @@ class chargerEnemy {
   float size;
   float xpos;
   float ypos;
-  float scaleRatio = 2;
   int hp;
   PVector position;
   float mvspeed;
@@ -12,7 +11,6 @@ class chargerEnemy {
   int lastSlash;
   boolean canMove = true;
   int canMoveTimer;
-  int frame;
 
   chargerEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
     size = _size;
@@ -40,23 +38,6 @@ if (canMove == true && goTime == true) {
     fill(0, 255, 0);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
     rect(position.x, position.y, size, size);
-    
-    if (towardPlayer.x >= 0) {
-      image(enemyLargeflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
-    }
-    
-    else {
-      image(enemyLarge[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
-    }
-
-    //Animate
-    if (goTime == true) {
-    if (frameCount %5 ==0) frame++;
-    if (frame>= enemyLarge.length) frame = 0;     
-    }
-    
-    fill(0, 255, 0);
-    hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
   }
 
 

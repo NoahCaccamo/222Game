@@ -5,9 +5,16 @@
 // Right Click - shoot
 import java.awt.geom.*;
 import java.awt.*;
-import ptmx.*;
+
+//declare SFX object variables
 import processing.sound.*;
-import processing.opengl.*;
+SoundFile playerSpawn;
+SoundFile playerSlash;
+SoundFile playerShoot;
+SoundFile gotAmmo;
+SoundFile hitMarker;
+SoundFile enemyKill;
+
 //////////////////////////////////////////
 
 // declare game state variables
@@ -26,43 +33,8 @@ gameOver gO;
 
 //////////////////////////////////////////
 
-SoundFile introMusic;
-SoundFile playMusic;
-SoundFile menuMusic;
-
-
-
-Ptmx map;
-
 PImage slowFilter;
 PImage emptyHeart, fullHeart;
-PImage maxPotion;
-
-PFont bit;
-
-PImage newcursor;
-PImage[] turret = new PImage[3];
-PImage[] turretflip = new PImage[3];
-PGraphics wall;
-PImage [] spiral = new PImage [4];
-PImage [] spiralflip = new PImage [4];
-PImage [] enemyLarge = new PImage [5];
-PImage [] enemyLargeflip = new PImage [5];
-PImage[] playerFrames = new PImage [3];
-PImage[] playerFramesUp = new PImage [3];
-PImage[] playerFramesRight = new PImage [3];
-PImage[] playerFramesLeft = new PImage [3];
-PImage[] magicFrames = new PImage [9];
-PImage[] magicFramesv2 = new PImage[9];
-PImage[] magicFramesv3 = new PImage [9];
-PImage[] meleeFrames = new PImage [9];
-PImage[] backgroundFrames = new PImage [3];
-PImage[] tripleranged = new PImage [4];
-PImage [] triplerangedflip = new PImage [4];
-PImage [] dragon = new PImage [4];
-PImage [] dragonflip = new PImage [4];
-PImage [] ogre = new PImage [8];
-PImage [] ogreflip = new PImage [8];
 
 Area playerHbox;
 
@@ -168,15 +140,18 @@ int maxPickupWorth = 2000;
 color cd = color(255, 0, 0);
 
 void setup() {
-  fullScreen(P2D);
+  fullScreen(P3D);
   //size(900, 900);
-  ((PGraphicsOpenGL)g).textureSampling(3);
-  noSmooth();
   noStroke();
-  imageMode(CENTER);
   rectMode(CENTER);
 
-  map = new Ptmx(this, "brick.tmx");
+  // load SFX into game world
+  playerSpawn = new SoundFile (this, "player_spawn.wav");
+  playerSlash = new SoundFile (this, "player_slash.wav");
+  playerShoot = new SoundFile (this, "player_shoot.wav");
+  gotAmmo = new SoundFile (this, "player_got_ammo.wav");
+  hitMarker = new SoundFile (this, "hit_marker.wav");
+  enemyKill = new SoundFile (this, "enemy_killed.wav");
 
   // add menus
   mM = new mainMenu();
@@ -187,147 +162,6 @@ void setup() {
   slowFilter.resize(width, height);
   fullHeart = loadImage("fill.png");
   emptyHeart = loadImage("empty.png");
-  maxPotion = loadImage("maxPotion.png");
-
-  //LOAD ANIMATIONS
-  //Loads Turret
-  for (int i=0; i< turret.length; i++) {
-    String filename = "turret_" + i + ".png";
-    turret[i] = loadImage(filename);
-  }
-
-  //Loads Turret Flip
-
-  for (int i=0; i< turretflip.length; i++) {
-    String filename = "turret_" + i + " copy" + ".png";
-    turretflip[i] = loadImage(filename);
-  }
-
-  //Loads Larger Enemy
-  for (int i=0; i< enemyLarge.length; i++) {
-    String filename = "enemybigger" + i + ".png";
-    enemyLarge[i] = loadImage(filename);
-  }
-
-  for (int i=0; i< enemyLarge.length; i++) {
-    String filename = "enemybigger" + i + " copy" + ".png";
-    enemyLargeflip[i] = loadImage(filename);
-  }
-
-  //Loads Spiral
-
-  for (int i = 0; i < spiral.length; i++) {
-    String filename = "spiral_" + i + ".png";
-    spiral[i] = loadImage(filename);
-  }
-
-  //Loads Spiral flip
-
-  for (int i = 0; i < spiral.length; i++) {
-    String filename = "spiral_" + i + " copy" + ".png";
-    spiralflip[i] = loadImage(filename);
-  }
-
-
-  //Loads Ogre
-  for (int i=0; i< ogre.length; i++) {
-    String filename = "OGRESPRITE_" + i + ".png";
-    ogre[i] = loadImage(filename);
-  }
-
-  for (int i =0; i < ogreflip.length; i++) {
-    String filename = "OGRESPRITECOPY_" + i + ".png";
-    ogreflip[i] = loadImage (filename);
-  }
-
-  //Loads Dragon
-  for (int i=0; i< dragon.length; i++) {
-    String filename = "dragonsprite_" + i + ".png";
-    dragon[i] = loadImage(filename);
-  }
-
-  for (int i=0; i< dragonflip.length; i++) {
-    String filename = "dragonsprite_" + i + " copy" + ".png";
-    dragonflip[i] = loadImage(filename);
-  }
-
-  //Loads Triple Ranged
-  for (int i=0; i< triplerangedflip.length; i++) {
-    String filename = "tripleranged_" + i + ".png";
-    triplerangedflip[i] = loadImage(filename);
-  }
-
-  for (int i=0; i< tripleranged.length; i++) {
-    String filename = "tripleranged_" + i + " copy" + ".png";
-    tripleranged[i] = loadImage(filename);
-  }
-
-  //Loads Player
-  for (int i=0; i< playerFrames.length; i++) {
-    String filename = "spriteDown_0" + i + ".png";
-    playerFrames[i] = loadImage(filename);
-  }
-
-
-  for (int i=0; i< playerFramesUp.length; i++) {
-    String filename = "spriteUp_0" + i + ".png";
-    playerFramesUp[i] = loadImage(filename);
-  }
-
-
-  for (int i=0; i< playerFramesRight.length; i++) {
-    String filename = "spriteRight_0" + i + ".png";
-    playerFramesRight[i] = loadImage(filename);
-  }
-
-  for (int i=0; i< playerFramesLeft.length; i++) {
-    String filename = "spriteLeft_0" + i + ".png";
-    playerFramesLeft[i] = loadImage(filename);
-  }
-
-  //Loads Magic
-  for (int i=0; i <magicFrames.length; i++) {
-    String filename = "fireball_0" + i + ".png";
-    magicFrames[i] = loadImage(filename);
-    magicFrames[i].resize(16, 16);
-  }
-
-  //Loads Magicv2
-
-  for (int i=0; i <magicFramesv2.length; i++) {
-    String filename = "enemyfireball_0" + i + ".png";
-    magicFramesv2[i] = loadImage(filename);
-    magicFramesv2[i].resize(16, 16);
-  }
-
-  //Loads Magicv3
-  for (int i=0; i <magicFramesv3.length; i++) {
-    String filename = "enemyprojectile_" + i + ".png";
-    magicFramesv3[i] = loadImage(filename);
-    magicFramesv3[i].resize(16, 16);
-  }
-
-  //Loads Melee
-  for (int i=0; i< meleeFrames.length; i++) {
-    String filename = "melee_0" + i + ".png";
-    meleeFrames[i] = loadImage(filename);
-  }
-  
-  introMusic = new SoundFile(this, "IntroMusic.mp3");
-  playMusic = new SoundFile(this, "GameplayMusic.mp3");
-  menuMusic = new SoundFile(this, "MenuMusic.mp3");
-  
-    introMusic.loop();
-
-    bit = createFont("GROBOLD.ttf", 32);
-
-    textFont(bit);
-  
-    
-    
-
-  
-  //END OF LOAD ANIMATIONS
 
   //add the player
   p1 = new Player(40, 1, 1, 3);
@@ -354,7 +188,6 @@ void setup() {
   //spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2, height/2, 0.3));
   //spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 200, height/2+ 300, 0.3));
 }
-
 
 void draw() {
   // for changing game states
@@ -397,19 +230,17 @@ void draw() {
 
 void runGame () {
   float millis = millis();
-  background(map.getBackgroundColor());
-  map.draw(0, 0);
+  background(135);
   // println(canSlash, millis(), cdSlash1, isSlashing);
 
-  //reticle
-  //pushMatrix(); 
-  //noCursor();
-  //newcursor = loadImage("cursor.png");
-  //image(newcursor, mouseX, mouseY);
-  //translate(mouseX, mouseY);
-  //fill(cd);
-  ////rect(0, 0, 25, 25); 
-  //popMatrix();
+
+  //temp mouse display hitbox///Make reticle here later
+  pushMatrix(); 
+  // translate(mouseX, mouseY);
+  fill(cd);
+  rect(mouseX, mouseY, 25, 25); 
+  popMatrix();
+  ////////////////////////
 
   //DASHING
 
@@ -713,8 +544,7 @@ void mousePressed() {
     // To switch game state from main menu to run game
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
-      introMusic.stop();
-     // playMusic.loop();
+      playerSpawn.play(); // play spawn SFX
     }
     //To switch game state from main menu to controls menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= height/2 && mouseY <= height)) {
@@ -727,8 +557,7 @@ void mousePressed() {
     // To switch game state from controls menu to run game
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
-      introMusic.stop();
-      playMusic.loop();
+      playerSpawn.play(); // play spawn SFX
     }
   }
 
@@ -737,13 +566,11 @@ void mousePressed() {
     // To switch game state from game over to main menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = mainM;
-      playMusic.stop();
-      menuMusic.stop();
-      introMusic.loop();
     }
   }
 
   if (mouseButton == LEFT) {
+
     int tempT = millis();
 
     if (isDashing == false && click1 == false && click2 == false && click3 == false && canSlash == true) {
@@ -763,12 +590,17 @@ void mousePressed() {
       cdSlash3 = tempT + cdSlash3e + (lag3-tempT);
       click3 = true;
     }
+
+    if (gameState == runGame) {
+      playerSlash.play(); // play slash SFX
+    }
   }
   ////////////
   if (mouseButton == RIGHT) {
     if (ammo > 0) {
       ammo -= 1;
       bullets.add (new projectile(10, false));
+      playerShoot.play(); // play shoot SFX
     }
   }
 }
@@ -828,6 +660,7 @@ void slashEnemy() {
         ammoParts += 1;
 
         getEnemy.hp -= 1; 
+        hitMarker.play();
 
         getEnemy.stun(100); 
 
@@ -845,6 +678,7 @@ void slashEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += meleeWorth;
           meleeEnemies.remove(i);
+          enemyKill.play();
         }
       }
     }
@@ -875,6 +709,7 @@ void slashEnemy() {
             ammoParts += 2;
           }
           getEnemy.hp -= 1; 
+          hitMarker.play();
 
           getEnemy.stun(100); 
 
@@ -896,6 +731,7 @@ void slashEnemy() {
               score += sChargerWorth;
             }
             chargerEnemies.remove(i);
+            enemyKill.play();
           }
         }
       }
@@ -923,6 +759,7 @@ void slashEnemy() {
         ammoParts += 1;
 
         getEnemy.hp -= 1; 
+        hitMarker.play();
 
         getEnemy.stun(100); 
 
@@ -940,6 +777,7 @@ void slashEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += rangedWorth;
           basicRangedEnemies.remove(i);
+          enemyKill.play();
         }
       }
     }
@@ -963,6 +801,7 @@ void slashEnemy() {
         ammoParts += 1;
 
         getEnemy.hp -= 1; 
+        hitMarker.play();
 
         getEnemy.stun(100); 
 
@@ -980,6 +819,7 @@ void slashEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += tripleWorth;
           tripleRangedEnemies.remove(i);
+          enemyKill.play();
         }
       }
     }
@@ -1003,6 +843,7 @@ void slashEnemy() {
         ammoParts += 1;
 
         getEnemy.hp -= 1; 
+        hitMarker.play();
 
         getEnemy.stun(100); 
 
@@ -1020,6 +861,7 @@ void slashEnemy() {
           rollPickup(getEnemy.position, highRate);
           score += spiralWorth;
           spiralRangedEnemies.remove(i);
+          enemyKill.play();
         }
       }
     }
@@ -1045,12 +887,14 @@ void slashEnemy() {
         ammoParts += 1;
 
         getEnemy.hp -= 1; 
+        hitMarker.play();
 
         if (getEnemy.hp <= 0) {
           ammoParts += 3;
           rollPickup(getEnemy.position, highRate);
           score += turretWorth;
           turrets.remove(i);
+          enemyKill.play();
         }
       }
     }
@@ -1110,12 +954,14 @@ void shootMeleeEnemy() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        hitMarker.play();
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, normalRate);
           score += meleeWorth;
           meleeEnemies.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1141,6 +987,7 @@ void shootChargerEnemy() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        hitMarker.play();
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
@@ -1152,6 +999,7 @@ void shootChargerEnemy() {
             score += sChargerWorth;
           }
           chargerEnemies.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1180,12 +1028,14 @@ void shootBasicRangedEnemy() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        hitMarker.play();
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, normalRate);
           score += rangedWorth;
           basicRangedEnemies.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1214,12 +1064,14 @@ void shootTripleRangedEnemy() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        hitMarker.play();
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, normalRate);
           score += tripleWorth;
           tripleRangedEnemies.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1241,12 +1093,14 @@ void shootSpiralRangedEnemy() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        hitMarker.play();
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, highRate);
           score += spiralWorth;
           spiralRangedEnemies.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1268,12 +1122,14 @@ void shootTurrets() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        hitMarker.play();
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, highRate);
           score += turretWorth;
           turrets.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1346,6 +1202,7 @@ void convertParts() {
   if (ammoParts >= ratio) {
     ammoParts -= ratio;
     ammo += 1;
+    gotAmmo.play(); // play received ammo SFX
   }
 }
 
@@ -1418,7 +1275,6 @@ void spawner() {
     collideTimer = millis() + 1000;
     if (wave <= 2) {
       calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
-meleeEnemies.add( new meleeEnemy(30, width/2+400, height/2, 3));
       wavePoints = 1;
     } else if ( wave <= 5) {
       calcChances(30, 30, 30, 10, 0, 0, 0);

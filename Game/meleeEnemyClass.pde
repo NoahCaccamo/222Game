@@ -18,8 +18,7 @@ class meleeEnemy {
   int meleeIncrement;
   color c = color(155, 155, 25);
   boolean isSlashing;
-int frame;
-float scaleRatio = 1.2;
+
 
   int topspeed = 40;
 
@@ -75,25 +74,6 @@ float scaleRatio = 1.2;
     fill(c);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
     rect(position.x, position.y, size, size);
-    //anim
-    if (towardPlayer.x >= 0) {
-      image(ogreflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
-      
-      //Animate
-      if (goTime == true) {
-    if (frameCount %5 ==0) frame++;
-    if (frame>= ogre.length) frame = 0;
-      }
-    }
-    else {
-      image(ogre[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
-      //Animate
-      if (goTime == true) {
-    if (frameCount %5 ==0) frame++;
-    if (frame>= ogreflip.length) frame = 0;
-      }
-    }
-    
   }
 
   void collide() {

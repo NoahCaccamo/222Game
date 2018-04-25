@@ -9,11 +9,6 @@ class Player {
   int maxHp = 6;
   boolean isStaggered;
   boolean invulnerable;
-  int frame;
-  float scaleRatio = 1.3;
-  boolean animate;
-  boolean lastU, lastR, lastL;
-  boolean lastD = true;
 
   Player(float isize, float ixpos, float iypos, float imvspeed) {
     size = isize;
@@ -26,14 +21,6 @@ class Player {
     fill(255, 0, 0);
     if (invulnerable == true) fill(0,0,255);
     rect(xpos, ypos, size, size);
-    animate();
-    if (animate == true) {
-      if (frameCount %5 ==0) frame++;
-      if (frame>= playerFrames.length) frame = 0;
-    }else {
-     frame = 1; 
-    }
-    
     hbox = new Area(new Rectangle2D.Float(p1.xpos - size/2, p1.ypos - size/2, size, size));
   }
 
@@ -68,64 +55,22 @@ class Player {
   void keysCheckR() {
     if (key == 'w' || key == 'W') {
       keys[0] = false;
-      lastU = true;
-      lastD = false; 
-      lastR = false; 
-      lastL = false;
     }
 
     if (key == 's' || key == 'S') {
       keys[1] = false;
-      lastU = false;
-      lastD = true; 
-      lastR = false; 
-      lastL = false;
     }
 
     if (key == 'a' || key == 'A') {
       keys[2] = false;
-      lastU = false;
-      lastD = false; 
-      lastR = false; 
-      lastL = true;
     }
 
     if (key == 'd' || key == 'D') {
       keys[3] = false;
-      lastU = false;
-      lastD = false; 
-      lastR = true; 
-      lastL = false;
     }
   }
 
-void animate() {
-    noTint();
-    if (keys[0] == true && isSlashing == false) {
-      animate = true;
-      image(playerFramesUp[frame], xpos, ypos, size*scaleRatio, size*scaleRatio);
-    } else if (keys[1] == true && isSlashing == false) {
-      animate = true;
-      image(playerFrames[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
-    } else if (keys[2] == true && isSlashing == false) {
-      animate = true;
-      image(playerFramesLeft[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
-    } else if (keys[3] == true && isSlashing == false) {
-      animate = true;
-      image(playerFramesRight[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
-    } else {
-      animate = false;
-      if (lastU == true) {
-        image(playerFramesUp[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
-      } else if (lastD == true) {
-        image(playerFrames[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
-      } else if (lastR == true) {
-        image(playerFramesRight[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
-      } else if (lastL == true) {
-        image(playerFramesLeft[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
-      }
-    }
-  }
+
 
   void move() {
 
@@ -198,19 +143,8 @@ class fadePlayer {
 
   void display() {
 
-    //fill(255, 0, 0, trans);
-    //rect(xpos, ypos, size, size);
-    tint(255, trans);
-    if (p1.keys[0] == true && isSlashing == false) {
-      image(playerFramesUp[p1.frame], xpos, ypos, size*p1.scaleRatio, size*p1.scaleRatio);
-    } else if (p1.keys[1] == true && isSlashing == false) {
-      image(playerFrames[p1.frame], xpos, ypos,size*p1.scaleRatio,size*p1.scaleRatio);
-    } else if (p1.keys[2] == true && isSlashing == false) {
-      image(playerFramesLeft[p1.frame], xpos, ypos,size*p1.scaleRatio,size*p1.scaleRatio);
-    } else if (p1.keys[3] == true && isSlashing == false) {
-      image(playerFramesRight[p1.frame], xpos, ypos,size*p1.scaleRatio,size*p1.scaleRatio);
-    }
-    tint(255);
+    fill(255, 0, 0, trans);
+    rect(xpos, ypos, size, size);
   }
 }
 
@@ -232,9 +166,7 @@ void damage(PVector source, float force, int damage) {
     if (p1.hp <= 0) {
       //game over
       println("game over");
-      gameState = gameO;
-      playMusic.stop();
-      menuMusic.play();
+      gameState = gameO; // changes game state to game over
     }
   }
 }

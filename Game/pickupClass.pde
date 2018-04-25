@@ -4,7 +4,6 @@ class pickup {
   float ypos;
 int life;
 int lifespan;
-float scaleRatio = 1.5;
 
   Area hbox;
 
@@ -21,7 +20,6 @@ lifespan = 600;
     fill(255, 155, 25);
     hbox = new Area(new Rectangle2D.Float(xpos - size/2, ypos -size/2, size, size));
     rect(xpos, ypos, size, size);
-    image(fullHeart, xpos, ypos, size*scaleRatio,size*scaleRatio);
     if (goTime == true) {
     life++;
     }
@@ -58,19 +56,10 @@ void collidePickup() {
 
 class maxPickup extends pickup {
   
-  float scaleRatio = 2.3;
-  
   maxPickup(float _size, float _xpos, float _ypos) {
     size = _size;
     xpos = _xpos;
     ypos = _ypos;
-  }
-  
-  void display() {
-    fill(255, 155, 25);
-    hbox = new Area(new Rectangle2D.Float(xpos - size/2, ypos -size/2, size, size));
-    rect(xpos, ypos, size, size);
-    image(maxPotion, xpos, ypos, size*scaleRatio, size*scaleRatio);
   }
   
 }

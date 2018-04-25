@@ -11,6 +11,6 @@ class gameOver {
   // display graphic
   void display() {
     gameOver.resize(width, height);
-    image(gameOver, width/2, height/2);
+    image(gameOver, 0, 0);
   }
 }
