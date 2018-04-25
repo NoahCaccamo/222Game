@@ -17,6 +17,8 @@ Ptmx map;
 
 PImage slowFilter;
 PImage newcursor;
+PImage[] turret = new PImage[3];
+PImage[] turretflip = new PImage[3];
 PGraphics wall;
 PImage [] enemyLarge = new PImage [5];
 PImage [] enemyLargeflip = new PImage [5];
@@ -131,7 +133,7 @@ void setup() {
   //basicRangedEnemies.add( new basicRangedEnemy(50, width/2, 0, 56));
 
   //tripleRangedEnemies.add( new tripleRangedEnemy(50, 800, 0, 56));
-  //turrets.add(new turret(30, width/2, height/2));
+  turrets.add(new turret(30, width/2, height/2));
 
   //chargerEnemies.add(new chargerEnemy(50, width/2, height/2, 12));
   chargerEnemies.add(new chargerEnemy(60, width/2, 0, 12));
@@ -142,6 +144,20 @@ void setup() {
   //chargerEnemies.add(new chargerEnemy(10, width + 3, height/2, 12));
   //chargerEnemies.add(new chargerEnemy(10, width+4, height/2, 12));
 
+
+  //Loads Turret
+   for (int i=0; i< turret.length; i++) {
+    String filename = "turret_" + i + ".png";
+    turret[i] = loadImage(filename);
+  }
+  
+  //Loads Turret Flip
+  
+   for (int i=0; i< turretflip.length; i++) {
+    String filename = "turret_" + i + " copy" + ".png";
+    turretflip[i] = loadImage(filename);
+  }
+  
   //Loads Larger Enemy
   for (int i=0; i< enemyLarge.length; i++) {
     String filename = "enemybigger" + i + ".png";
