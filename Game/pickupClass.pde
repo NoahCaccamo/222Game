@@ -3,6 +3,7 @@ class pickup {
   float xpos;
   float ypos;
 int life;
+int lifespan;
 
   Area hbox;
 
@@ -11,13 +12,17 @@ pickup(){}
     size = _size;
     xpos = _xpos;
     ypos = _ypos;
-life = millis() + 10000;
+life = 0;
+lifespan = 600;
   }
 
   void display() {
     fill(255, 155, 25);
     hbox = new Area(new Rectangle2D.Float(xpos - size/2, ypos -size/2, size, size));
     rect(xpos, ypos, size, size);
+    if (goTime == true) {
+    life++;
+    }
   }
 
 
@@ -39,6 +44,7 @@ void collidePickup() {
       if (p1.hp < p1.maxHp) {
       p1.hp ++;
       }
+      score += pickupWorth;
       pickups.remove(i);
       break;
     } else {
@@ -69,6 +75,7 @@ void collideMaxPickup() {
       //HEAL PLAYER
       p1.maxHp ++;
       p1.hp ++;
+      score += maxPickupWorth;
       maxPickups.remove(i);
       break;
     } else {

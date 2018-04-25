@@ -12,9 +12,9 @@ PImage emptyHeart, fullHeart;
 Area playerHbox;
 
 ArrayList<hitboxSlash> HboxSlashes = new ArrayList<hitboxSlash>();
+ArrayList<meleeEnemy.eHitboxSlash> eHboxSlashes = new ArrayList<meleeEnemy.eHitboxSlash>();
 
 Player p1;
-basicRangedEnemy e1, e2;
 
 ArrayList<fadePlayer> streak = new ArrayList<fadePlayer>();
 
@@ -99,6 +99,17 @@ int lowRate = 5;
 int highRate = 80;
 
 int damageTaken;
+
+int meleeWorth = 100;
+int rangedWorth = 150;
+int sChargerWorth = 20;
+int lChargerWorth = 100;
+int tripleWorth = 300;
+int spiralWorth = 1000;
+int turretWorth = 500;
+int dmgPenalty = 100;
+int pickupWorth = 10;
+int maxPickupWorth = 2000;
 color cd = color(255, 0, 0);
 void setup() {
   fullScreen();
@@ -342,6 +353,9 @@ void draw () {
   if (HboxSlashes.size() >= 1 && collideTimer < millis) {
     slashEnemy();
   }
+  if (eHboxSlashes.size() >= 1 && collideTimer < millis) {
+   slashPlayer(); 
+  }
 
   if (p1.xpos + p1.size/2 > width) {
     p1.xpos = width - p1.size/2;
@@ -391,7 +405,7 @@ void draw () {
   }
   for (int i=0; i < pickups.size(); i++) {
     pickup getPickup = pickups.get(i);
-    if (getPickup.life < millis) {
+    if (getPickup.life >= 600) {
       pickups.remove(i);
     }
   }
@@ -421,7 +435,9 @@ void draw () {
   //DISPLAY HUD
   fill(0);
   textSize(40);
-  text("Ammo: " + ammo, 20, 100); 
+  text("Ammo: " + ammo, 20, 112);
+  text("Score: " + score, width-370, 40);
+  text("Wave " + wave, width/2, 80);
   displayHealth();
   spawner();
   //////////end of draw
@@ -484,6 +500,25 @@ void slash(color c) {
   slashes.add(new slashBox(color(c)));
 }
 
+void slashPlayer() {
+ for(int i=0; i < eHboxSlashes.size(); i++){
+    meleeEnemy.eHitboxSlash getSlash = eHboxSlashes.get(i);
+    getSlash.count();
+    
+    getSlash.a1.intersect(p1.hbox);
+    
+    if (getSlash.a1.isEmpty() == false) {
+     damage(getSlash.knockbackS, 7, 1); 
+    }
+    getSlash.refresh();
+    p1.refresh();
+    if (getSlash.incr >= getSlash.life) {
+      eHboxSlashes.remove(i);
+    }
+ }
+  
+}
+
 void slashEnemy() {
 
 
@@ -519,8 +554,8 @@ void slashEnemy() {
         if (getEnemy.hp <= 0) {
           ammoParts += 3;
           rollPickup(getEnemy.position, normalRate);
+          score += meleeWorth;
           meleeEnemies.remove(i);
-          ///TEMP REMOVE
         }
       }
     }
@@ -566,7 +601,11 @@ void slashEnemy() {
           if (getEnemy.hp <= 0) {
             if (getEnemy.size >= 30) {
               rollPickup(getEnemy.position, normalRate);
-            } else rollPickup(getEnemy.position, lowRate);
+              score += lChargerWorth;
+            } else {
+              rollPickup(getEnemy.position, lowRate);
+              score += sChargerWorth;
+            }
             chargerEnemies.remove(i);
           }
         }
@@ -610,6 +649,7 @@ void slashEnemy() {
         if (getEnemy.hp <= 0) {
           ammoParts += 3;
           rollPickup(getEnemy.position, normalRate);
+          score += rangedWorth;
           basicRangedEnemies.remove(i);
         }
       }
@@ -649,6 +689,7 @@ void slashEnemy() {
         if (getEnemy.hp <= 0) {
           ammoParts += 3;
           rollPickup(getEnemy.position, normalRate);
+          score += tripleWorth;
           tripleRangedEnemies.remove(i);
         }
       }
@@ -688,6 +729,7 @@ void slashEnemy() {
         if (getEnemy.hp <= 0) {
           ammoParts += 3;
           rollPickup(getEnemy.position, highRate);
+          score += spiralWorth;
           spiralRangedEnemies.remove(i);
         }
       }
@@ -718,6 +760,7 @@ void slashEnemy() {
         if (getEnemy.hp <= 0) {
           ammoParts += 3;
           rollPickup(getEnemy.position, highRate);
+          score += turretWorth;
           turrets.remove(i);
         }
       }
@@ -782,6 +825,7 @@ void shootMeleeEnemy() {
 
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, normalRate);
+          score += meleeWorth;
           meleeEnemies.remove(a);
         }
         break;
@@ -813,7 +857,11 @@ void shootChargerEnemy() {
         if (getEnemy.hp <= 0) {
           if (getEnemy.size >= 30) {
             rollPickup(getEnemy.position, normalRate);
-          } else rollPickup(getEnemy.position, lowRate);
+            score += lChargerWorth;
+          } else { 
+            rollPickup(getEnemy.position, lowRate);
+            score += sChargerWorth;
+          }
           chargerEnemies.remove(a);
         }
         break;
@@ -847,6 +895,7 @@ void shootBasicRangedEnemy() {
 
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, normalRate);
+          score += rangedWorth;
           basicRangedEnemies.remove(a);
         }
         break;
@@ -880,6 +929,7 @@ void shootTripleRangedEnemy() {
 
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, normalRate);
+          score += tripleWorth;
           tripleRangedEnemies.remove(a);
         }
         break;
@@ -906,6 +956,7 @@ void shootSpiralRangedEnemy() {
 
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, highRate);
+          score += spiralWorth;
           spiralRangedEnemies.remove(a);
         }
         break;
@@ -932,6 +983,7 @@ void shootTurrets() {
 
         if (getEnemy.hp <= 0) {
           rollPickup(getEnemy.position, highRate);
+          score += turretWorth;
           turrets.remove(a);
         }
         break;
@@ -1059,25 +1111,25 @@ void slowTime() {
 }
 
 void displayHealth() {
-  text("Health: ", 50, 45);
+  text("Health: ", 20, 45);
   tint(255);
   for (int i=0; i < p1.maxHp; i++) {
-    image(emptyHeart, 200+ i*70, 0);
+    image(emptyHeart, 180+ i*70, 5);
   }
 
   for (int i=0; i < p1.hp; i++) {
-    image(fullHeart, 200+ i*70, 0);
+    image(fullHeart, 180+ i*70, 5);
   }
 }
 
 void spawner() {
-  text(wave, width/2, height/2);
 
   if (meleeEnemies.isEmpty() && chargerEnemies.isEmpty() && basicRangedEnemies.isEmpty() && tripleRangedEnemies.isEmpty() && spiralRangedEnemies.isEmpty() && turrets.isEmpty() && maxPickups.isEmpty() && collideTimer < millis()) {
     wave ++;
     collideTimer = millis() + 1000;
     if (wave <= 2) {
-      calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
+      //calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
+      calcChances(100, 0, 0, 0, 0, 0, 0);
       wavePoints = 1;
     } else if ( wave <= 5) {
       calcChances(30, 30, 30, 10, 0, 0, 0);

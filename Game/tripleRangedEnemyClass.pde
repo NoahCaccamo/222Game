@@ -18,7 +18,7 @@ void display() {
     if (canMoveTimer < millis()) {
       canMove = true;
     }
-    if (shootTimer >= 90) {
+    if (shootTimer >= 120) {
       shoot(); 
       shootTimer = 0;
     }

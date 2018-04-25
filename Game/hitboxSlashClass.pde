@@ -17,7 +17,6 @@ class hitboxSlash {
 
     r1 = new Rectangle(0, 0, rwidth, rheight);
 
-    //r1.setFrameFromCenter(xpos, ypos, xpos + 50, ypos + 25);
     t1.translate(xpos, ypos);
     t1.rotate(mAngle);
     t1.translate(50, 0);
