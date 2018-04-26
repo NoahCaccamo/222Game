@@ -321,9 +321,9 @@ void setup() {
   
     introMusic.loop();
 
-    bit = createFont("GROBOLD.ttf", 32);
+    bit = loadFont("BIT.vlw");
 
-    textFont(bit);
+    textFont(bit, 1);
     
     brick = loadImage("brick.jpg");
   
