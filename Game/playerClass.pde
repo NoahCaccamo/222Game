@@ -5,8 +5,8 @@ class Player {
   float ypos;
   float mvspeed;
   Area hbox;
-  int hp = 999;
-  int maxHp = 999;
+  int hp = 6;
+  int maxHp = 6;
   boolean isStaggered;
   boolean invulnerable;
   int frame;

@@ -1,5 +1,6 @@
 class tripleRangedEnemy extends basicRangedEnemy{ //just make this one a recolour of the basic ranged enemy sprite
 
+float scaleRatio = 1.3; 
 
   tripleRangedEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
 

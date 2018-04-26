@@ -64,7 +64,9 @@ class projectile {
       if (frameCount %5 ==0) frame++;
       if (frame>= magicFrames.length) frame = 0;
     }
+    if (debug == true) {
     ellipse(position.x, position.y, size, size);
+    }
   }
 
   void refresh() {

@@ -63,6 +63,8 @@ PImage [] dragon = new PImage [4];
 PImage [] dragonflip = new PImage [4];
 PImage [] ogre = new PImage [8];
 PImage [] ogreflip = new PImage [8];
+PImage [] gogre = new PImage [8];
+PImage [] gogreflip = new PImage [8];
 
 Area playerHbox;
 
@@ -228,6 +230,15 @@ void setup() {
 
 
   //Loads Ogre
+  for (int i=0; i< gogre.length; i++) {
+    String filename = "g_" + i + ".png";
+    gogre[i] = loadImage(filename);
+  }
+
+  for (int i =0; i < gogreflip.length; i++) {
+    String filename = "g_" + i + " copy.png";
+    gogreflip[i] = loadImage (filename);
+  }
   for (int i=0; i< ogre.length; i++) {
     String filename = "OGRESPRITE_" + i + ".png";
     ogre[i] = loadImage(filename);
@@ -256,7 +267,7 @@ void setup() {
   }
 
   for (int i=0; i< tripleranged.length; i++) {
-    String filename = "tripleranged_" + i + " copy" + ".png";
+    String filename = "tripleranged_" + i + "copy" + ".png";
     tripleranged[i] = loadImage(filename);
   }
 
@@ -364,9 +375,9 @@ void draw() {
   if (gameState == mainM) {
     mM.display(); // display main menu
     // reset game elements
-    score = 999999999;
-    p1.hp = 999;
-    p1.maxHp = 999;
+    score = 0;
+    p1.hp = 6;
+    p1.maxHp = 6;
     ammo = 0;
     ammoParts = 0;
     wave = 0;
@@ -1421,7 +1432,7 @@ void spawner() {
     collideTimer = millis() + 1000;
     if (wave <= 2) {
       calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
-      turrets.add(new turret(30, width/2 + 400, height/2));
+      tripleRangedEnemies.add( new tripleRangedEnemy(50, width/2 + 400, height/2, 56));
       wavePoints = 1;
     } else if ( wave <= 5) {
       calcChances(30, 30, 30, 10, 0, 0, 0);
