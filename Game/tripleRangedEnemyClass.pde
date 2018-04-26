@@ -42,6 +42,7 @@ shootTimer ++;
     rect(position.x, position.y, size, size);
     }
     //anim
+    if(tint == true) tint(255,0,0);
     if (towardPlayer.x >= 0) {
       image(tripleranged[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     }
@@ -53,6 +54,7 @@ shootTimer ++;
     if (frameCount %5 ==0) frame++;
     if (frame>= dragon.length) frame = 0;
     }
+    noTint();
   }
 
 

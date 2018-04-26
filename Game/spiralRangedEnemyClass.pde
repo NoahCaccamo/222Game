@@ -60,6 +60,8 @@ class spiralRangedEnemy extends basicRangedEnemy { //WHERE IS FRAME?
     rect(position.x, position.y, size, size);
     }
     //anim
+    if (tint == true) tint(255,0,0);
+    
     if (towardPlayer.x >= 0) {
       image(spiralflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     }
@@ -72,6 +74,7 @@ if (goTime == true) {
     if (frameCount %5 ==0) frame++;
     if (frame>= spiral.length) frame = 0;  
 }   
+noTint();
   }
   
    void shoot() {

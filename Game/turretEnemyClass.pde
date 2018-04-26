@@ -34,12 +34,14 @@ class turret extends basicRangedEnemy {
     if(debug == true) {
     rect(position.x, position.y, size, size);
     }
+    if (tint == true) tint(255,0,0);
     image(turret[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     
     if (goTime == true) {
       if (frameCount %5 ==0) frame++;
     if (frame>= turret.length) frame = 0;
     }
+    noTint();
   }
   
   void shoot() {
