@@ -177,12 +177,16 @@ class slashBox {
 
   float plx;
   float ply;
+  int frame = 0;
+  float scaleRatio = 1.1;
 
   int life = millis() + 50;
   color c;
+  boolean isFlipped;
 
-  slashBox(color bc) {
+  slashBox(color bc, boolean _isFlipped) {
 
+    isFlipped = _isFlipped;
     c = bc;
 
     mAngle = atan2(mouseY-p1.ypos, mouseX - p1.xpos);
@@ -212,10 +216,19 @@ class slashBox {
     rotate(angle);
     translate(50, 0);
     fill(c);
-    rect(0, 0, bwidth, bheight);
+    //rect(0, 0, bwidth, bheight);
+    if (isFlipped == false) {
+    image(meleeFrames[frame], 0, 0, bwidth*scaleRatio, bheight*scaleRatio);
+    }else {
+      
+    }
     popMatrix();
+    
+    if (frameCount %1 ==0) frame++;
+    if (frame>= meleeFrames.length) frame = 0;
+ 
   }
 }
 
 
-///////////
+//////////
