@@ -1,4 +1,4 @@
-boolean debug = true;
+boolean debug = false;
 //INSTRUCTIONS: WSAD - move
 // SPACEBAR or SHIFT - dodge
 // Left Click - slash

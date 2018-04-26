@@ -40,10 +40,10 @@ shootTimer ++;
     }
     //anim
     if (towardPlayer.x >= 0) {
-      image(triplerangedflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+      image(tripleranged[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     }
     else {
-      image(tripleranged[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+      image(triplerangedflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     }
     if (goTime == true) {
     //Animate

@@ -104,7 +104,7 @@ class enemyProjectile extends projectile {
     fill(c);
     
 
-    if (canSlash == true) {
+    if (canSlash == false) {
       //ellipse(position.x, position.y, size, size);
       image(magicFramesv2[frame], position.x, position.y, size, size);
       
