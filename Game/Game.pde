@@ -55,6 +55,7 @@ PImage[] magicFrames = new PImage [9];
 PImage[] magicFramesv2 = new PImage[9];
 PImage[] magicFramesv3 = new PImage [9];
 PImage[] meleeFrames = new PImage [10];
+PImage[] fMeleeFrames = new PImage [10];
 PImage[] backgroundFrames = new PImage [3];
 PImage[] tripleranged = new PImage [4];
 PImage [] triplerangedflip = new PImage [4];
@@ -310,7 +311,10 @@ void setup() {
     String filename = i + ".png";
     meleeFrames[i] = loadImage(filename);
   }
-  
+  for (int i=0; i< fMeleeFrames.length; i++) {
+    String filename = "copy" + i + ".png";
+    meleeFrames[i] = loadImage(filename);
+  }
   introMusic = new SoundFile(this, "IntroMusic.mp3");
   playMusic = new SoundFile(this, "GameplayMusic.mp3");
   menuMusic = new SoundFile(this, "MenuMusic.mp3");
