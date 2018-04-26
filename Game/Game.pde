@@ -731,7 +731,7 @@ void mousePressed() {
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
       introMusic.stop();
-       playMusic.loop();
+      playMusic.loop();
     }
     //To switch game state from main menu to controls menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= height/2 && mouseY <= height)) {
@@ -847,7 +847,7 @@ void slashEnemy() {
         getEnemy.hp -= 1; 
 
         getEnemy.stun(100); 
-
+getEnemy.flash(100);
         slashBox getSlashAngle = slashes.get(0);
         PVector knockback = new PVector(getEnemy.position.x + 100, getEnemy.position.y);
 
@@ -942,7 +942,7 @@ void slashEnemy() {
         getEnemy.hp -= 1; 
 
         getEnemy.stun(100); 
-
+getEnemy.flash(100);
         slashBox getSlashAngle = slashes.get(0);
         PVector knockback = new PVector(getEnemy.position.x + 100, getEnemy.position.y);
 
@@ -980,7 +980,7 @@ void slashEnemy() {
         ammoParts += 1;
 
         getEnemy.hp -= 1; 
-
+getEnemy.flash(100);
         getEnemy.stun(100); 
 
         slashBox getSlashAngle = slashes.get(0);
@@ -1020,7 +1020,7 @@ void slashEnemy() {
         ammoParts += 1;
 
         getEnemy.hp -= 1; 
-
+getEnemy.flash(100);
         getEnemy.stun(100); 
 
         slashBox getSlashAngle = slashes.get(0);
@@ -1060,7 +1060,7 @@ void slashEnemy() {
 
       if (getSlash.a1.isEmpty() == false) {
         ammoParts += 1;
-
+        getEnemy.flash(100);
         getEnemy.hp -= 1; 
 
         if (getEnemy.hp <= 0) {
@@ -1127,6 +1127,7 @@ void shootMeleeEnemy() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        getEnemy.flash(100);
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
@@ -1197,6 +1198,7 @@ void shootBasicRangedEnemy() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        getEnemy.flash(100);
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
@@ -1231,6 +1233,7 @@ void shootTripleRangedEnemy() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        getEnemy.flash(100);
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
@@ -1258,6 +1261,7 @@ void shootSpiralRangedEnemy() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        getEnemy.flash(100);
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
@@ -1285,6 +1289,7 @@ void shootTurrets() {
 
       if (getBullet.hbox.isEmpty() == false) {
         getEnemy.hp -= bulletDamage;
+        getEnemy.flash(100);
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {

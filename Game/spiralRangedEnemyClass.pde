@@ -24,6 +24,9 @@ class spiralRangedEnemy extends basicRangedEnemy { //WHERE IS FRAME?
     if (canMoveTimer < millis()) {
       canMove = true;
     }
+    if(flashTimer < millis()) {
+     tint = false; 
+    }
     
     if (activeTimer >= 540/3 && active == false) {
      active = true;

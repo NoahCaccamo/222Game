@@ -11,6 +11,7 @@ class meleeEnemy {
   int lastSlash;
   boolean canMove = true;
   int canMoveTimer;
+  int flashTimer;
   float angle;
   int displayIncr;
   int displayMax = 10;
@@ -21,6 +22,7 @@ class meleeEnemy {
   int frame;
   float scaleRatio = 1.2;
   boolean red;
+  boolean tint;
 
   int topspeed = 40;
 
@@ -37,6 +39,9 @@ class meleeEnemy {
     red = true;
     if (canMoveTimer < millis()) {
       canMove = true;
+    }
+    if(flashTimer < millis()) {
+     tint = false; 
     }
 
     player = new PVector(p1.xpos, p1.ypos);
@@ -82,6 +87,7 @@ class meleeEnemy {
       rect(position.x, position.y, size, size + 10);
     }
     //anim
+    if(tint == true) tint(255,0,0);
     if (towardPlayer.x >= 0) {
       if (red == false) {
         image(ogreflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
@@ -101,6 +107,7 @@ class meleeEnemy {
         if (frame>= ogreflip.length) frame = 0;
       }
     }
+    noTint();
   }
 
   void collide() {
@@ -143,6 +150,11 @@ class meleeEnemy {
     fill(255);
     rect(0, 0, 50, 50);
     popMatrix();
+  }
+  
+  void flash(int flashTime) {
+   tint = true;
+   flashTimer = millis() + flashTime;
   }
 
   class eHitboxSlash {

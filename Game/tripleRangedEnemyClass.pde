@@ -18,6 +18,9 @@ void display() {
     if (canMoveTimer < millis()) {
       canMove = true;
     }
+    if(flashTimer < millis()) {
+     tint = false; 
+    }
     if (shootTimer >= 120) {
       shoot(); 
       shootTimer = 0;

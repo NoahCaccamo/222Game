@@ -18,6 +18,9 @@ class turret extends basicRangedEnemy {
     if (canMoveTimer < millis()) {
       canMove = true;
     }
+    if(flashTimer < millis()) {
+     tint = false; 
+    }
     if (shootTimer >= 20) {
       shoot(); 
       shootTimer = 0;

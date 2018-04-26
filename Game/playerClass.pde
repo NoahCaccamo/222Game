@@ -14,6 +14,7 @@ class Player {
   boolean animate;
   boolean lastU, lastR, lastL;
   boolean lastD = true;
+  boolean tint;
 
   Player(float isize, float ixpos, float iypos, float imvspeed) {
     size = isize;
@@ -102,7 +103,7 @@ class Player {
   }
 
 void animate() {
-    noTint();
+    if (tint == true) tint(255,0,0);
     if (keys[0] == true && isSlashing == false) {
       animate = true;
       image(playerFramesUp[frame], xpos, ypos, size*scaleRatio, size*scaleRatio);
@@ -127,6 +128,7 @@ void animate() {
         image(playerFramesLeft[frame], xpos, ypos,size*scaleRatio,size*scaleRatio);
       }
     }
+    noTint();
   }
 
   void move() {
@@ -251,10 +253,12 @@ void stagger() {
     rect(p1.xpos, p1.ypos, p1.size, p1.size);
     }
     if (smTimer > millis()) {
+      p1.tint = true;
       p1.xpos -= lastSource.x;
       p1.ypos -= lastSource.y;
     }
   } else {
+    p1.tint = false;
     p1.isStaggered = false;
     canSlash = true;
   }

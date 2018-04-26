@@ -11,11 +11,13 @@ class basicRangedEnemy {
   int lastSlash;
   boolean canMove = true;
   int canMoveTimer;
+  int flashTimer;
   int shootTimer;
   int shootDelay = 1000;
   int atkAnimTimer = 0; // Use this timer to make the animation happen right before the shoot timer goes off so they align
 int frame = 0;
 float scaleRatio = 3;
+boolean tint;
 
   basicRangedEnemy(){}
   basicRangedEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
@@ -43,6 +45,9 @@ float scaleRatio = 3;
     if (canMoveTimer < millis()) {
       canMove = true;
     }
+    if (flashTimer < millis()) {
+     tint = false; 
+    }
     if (shootTimer >= 60) {
       shoot(); 
       shootTimer = 0;
@@ -65,7 +70,7 @@ shootTimer ++;
     }
     
     //anim stuff
-    
+    if(tint == true)tint(255,0,0);
     if (towardPlayer.x >= 0) {
       image(dragonflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     }
@@ -79,7 +84,7 @@ shootTimer ++;
     if (frameCount %5 ==0) frame++;
     if (frame>= dragon.length) frame = 0;
     }
-    
+    noTint();
   }
 
   void collide() {
@@ -100,7 +105,11 @@ shootTimer ++;
     canMove = false;
     canMoveTimer = millis() + stunTime;
   }
-
+  
+  void flash(int flashTime) {
+   tint = true;
+   flashTimer = millis() + flashTime;
+  }
   void shoot() {
     enemyProjectiles.add(new enemyProjectile(10, position, 5, true, 0, false));
   }
