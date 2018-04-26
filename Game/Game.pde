@@ -163,7 +163,7 @@ int lChargerWorth = 100;
 int tripleWorth = 300;
 int spiralWorth = 1000;
 int turretWorth = 500;
-int dmgPenalty = 100;
+int dmgPenalty = 50;
 int pickupWorth = 10;
 int maxPickupWorth = 2000;
 color cd = color(255, 0, 0);
@@ -902,7 +902,7 @@ void slashEnemy() {
           getEnemy.position.y -= slashKnockVector.y;
 
           if (getEnemy.hp <= 0) {
-            if (getEnemy.size >= 30) {
+            if (getEnemy.size >= 20) {
               rollPickup(getEnemy.position, normalRate);
               score += lChargerWorth;
             } else {
@@ -1158,7 +1158,7 @@ void shootChargerEnemy() {
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
-          if (getEnemy.size >= 30) {
+          if (getEnemy.size >= 20) {
             rollPickup(getEnemy.position, normalRate);
             score += lChargerWorth;
           } else { 
@@ -1432,7 +1432,6 @@ void spawner() {
     collideTimer = millis() + 1000;
     if (wave <= 2) {
       calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
-      tripleRangedEnemies.add( new tripleRangedEnemy(50, width/2 + 400, height/2, 56));
       wavePoints = 1;
     } else if ( wave <= 5) {
       calcChances(30, 30, 30, 10, 0, 0, 0);
@@ -1444,8 +1443,18 @@ void spawner() {
     } else if (wave < 10) {
       calcChances(24.33, 24.33, 24.33, 10, 5, 5, 7);
       wavePoints = 10;
-    } else {
-      wavePoints = 30;
+    }else if (wave == 10) {
+      spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
+      spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
+       float swarmNum = random(3, 8);
+        PVector pos = securePos(0, width, 0, height, 1000);
+        for (int i=0; i < swarmNum; i++) {
+          chargerEnemies.add(new chargerEnemy(10, pos.x + i, pos.y + i, 12));
+        }
+      if (damageTaken == 0)maxPickups.add(new maxPickup(30, width/2, height/2));
+      damageTaken = 0;
+  }else {
+      wavePoints = wave;
     }
   }
 

@@ -20,7 +20,9 @@ lifespan = 600;
   void display() {
     fill(255, 155, 25);
     hbox = new Area(new Rectangle2D.Float(xpos - size/2, ypos -size/2, size, size));
+    if(debug == true) {
     rect(xpos, ypos, size, size);
+    }
     image(fullHeart, xpos, ypos, size*scaleRatio,size*scaleRatio);
     if (goTime == true) {
     life++;
@@ -69,7 +71,9 @@ class maxPickup extends pickup {
   void display() {
     fill(255, 155, 25);
     hbox = new Area(new Rectangle2D.Float(xpos - size/2, ypos -size/2, size, size));
+    if(debug == true) {
     rect(xpos, ypos, size, size);
+    }
     image(maxPotion, xpos, ypos, size*scaleRatio, size*scaleRatio);
   }
   
