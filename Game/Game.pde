@@ -1,11 +1,10 @@
-
+boolean debug = false;
 //INSTRUCTIONS: WSAD - move
 // SPACEBAR or SHIFT - dodge
 // Left Click - slash
 // Right Click - shoot
 import java.awt.geom.*;
 import java.awt.*;
-import ptmx.*;
 import processing.sound.*;
 import processing.opengl.*;
 //////////////////////////////////////////
@@ -31,16 +30,15 @@ SoundFile playMusic;
 SoundFile menuMusic;
 
 
-
-Ptmx map;
-
 PImage slowFilter;
 PImage emptyHeart, fullHeart;
 PImage maxPotion;
+PImage gradientOverlay;
 
 PFont bit;
 
 PImage newcursor;
+PImage brick;
 PImage[] turret = new PImage[3];
 PImage[] turretflip = new PImage[3];
 PGraphics wall;
@@ -55,7 +53,8 @@ PImage[] playerFramesLeft = new PImage [3];
 PImage[] magicFrames = new PImage [9];
 PImage[] magicFramesv2 = new PImage[9];
 PImage[] magicFramesv3 = new PImage [9];
-PImage[] meleeFrames = new PImage [9];
+PImage[] meleeFrames = new PImage [10];
+PImage[] fMeleeFrames = new PImage [10];
 PImage[] backgroundFrames = new PImage [3];
 PImage[] tripleranged = new PImage [4];
 PImage [] triplerangedflip = new PImage [4];
@@ -63,6 +62,8 @@ PImage [] dragon = new PImage [4];
 PImage [] dragonflip = new PImage [4];
 PImage [] ogre = new PImage [8];
 PImage [] ogreflip = new PImage [8];
+PImage [] gogre = new PImage [8];
+PImage [] gogreflip = new PImage [8];
 
 Area playerHbox;
 
@@ -119,7 +120,6 @@ boolean combo1, combo2, combo3, isSlashing, click1, click2, click3;
 int dLength = 120;
 int dDist = 10;
 
-int debug;
 
 boolean dUp, dDown, dLeft, dRight, dIag;
 boolean isDashing;
@@ -162,7 +162,7 @@ int lChargerWorth = 100;
 int tripleWorth = 300;
 int spiralWorth = 1000;
 int turretWorth = 500;
-int dmgPenalty = 100;
+int dmgPenalty = 50;
 int pickupWorth = 10;
 int maxPickupWorth = 2000;
 color cd = color(255, 0, 0);
@@ -176,7 +176,6 @@ void setup() {
   imageMode(CENTER);
   rectMode(CENTER);
 
-  map = new Ptmx(this, "brick.tmx");
 
   // add menus
   mM = new mainMenu();
@@ -188,6 +187,9 @@ void setup() {
   fullHeart = loadImage("fill.png");
   emptyHeart = loadImage("empty.png");
   maxPotion = loadImage("maxPotion.png");
+
+  gradientOverlay = loadImage("gradient_overlay_2.png");
+  gradientOverlay.resize(width, height);
 
   //LOAD ANIMATIONS
   //Loads Turret
@@ -230,6 +232,15 @@ void setup() {
 
 
   //Loads Ogre
+  for (int i=0; i< gogre.length; i++) {
+    String filename = "g_" + i + ".png";
+    gogre[i] = loadImage(filename);
+  }
+
+  for (int i =0; i < gogreflip.length; i++) {
+    String filename = "g_" + i + " copy.png";
+    gogreflip[i] = loadImage (filename);
+  }
   for (int i=0; i< ogre.length; i++) {
     String filename = "OGRESPRITE_" + i + ".png";
     ogre[i] = loadImage(filename);
@@ -258,7 +269,7 @@ void setup() {
   }
 
   for (int i=0; i< tripleranged.length; i++) {
-    String filename = "tripleranged_" + i + " copy" + ".png";
+    String filename = "tripleranged_" + i + "copy" + ".png";
     tripleranged[i] = loadImage(filename);
   }
 
@@ -309,24 +320,29 @@ void setup() {
 
   //Loads Melee
   for (int i=0; i< meleeFrames.length; i++) {
-    String filename = "melee_0" + i + ".png";
+    String filename = i + ".png";
     meleeFrames[i] = loadImage(filename);
   }
-  
+  for (int i=0; i< fMeleeFrames.length; i++) {
+    String filename = i + "copy" + ".png";
+    fMeleeFrames[i] = loadImage(filename);
+  }
   introMusic = new SoundFile(this, "IntroMusic.mp3");
   playMusic = new SoundFile(this, "GameplayMusic.mp3");
   menuMusic = new SoundFile(this, "MenuMusic.mp3");
-  
-    introMusic.loop();
 
-    bit = createFont("GROBOLD.ttf", 32);
+  introMusic.loop();
 
-    textFont(bit);
-  
-    
-    
+  bit = loadFont("BIT.vlw");
 
-  
+  textFont(bit, 1);
+
+  brick = loadImage("brick.jpg");
+
+
+
+
+
   //END OF LOAD ANIMATIONS
 
   //add the player
@@ -397,8 +413,7 @@ void draw() {
 
 void runGame () {
   float millis = millis();
-  background(map.getBackgroundColor());
-  map.draw(0, 0);
+  image(brick, width/2, height/2, width, height);
   // println(canSlash, millis(), cdSlash1, isSlashing);
 
   //reticle
@@ -468,7 +483,7 @@ void runGame () {
     lag1 = 0;
     slashPunch = 10;
 
-    slash(color(255, 0, 0));
+    slash(color(255, 0, 0), false);
     HboxSlashes.add(new hitboxSlash(50, 100));
     slashKnockVector.setMag(slashPunch);
 
@@ -481,7 +496,7 @@ void runGame () {
     lag2 = 0;
     slashPunch = 10;
 
-    slash(color(0, 255, 0));
+    slash(color(0, 255, 0), true);
     HboxSlashes.add(new hitboxSlash(50, 100));
     slashKnockVector.setMag(slashPunch);
 
@@ -494,7 +509,7 @@ void runGame () {
     lag3 = 0;
     slashPunch = 10;
 
-    slash(color(0, 0, 255));
+    slash(color(0, 0, 255), false);
     HboxSlashes.add(new hitboxSlash(50, 100));
     slashKnockVector.setMag(slashPunch);
     combo3 = true;
@@ -683,9 +698,11 @@ void runGame () {
 
   //DISPLAY HUD
   fill(0);
-  textSize(40);
+  textSize(29);
+  fill(255);
+  image(gradientOverlay, width/2, height/2);
   text("Ammo: " + ammo, 20, 112);
-  text("Score: " + score, width-280, 112);
+  text("Score: " + score, width-437, 112);
   text("Wave " + wave, width/2.2, 112);
   displayHealth();
   spawner();
@@ -714,7 +731,7 @@ void mousePressed() {
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
       introMusic.stop();
-     // playMusic.loop();
+       playMusic.loop();
     }
     //To switch game state from main menu to controls menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= height/2 && mouseY <= height)) {
@@ -773,7 +790,7 @@ void mousePressed() {
   }
 }
 
-void slash(color c) {
+void slash(color c, boolean isTrue) {
 
   PVector mouseVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
   mouseVec.normalize();
@@ -781,7 +798,7 @@ void slash(color c) {
   p1.xpos -= mouseVec.x;
   p1.ypos -= mouseVec.y;
 
-  slashes.add(new slashBox(color(c)));
+  slashes.add(new slashBox(color(c), isTrue));
 }
 
 void slashPlayer() {
@@ -888,7 +905,7 @@ void slashEnemy() {
           getEnemy.position.y -= slashKnockVector.y;
 
           if (getEnemy.hp <= 0) {
-            if (getEnemy.size >= 30) {
+            if (getEnemy.size >= 20) {
               rollPickup(getEnemy.position, normalRate);
               score += lChargerWorth;
             } else {
@@ -1144,7 +1161,7 @@ void shootChargerEnemy() {
         bullets.remove(b);
 
         if (getEnemy.hp <= 0) {
-          if (getEnemy.size >= 30) {
+          if (getEnemy.size >= 20) {
             rollPickup(getEnemy.position, normalRate);
             score += lChargerWorth;
           } else { 
@@ -1400,14 +1417,14 @@ void slowTime() {
 }
 
 void displayHealth() {
-
+  fill(255);
   text("Health: ", 20, 52);
   tint(255);
   for (int i=0; i < p1.maxHp; i++) {
-    image(emptyHeart, 191+ i*70, 40);
+    image(emptyHeart, 240+ i*70, 45);
   }
   for (int i=0; i < p1.hp; i++) {
-    image(fullHeart, 191+ i*70, 40);
+    image(fullHeart, 240+ i*70, 45);
   }
 }
 
@@ -1418,7 +1435,6 @@ void spawner() {
     collideTimer = millis() + 1000;
     if (wave <= 2) {
       calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
-spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 400, height/2, 0.3));
       wavePoints = 1;
     } else if ( wave <= 5) {
       calcChances(30, 30, 30, 10, 0, 0, 0);
@@ -1430,8 +1446,18 @@ spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 400, height/2, 0.3))
     } else if (wave < 10) {
       calcChances(24.33, 24.33, 24.33, 10, 5, 5, 7);
       wavePoints = 10;
+    } else if (wave == 10) {
+      spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
+      spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
+      float swarmNum = random(3, 8);
+      PVector pos = securePos(0, width, 0, height, 1000);
+      for (int i=0; i < swarmNum; i++) {
+        chargerEnemies.add(new chargerEnemy(10, pos.x + i, pos.y + i, 12));
+      }
+      if (damageTaken == 0)maxPickups.add(new maxPickup(30, width/2, height/2));
+      damageTaken = 0;
     } else {
-      wavePoints = 30;
+      wavePoints = wave;
     }
   }
 

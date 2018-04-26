@@ -39,8 +39,9 @@ if (canMove == true && goTime == true) {
 
     fill(0, 255, 0);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
+    if (debug == true) {
     rect(position.x, position.y, size, size);
-    
+    }
     if (towardPlayer.x >= 0) {
       image(enemyLargeflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     }

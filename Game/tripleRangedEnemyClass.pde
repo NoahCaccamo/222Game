@@ -1,5 +1,6 @@
 class tripleRangedEnemy extends basicRangedEnemy{ //just make this one a recolour of the basic ranged enemy sprite
 
+float scaleRatio = 1.3; 
 
   tripleRangedEnemy(float _size, float _xpos, float _ypos, float _mvspeed) {
 
@@ -34,14 +35,15 @@ shootTimer ++;
 
     fill(0, 255, 255);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
+    if(debug == true){
     rect(position.x, position.y, size, size);
-    
+    }
     //anim
     if (towardPlayer.x >= 0) {
-      image(triplerangedflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+      image(tripleranged[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     }
     else {
-      image(tripleranged[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+      image(triplerangedflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     }
     if (goTime == true) {
     //Animate

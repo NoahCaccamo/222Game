@@ -16,7 +16,8 @@ class projectile {
   int frame;
   float scaleRatio = 1.0000;
 
-projectile(){}
+  projectile() {
+  }
   projectile(int _size, boolean _canPen) {
     mouse = new PVector(mouseX, mouseY);
     position = new PVector(p1.xpos, p1.ypos);
@@ -46,44 +47,45 @@ projectile(){}
     // velocity.limit(topspeed);
     //velocity.setMag(0.2);
     //position.add(velocity);
-      if (goTime == true) {
-    position.x -= projectileVec.x;
-    position.y -= projectileVec.y;
-      }
-      
+    if (goTime == true) {
+      position.x -= projectileVec.x;
+      position.y -= projectileVec.y;
+    }
   }
 
   void display() {
     hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
     fill(c);
-    ellipse(position.x, position.y, size, size);
     
+
     image(magicFrames[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     if (goTime == true) {
-    //Animate
-    if (frameCount %5 ==0) frame++;
-    if (frame>= magicFrames.length) frame = 0; 
+      //Animate
+      if (frameCount %5 ==0) frame++;
+      if (frame>= magicFrames.length) frame = 0;
+    }
+    if (debug == true) {
+    ellipse(position.x, position.y, size, size);
     }
   }
 
   void refresh() {
     hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
   }
-  
 }
 
 class enemyProjectile extends projectile {
 
   float speed;
   boolean canSlash;
-  
+
   enemyProjectile(int _size, PVector _enemyPos, float _speed, boolean _canSlash, float _angle, boolean _isRotated) {
-size = _size;
+    size = _size;
     speed = _speed;
     canSlash = _canSlash;
     angle = _angle;
     isRotated = _isRotated;
-    
+
     c = color(142, 12, 157);
 
     float xenemy = _enemyPos.x;
@@ -91,35 +93,36 @@ size = _size;
     position = new PVector(xenemy, yenemy);
     projectileVec = new PVector(xenemy - p1.xpos, yenemy - p1.ypos);
     projectileVec.setMag(speed);
-    
+
     if (isRotated == true) {
-     projectileVec.rotate(angle); 
+      projectileVec.rotate(angle);
     }
-    
   }
-  
+
   void display() {
     hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
     fill(c);
-    ellipse(position.x, position.y, size, size);
     
-    if (canSlash == true) {
-    image(magicFramesv2[frame], position.x, position.y);
-    if (goTime == true) {
-     //Animate
-    if (frameCount %5 ==0) frame++;
-    if (frame>= magicFramesv2.length) frame = 0;     
-    }
-     }
-     else { 
-    image(magicFramesv3[frame], position.x, position.y);
-    if(goTime == true) {
-      if (frameCount %5 ==0) frame++;
-    if (frame>= magicFramesv3.length) frame = 0;  
-    }
+
+    if (canSlash == false) {
+      //ellipse(position.x, position.y, size, size);
+      image(magicFramesv2[frame], position.x, position.y, size, size);
+      
+      if (goTime == true) {
+        //Animate
+        if (frameCount %5 ==0) frame++;
+        if (frame>= magicFramesv2.length) frame = 0;
+      }
+    } else { 
+      //ellipse(position.x, position.y, size, size);
+      image(magicFramesv3[frame], position.x, position.y, size, size);
+      
+      if (goTime == true) {
+        if (frameCount %5 ==0) frame++;
+        if (frame>= magicFramesv3.length) frame = 0;
+      }
     }
   }
-  
 }
 //new comType(6)
 
@@ -177,12 +180,16 @@ class slashBox {
 
   float plx;
   float ply;
+  int frame = 0;
+  float scaleRatio = 1.1;
 
   int life = millis() + 50;
   color c;
+  boolean isFlipped;
 
-  slashBox(color bc) {
+  slashBox(color bc, boolean _isFlipped) {
 
+    isFlipped = _isFlipped;
     c = bc;
 
     mAngle = atan2(mouseY-p1.ypos, mouseX - p1.xpos);
@@ -212,10 +219,21 @@ class slashBox {
     rotate(angle);
     translate(50, 0);
     fill(c);
-    rect(0, 0, bwidth, bheight);
+    //rect(0, 0, bwidth, bheight);
+    if (isFlipped == false) {
+      image(meleeFrames[frame], 0, 0, bwidth*scaleRatio, bheight*scaleRatio);
+      if (frameCount %1 ==0) frame++;
+    if (frame>= meleeFrames.length) frame = 0;
+    } else {
+      image(fMeleeFrames[frame], 0, 0, bwidth*scaleRatio, bheight*scaleRatio);
+      if (frameCount %1 ==0) frame++;
+    if (frame>= fMeleeFrames.length) frame = 0;
+    }
     popMatrix();
+
+    
   }
 }
 
 
-///////////
+//////////

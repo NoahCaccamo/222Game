@@ -18,8 +18,9 @@ class meleeEnemy {
   int meleeIncrement;
   color c = color(155, 155, 25);
   boolean isSlashing;
-int frame;
-float scaleRatio = 1.2;
+  int frame;
+  float scaleRatio = 1.2;
+  boolean red;
 
   int topspeed = 40;
 
@@ -33,6 +34,7 @@ float scaleRatio = 1.2;
   }
 
   void display() {
+    red = true;
     if (canMoveTimer < millis()) {
       canMove = true;
     }
@@ -47,14 +49,16 @@ float scaleRatio = 1.2;
     } else {
       isSlashing = true;
     }
-
+    
     if (isSlashing == true && goTime == true) {
       canMove = false;
       meleeIncrement++;
       if (meleeIncrement < meleeTimer && meleeIncrement > meleeTimer - 10) { 
         c=color(255, 55, 25);
+        red = false;
       } else {    
         c=color(155, 155, 25);
+        red = true;
       }
       if (meleeIncrement > meleeTimer) {
 
@@ -74,26 +78,29 @@ float scaleRatio = 1.2;
 
     fill(c);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
-    rect(position.x, position.y, size, size);
+    if (debug == true) {
+      rect(position.x, position.y, size, size + 10);
+    }
     //anim
     if (towardPlayer.x >= 0) {
-      image(ogreflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
-      
+      if (red == false) {
+        image(ogreflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+      } else image(gogreflip[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
       //Animate
       if (goTime == true) {
-    if (frameCount %5 ==0) frame++;
-    if (frame>= ogre.length) frame = 0;
+        if (frameCount %5 ==0) frame++;
+        if (frame>= ogre.length) frame = 0;
       }
-    }
-    else {
-      image(ogre[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+    } else {
+      if (red == false) {
+        image(ogre[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
+      } else image(gogre[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
       //Animate
       if (goTime == true) {
-    if (frameCount %5 ==0) frame++;
-    if (frame>= ogreflip.length) frame = 0;
+        if (frameCount %5 ==0) frame++;
+        if (frame>= ogreflip.length) frame = 0;
       }
     }
-    
   }
 
   void collide() {

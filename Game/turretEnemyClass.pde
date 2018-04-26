@@ -28,7 +28,9 @@ class turret extends basicRangedEnemy {
 
     fill(0);
     hbox = new Area(new Rectangle2D.Float(position.x - size/2, position.y -size/2, size, size));
+    if(debug == true) {
     rect(position.x, position.y, size, size);
+    }
     image(turret[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     
     if (goTime == true) {
