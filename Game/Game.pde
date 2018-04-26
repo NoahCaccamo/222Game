@@ -5,7 +5,6 @@
 // Right Click - shoot
 import java.awt.geom.*;
 import java.awt.*;
-import ptmx.*;
 import processing.sound.*;
 import processing.opengl.*;
 //////////////////////////////////////////
@@ -32,7 +31,6 @@ SoundFile menuMusic;
 
 
 
-Ptmx map;
 
 PImage slowFilter;
 PImage emptyHeart, fullHeart;
@@ -56,7 +54,7 @@ PImage[] playerFramesLeft = new PImage [3];
 PImage[] magicFrames = new PImage [9];
 PImage[] magicFramesv2 = new PImage[9];
 PImage[] magicFramesv3 = new PImage [9];
-PImage[] meleeFrames = new PImage [5];
+PImage[] meleeFrames = new PImage [10];
 PImage[] backgroundFrames = new PImage [3];
 PImage[] tripleranged = new PImage [4];
 PImage [] triplerangedflip = new PImage [4];
@@ -177,7 +175,6 @@ void setup() {
   imageMode(CENTER);
   rectMode(CENTER);
 
-  map = new Ptmx(this, "brick.tmx");
 
   // add menus
   mM = new mainMenu();
@@ -400,7 +397,6 @@ void draw() {
 
 void runGame () {
   float millis = millis();
-  background(map.getBackgroundColor());
   image(brick, width/2, height/2, width, height);
   // println(canSlash, millis(), cdSlash1, isSlashing);
 
@@ -784,7 +780,7 @@ void slash(color c) {
   p1.xpos -= mouseVec.x;
   p1.ypos -= mouseVec.y;
 
-  slashes.add(new slashBox(color(c)));
+  slashes.add(new slashBox(color(c), false));
 }
 
 void slashPlayer() {
@@ -1403,7 +1399,7 @@ void slowTime() {
 }
 
 void displayHealth() {
-
+fill(255);
   text("Health: ", 20, 52);
   tint(255);
   for (int i=0; i < p1.maxHp; i++) {
