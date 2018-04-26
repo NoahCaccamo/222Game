@@ -687,6 +687,7 @@ void runGame () {
   //DISPLAY HUD
   fill(0);
   textSize(40);
+  fill(255);
   text("Ammo: " + ammo, 20, 112);
   text("Score: " + score, width-280, 112);
   text("Wave " + wave, width/2.2, 112);
