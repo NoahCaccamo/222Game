@@ -5,6 +5,7 @@ class pickup {
 int life;
 int lifespan;
 float scaleRatio = 1.5;
+boolean invis;
 
   Area hbox;
 
@@ -20,12 +21,22 @@ lifespan = 600;
   void display() {
     fill(255, 155, 25);
     hbox = new Area(new Rectangle2D.Float(xpos - size/2, ypos -size/2, size, size));
+    if (invis == false) {
     if(debug == true) {
     rect(xpos, ypos, size, size);
     }
     image(fullHeart, xpos, ypos, size*scaleRatio,size*scaleRatio);
+    }
     if (goTime == true) {
     life++;
+    }
+    
+    if (life > lifespan - 120 && goTime == true) {
+     if (frameCount % 10 == 0) {
+      if(invis == false) {
+       invis = true; 
+      }else invis = false;
+     }
     }
   }
 
