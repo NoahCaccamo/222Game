@@ -7,6 +7,14 @@ import java.awt.geom.*;
 import java.awt.*;
 import processing.sound.*;
 import processing.opengl.*;
+
+//declare SFX object variables
+SoundFile playerSpawn;
+SoundFile playerSlash;
+SoundFile playerShoot;
+SoundFile gotAmmo;
+SoundFile enemyKill;
+
 //////////////////////////////////////////
 
 // declare game state variables
@@ -176,6 +184,12 @@ void setup() {
   imageMode(CENTER);
   rectMode(CENTER);
 
+  // load SFX into game world
+  playerSpawn = new SoundFile (this, "player_spawn.wav");
+  playerSlash = new SoundFile (this, "player_slash.wav");
+  playerShoot = new SoundFile (this, "player_shoot.wav");
+  gotAmmo = new SoundFile (this, "player_got_ammo.wav");
+  enemyKill = new SoundFile (this, "enemy_killed.wav");
 
   // add menus
   mM = new mainMenu();
@@ -730,8 +744,9 @@ void mousePressed() {
     // To switch game state from main menu to run game
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
+      playerSpawn.play(); // play spawn SFX
       introMusic.stop();
-       playMusic.loop();
+      playMusic.loop();
     }
     //To switch game state from main menu to controls menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= height/2 && mouseY <= height)) {
@@ -744,6 +759,7 @@ void mousePressed() {
     // To switch game state from controls menu to run game
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
+      playerSpawn.play(); // play spawn SFX
       introMusic.stop();
       playMusic.loop();
     }
@@ -780,12 +796,17 @@ void mousePressed() {
       cdSlash3 = tempT + cdSlash3e + (lag3-tempT);
       click3 = true;
     }
+
+    if (gameState == runGame) {
+      playerSlash.play(); // play slash SFX
+    }
   }
   ////////////
   if (mouseButton == RIGHT) {
     if (ammo > 0) {
       ammo -= 1;
       bullets.add (new projectile(10, false));
+      playerShoot.play(); // play shoot SFX
     }
   }
 }
@@ -862,6 +883,7 @@ void slashEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += meleeWorth;
           meleeEnemies.remove(i);
+          enemyKill.play();
         }
       }
     }
@@ -913,6 +935,7 @@ void slashEnemy() {
               score += sChargerWorth;
             }
             chargerEnemies.remove(i);
+            enemyKill.play();
           }
         }
       }
@@ -957,6 +980,7 @@ void slashEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += rangedWorth;
           basicRangedEnemies.remove(i);
+          enemyKill.play();
         }
       }
     }
@@ -997,6 +1021,7 @@ void slashEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += tripleWorth;
           tripleRangedEnemies.remove(i);
+          enemyKill.play();
         }
       }
     }
@@ -1037,6 +1062,7 @@ void slashEnemy() {
           rollPickup(getEnemy.position, highRate);
           score += spiralWorth;
           spiralRangedEnemies.remove(i);
+          enemyKill.play();
         }
       }
     }
@@ -1068,6 +1094,7 @@ void slashEnemy() {
           rollPickup(getEnemy.position, highRate);
           score += turretWorth;
           turrets.remove(i);
+          enemyKill.play();
         }
       }
     }
@@ -1133,6 +1160,7 @@ void shootMeleeEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += meleeWorth;
           meleeEnemies.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1169,6 +1197,7 @@ void shootChargerEnemy() {
             score += sChargerWorth;
           }
           chargerEnemies.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1203,6 +1232,7 @@ void shootBasicRangedEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += rangedWorth;
           basicRangedEnemies.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1237,6 +1267,7 @@ void shootTripleRangedEnemy() {
           rollPickup(getEnemy.position, normalRate);
           score += tripleWorth;
           tripleRangedEnemies.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1264,6 +1295,7 @@ void shootSpiralRangedEnemy() {
           rollPickup(getEnemy.position, highRate);
           score += spiralWorth;
           spiralRangedEnemies.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1291,6 +1323,7 @@ void shootTurrets() {
           rollPickup(getEnemy.position, highRate);
           score += turretWorth;
           turrets.remove(a);
+          enemyKill.play();
         }
         break;
       }
@@ -1363,6 +1396,7 @@ void convertParts() {
   if (ammoParts >= ratio) {
     ammoParts -= ratio;
     ammo += 1;
+    gotAmmo.play(); // play received ammo SFX
   }
 }
 
