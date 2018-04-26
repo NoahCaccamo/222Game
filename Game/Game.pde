@@ -327,9 +327,9 @@ void setup() {
     String filename = i + "copy" + ".png";
     fMeleeFrames[i] = loadImage(filename);
   }
-  introMusic = new SoundFile(this, "IntroMusic.mp3");
-  playMusic = new SoundFile(this, "GameplayMusic.mp3");
-  menuMusic = new SoundFile(this, "MenuMusic.mp3");
+  introMusic = new SoundFile(this, "IntroMusic.wav");
+  playMusic = new SoundFile(this, "Game_Music.wav");
+  menuMusic = new SoundFile(this, "MenuMusic.wav");
 
   introMusic.loop();
 
