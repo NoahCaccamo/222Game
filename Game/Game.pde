@@ -1560,7 +1560,6 @@ PVector other;
   if (dist(tempRandomX, tempRandomY, p1.xpos, p1.ypos) >= minDist) {
     return new PVector(tempRandomX, tempRandomY);
   } else {
-    println("THIS RAN");
     return other = (securePos(minPosX, maxPosX, minPosY, maxPosY, minDist));
   }
 }
