@@ -5,8 +5,8 @@ class Player {
   float ypos;
   float mvspeed;
   Area hbox;
-  int hp = 6;
-  int maxHp = 6;
+  int hp = 999;
+  int maxHp = 999;
   boolean isStaggered;
   boolean invulnerable;
   int frame;
@@ -25,7 +25,9 @@ class Player {
   void display() {
     fill(255, 0, 0);
     if (invulnerable == true) fill(0,0,255);
+    if(debug == true) {
     rect(xpos, ypos, size, size);
+    }
     animate();
     if (animate == true) {
       if (frameCount %5 ==0) frame++;
@@ -245,7 +247,9 @@ void stagger() {
     dTimer = 0;
     canSlash = false;
     fill(255, 0, 255);
+    if (debug == true) {
     rect(p1.xpos, p1.ypos, p1.size, p1.size);
+    }
     if (smTimer > millis()) {
       p1.xpos -= lastSource.x;
       p1.ypos -= lastSource.y;

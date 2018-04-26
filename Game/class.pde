@@ -56,7 +56,7 @@ class projectile {
   void display() {
     hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
     fill(c);
-    ellipse(position.x, position.y, size, size);
+    
 
     image(magicFrames[frame], position.x, position.y, size*scaleRatio, size*scaleRatio);
     if (goTime == true) {
@@ -64,6 +64,7 @@ class projectile {
       if (frameCount %5 ==0) frame++;
       if (frame>= magicFrames.length) frame = 0;
     }
+    ellipse(position.x, position.y, size, size);
   }
 
   void refresh() {
@@ -99,17 +100,21 @@ class enemyProjectile extends projectile {
   void display() {
     hbox = new Area(new Ellipse2D.Float(position.x - size/2, position.y-size/2, size, size));
     fill(c);
-    ellipse(position.x, position.y, size, size);
+    
 
     if (canSlash == true) {
-      image(magicFramesv2[frame], position.x, position.y);
+      //ellipse(position.x, position.y, size, size);
+      image(magicFramesv2[frame], position.x, position.y, size, size);
+      
       if (goTime == true) {
         //Animate
         if (frameCount %5 ==0) frame++;
         if (frame>= magicFramesv2.length) frame = 0;
       }
     } else { 
-      image(magicFramesv3[frame], position.x, position.y);
+      //ellipse(position.x, position.y, size, size);
+      image(magicFramesv3[frame], position.x, position.y, size, size);
+      
       if (goTime == true) {
         if (frameCount %5 ==0) frame++;
         if (frame>= magicFramesv3.length) frame = 0;

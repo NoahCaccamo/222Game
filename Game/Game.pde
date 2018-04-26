@@ -1,4 +1,4 @@
-
+boolean debug = true;
 //INSTRUCTIONS: WSAD - move
 // SPACEBAR or SHIFT - dodge
 // Left Click - slash
@@ -119,7 +119,6 @@ boolean combo1, combo2, combo3, isSlashing, click1, click2, click3;
 int dLength = 120;
 int dDist = 10;
 
-int debug;
 
 boolean dUp, dDown, dLeft, dRight, dIag;
 boolean isDashing;
@@ -318,19 +317,19 @@ void setup() {
   introMusic = new SoundFile(this, "IntroMusic.mp3");
   playMusic = new SoundFile(this, "GameplayMusic.mp3");
   menuMusic = new SoundFile(this, "MenuMusic.mp3");
-  
-    introMusic.loop();
 
-    bit = loadFont("BIT.vlw");
+  introMusic.loop();
 
-    textFont(bit, 1);
-    
-    brick = loadImage("brick.jpg");
-  
-    
-    
+  bit = loadFont("BIT.vlw");
 
-  
+  textFont(bit, 1);
+
+  brick = loadImage("brick.jpg");
+
+
+
+
+
   //END OF LOAD ANIMATIONS
 
   //add the player
@@ -365,9 +364,9 @@ void draw() {
   if (gameState == mainM) {
     mM.display(); // display main menu
     // reset game elements
-    score = 0;
-    p1.hp = 6;
-    p1.maxHp = 6;
+    score = 999999999;
+    p1.hp = 999;
+    p1.maxHp = 999;
     ammo = 0;
     ammoParts = 0;
     wave = 0;
@@ -686,10 +685,10 @@ void runGame () {
 
   //DISPLAY HUD
   fill(0);
-  textSize(40);
+  textSize(29);
   fill(255);
   text("Ammo: " + ammo, 20, 112);
-  text("Score: " + score, width-280, 112);
+  text("Score: " + score, width-437, 112);
   text("Wave " + wave, width/2.2, 112);
   displayHealth();
   spawner();
@@ -718,7 +717,7 @@ void mousePressed() {
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
       introMusic.stop();
-     // playMusic.loop();
+      // playMusic.loop();
     }
     //To switch game state from main menu to controls menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= height/2 && mouseY <= height)) {
@@ -1404,14 +1403,14 @@ void slowTime() {
 }
 
 void displayHealth() {
-fill(255);
+  fill(255);
   text("Health: ", 20, 52);
   tint(255);
   for (int i=0; i < p1.maxHp; i++) {
-    image(emptyHeart, 191+ i*70, 40);
+    image(emptyHeart, 240+ i*70, 45);
   }
   for (int i=0; i < p1.hp; i++) {
-    image(fullHeart, 191+ i*70, 40);
+    image(fullHeart, 240+ i*70, 45);
   }
 }
 
@@ -1422,7 +1421,7 @@ void spawner() {
     collideTimer = millis() + 1000;
     if (wave <= 2) {
       calcChances(33.33, 33.33, 33.33, 0, 0, 0, 0);
-spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 400, height/2, 0.3));
+      turrets.add(new turret(30, width/2 + 400, height/2));
       wavePoints = 1;
     } else if ( wave <= 5) {
       calcChances(30, 30, 30, 10, 0, 0, 0);
