@@ -30,11 +30,10 @@ SoundFile playMusic;
 SoundFile menuMusic;
 
 
-
-
 PImage slowFilter;
 PImage emptyHeart, fullHeart;
 PImage maxPotion;
+PImage gradientOverlay;
 
 PFont bit;
 
@@ -188,6 +187,9 @@ void setup() {
   fullHeart = loadImage("fill.png");
   emptyHeart = loadImage("empty.png");
   maxPotion = loadImage("maxPotion.png");
+
+  gradientOverlay = loadImage("gradient_overlay_2.png");
+  gradientOverlay.resize(width, height);
 
   //LOAD ANIMATIONS
   //Loads Turret
@@ -698,6 +700,7 @@ void runGame () {
   fill(0);
   textSize(29);
   fill(255);
+  image(gradientOverlay, width/2, height/2);
   text("Ammo: " + ammo, 20, 112);
   text("Score: " + score, width-437, 112);
   text("Wave " + wave, width/2.2, 112);
@@ -728,7 +731,7 @@ void mousePressed() {
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
       introMusic.stop();
-      // playMusic.loop();
+       playMusic.loop();
     }
     //To switch game state from main menu to controls menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= height/2 && mouseY <= height)) {
@@ -1443,17 +1446,17 @@ void spawner() {
     } else if (wave < 10) {
       calcChances(24.33, 24.33, 24.33, 10, 5, 5, 7);
       wavePoints = 10;
-    }else if (wave == 10) {
+    } else if (wave == 10) {
       spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
       spiralRangedEnemies.add(new spiralRangedEnemy(30, random(width), random(height), 0.3));
-       float swarmNum = random(3, 8);
-        PVector pos = securePos(0, width, 0, height, 1000);
-        for (int i=0; i < swarmNum; i++) {
-          chargerEnemies.add(new chargerEnemy(10, pos.x + i, pos.y + i, 12));
-        }
+      float swarmNum = random(3, 8);
+      PVector pos = securePos(0, width, 0, height, 1000);
+      for (int i=0; i < swarmNum; i++) {
+        chargerEnemies.add(new chargerEnemy(10, pos.x + i, pos.y + i, 12));
+      }
       if (damageTaken == 0)maxPickups.add(new maxPickup(30, width/2, height/2));
       damageTaken = 0;
-  }else {
+    } else {
       wavePoints = wave;
     }
   }
