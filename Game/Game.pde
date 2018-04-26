@@ -312,8 +312,8 @@ void setup() {
     meleeFrames[i] = loadImage(filename);
   }
   for (int i=0; i< fMeleeFrames.length; i++) {
-    String filename = "copy" + i + ".png";
-    meleeFrames[i] = loadImage(filename);
+    String filename = i + "copy" + ".png";
+    fMeleeFrames[i] = loadImage(filename);
   }
   introMusic = new SoundFile(this, "IntroMusic.mp3");
   playMusic = new SoundFile(this, "GameplayMusic.mp3");
@@ -471,7 +471,7 @@ void runGame () {
     lag1 = 0;
     slashPunch = 10;
 
-    slash(color(255, 0, 0));
+    slash(color(255, 0, 0), false);
     HboxSlashes.add(new hitboxSlash(50, 100));
     slashKnockVector.setMag(slashPunch);
 
@@ -484,7 +484,7 @@ void runGame () {
     lag2 = 0;
     slashPunch = 10;
 
-    slash(color(0, 255, 0));
+    slash(color(0, 255, 0), true);
     HboxSlashes.add(new hitboxSlash(50, 100));
     slashKnockVector.setMag(slashPunch);
 
@@ -497,7 +497,7 @@ void runGame () {
     lag3 = 0;
     slashPunch = 10;
 
-    slash(color(0, 0, 255));
+    slash(color(0, 0, 255), false);
     HboxSlashes.add(new hitboxSlash(50, 100));
     slashKnockVector.setMag(slashPunch);
     combo3 = true;
@@ -776,7 +776,7 @@ void mousePressed() {
   }
 }
 
-void slash(color c) {
+void slash(color c, boolean isTrue) {
 
   PVector mouseVec = new PVector(p1.xpos - mouseX, p1.ypos - mouseY);
   mouseVec.normalize();
@@ -784,7 +784,7 @@ void slash(color c) {
   p1.xpos -= mouseVec.x;
   p1.ypos -= mouseVec.y;
 
-  slashes.add(new slashBox(color(c), false));
+  slashes.add(new slashBox(color(c), isTrue));
 }
 
 void slashPlayer() {
