@@ -384,6 +384,7 @@ void draw() {
     ammoParts = 0;
     wave = 0;
     wavePoints = 0;
+    damageTaken = 0;
     p1.xpos = width/2;
     p1.ypos = height/2;
     collideTimer = 1000;
