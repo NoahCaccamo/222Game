@@ -1555,10 +1555,11 @@ void rollPickup(PVector position, int chance) {
 PVector securePos(float minPosX, float maxPosX, float minPosY, float maxPosY, float minDist) {
   float tempRandomX = random(minPosX, maxPosX);
   float tempRandomY = random(minPosY, maxPosY);
+PVector other;
 
   if (dist(tempRandomX, tempRandomY, p1.xpos, p1.ypos) >= minDist) {
     return new PVector(tempRandomX, tempRandomY);
   } else {
-    return securePos(minPosX, maxPosX, minPosY, maxPosY, minDist);
+    return other = (securePos(minPosX, maxPosX, minPosY, maxPosY, minDist));
   }
 }
