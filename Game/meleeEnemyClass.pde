@@ -133,16 +133,9 @@ float scaleRatio = 1.2;
     translate(position.x, position.y);
     rotate(angle);
     translate(50, 0);
+    fill(255);
     rect(0, 0, 50, 50);
-    image(ogreattack[frame], 0, 0);
     popMatrix();
-    
-     if (goTime == true) {
-    // animate the player 
-    // we want to increase the frame counter every 4 frames
-    if (frameCount % 4 == 0) frame++;   
-    if (frame >= ogreflip.length) frame = 0;
-    }
   }
 
   class eHitboxSlash {

@@ -63,7 +63,6 @@ PImage [] dragon = new PImage [4];
 PImage [] dragonflip = new PImage [4];
 PImage [] ogre = new PImage [8];
 PImage [] ogreflip = new PImage [8];
-PImage [] ogreattack = new PImage [7];
 
 Area playerHbox;
 
@@ -229,13 +228,6 @@ void setup() {
   }
 
 
-  //Loads Ogre ATTACK
-  for (int i=0; i< ogreattack.length; i++) {
-    String filename = "OGREATTACK_" + i + ".png";
-    ogreattack[i] = loadImage(filename);
-    ogreattack[i].resize(64, 64);
-  }
-  
   //Loads Ogre
   for (int i=0; i< ogre.length; i++) {
     String filename = "OGRESPRITE_" + i + ".png";
@@ -320,7 +312,7 @@ void setup() {
     meleeFrames[i] = loadImage(filename);
   }
   for (int i=0; i< fMeleeFrames.length; i++) {
-    String filename =  i + "copy" + ".png";
+    String filename = "copy" + i + ".png";
     meleeFrames[i] = loadImage(filename);
   }
   introMusic = new SoundFile(this, "IntroMusic.mp3");
@@ -725,7 +717,7 @@ void mousePressed() {
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= 0 && mouseY <= height/2)) {
       gameState = runGame;
       introMusic.stop();
-      playMusic.loop();
+     // playMusic.loop();
     }
     //To switch game state from main menu to controls menu
     if ((mouseX >= width/2 && mouseX <= width) && (mouseY >= height/2 && mouseY <= height)) {
