@@ -89,7 +89,9 @@ ArrayList<tripleRangedEnemy> tripleRangedEnemies = new ArrayList<tripleRangedEne
 ArrayList<turret> turrets = new ArrayList<turret>();
 ArrayList<spiralRangedEnemy> spiralRangedEnemies = new ArrayList<spiralRangedEnemy>();
 
-int score;
+int score, highScore;
+boolean newScore;
+String strHighscore;
 int ammo;
 int ratio = 6;
 float ammoParts;
@@ -175,6 +177,7 @@ void setup() {
   noStroke();
   imageMode(CENTER);
   rectMode(CENTER);
+  textAlign(CENTER);
 
 
   // add menus
@@ -369,6 +372,8 @@ void setup() {
 
   //spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2, height/2, 0.3));
   //spiralRangedEnemies.add(new spiralRangedEnemy(30, width/2 + 200, height/2+ 300, 0.3));
+  String[] loadedHighScore = loadStrings("highScore.txt");
+  highScore = int(loadedHighScore[0]);
 }
 
 
@@ -378,6 +383,7 @@ void draw() {
     mM.display(); // display main menu
     // reset game elements
     score = 0;
+    newScore = false;
     p1.hp = 6;
     p1.maxHp = 6;
     ammo = 0;
@@ -406,9 +412,6 @@ void draw() {
     cM.display(); // display controls menu
   } else if (gameState == gameO) {
     gO.display(); // display game over screen
-    fill(255);
-    textSize(48);
-    text(score + " points", (width/4)*2.8, (height/4)*3.1);
   }
 }
 
@@ -702,8 +705,10 @@ void runGame () {
   textSize(29);
   fill(255);
   image(gradientOverlay, width/2, height/2);
-  text("Ammo: " + ammo, 20, 112);
+  text("Ammo: " + ammo, 109, 112);
+  textAlign(LEFT);
   text("Score: " + score, width-437, 112);
+  textAlign(CENTER);
   text("Wave " + wave, width/2.2, 112);
   displayHealth();
   spawner();
@@ -1424,7 +1429,7 @@ void slowTime() {
 
 void displayHealth() {
   fill(255);
-  text("Health: ", 20, 52);
+  text("Health: ", 109, 52);
   tint(255);
   for (int i=0; i < p1.maxHp; i++) {
     image(emptyHeart, 240+ i*70, 45);

@@ -236,6 +236,12 @@ void damage(PVector source, float force, int damage) {
     if (p1.hp <= 0) {
       //game over
       println("game over");
+      if (score > highScore) {
+       highScore = score;
+       String[] saved = {str(highScore)};
+       saveStrings("highScore.txt", saved);
+       newScore = true;
+      }
       gameState = gameO;
       playMusic.stop();
       menuMusic.play();

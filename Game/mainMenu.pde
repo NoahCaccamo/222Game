@@ -13,6 +13,8 @@ class mainMenu {
     image(mainMenu, width/2, height/2);
     fill(255);
     textSize(20);
-    text("Made by: Noah Caccamo, Jasper Tu, and Sam Gibson-Gamache", 20, height - 20);
+    text("Made by: Noah Caccamo, Jasper Tu, and Sam Gibson-Gamache", 530, height - 20);
+    textSize(30);
+    text("Highscore: " + highScore, width/2, 40);
   }
 }
